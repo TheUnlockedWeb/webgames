@@ -10,40 +10,24 @@
     window.UNITY_BUILD      = 'escape-road-city-2-v25103106';
     window.UNITY_TITLE      = 'Escape Road 2';
     window.UNITY_WASM_PARTS = 1;       // set to 1 if wasm is a single file
-  const originalOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function(method, url) {
-    if (url.includes("api.cdnwave.com")) {
-      console.log("Intercepted CDNWave verification request!");
-      
-      // We overwrite the send method for THIS specific request instance
-      this.send = function() {
-        Object.defineProperty(this, 'status', { value: 200 });
-        Object.defineProperty(this, 'readyState', { value: 4 });
-        Object.defineProperty(this, 'responseText', { 
-          value: "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ==" 
-        });
-        
-        // Manually trigger the "finished" events the game is waiting for
-        if (this.onreadystatechange) this.onreadystatechange();
-        if (this.onload) this.onload();
-      };
-    }
-    return originalOpen.apply(this, arguments);
-  };
-
-  // 2. Mock GMSDK & Firebase
-  window.GMSDK = {
-    GetVeryfiedSignature: function() { 
-      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ=="; 
-    },
-    Init: function() { return Promise.resolve({code: 0}); },
-    StartGame: function() { return true; }
-  };
+// Force the browser to report the "correct" domain to the SDK
+  Object.defineProperty(window, 'location', {
+    value: new URL('https://escaperoad.io/escape-road-city-2/'),
+    configurable: true
+  });
   
-  // Set global aliases
-  window.GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
+  // Also spoof the document.domain for older SDK versions
+  Object.defineProperty(document, 'domain', {
+    value: 'escaperoad.io/escape-road-city-2/',
+    configurable: true
+  });
+
+  // Ensure the SDK always sees the "valid" signature
+  window.GMSDK = window.GMSDK || {};
+  window.GMSDK.GetVeryfiedSignature = function() {
+    return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ==";
+  };
   window.firebaseLogEventParameter = function(n, p) { console.log("Firebase Log:", n); };
-  window.GMAnalytics = { LogEventParameter: function() { return true; } };
 </script>
   </script>
   
