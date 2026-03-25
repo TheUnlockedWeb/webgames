@@ -10,26 +10,11 @@
     window.UNITY_BUILD      = 'escape-road-city-2-v25103106';
     window.UNITY_TITLE      = 'Escape Road 2';
     window.UNITY_WASM_PARTS = 1;       // set to 1 if wasm is a single file
-    window.GMSDK = {
-      version: "1.0.0",
-      init: function(config) { 
-        console.log("GMSDK: Init called", config); 
-        return Promise.resolve({code: 0, message: "success"}); 
-      },
-      login: function() { 
-        return Promise.resolve({code: 0, data: {userId: "guest_123", token: "fake_token"}}); 
-      },
-      checkLogin: function() { return true; },
-      getUserInfo: function() { return {userId: "guest_123", nickname: "Player"}; },
-      on: function(event, callback) { console.log("GMSDK Event Registered:", event); },
-      sendStatistic: function(data) { return true; },
-      // Add common sub-modules if the game calls them
-      pay: { isSupport: function() { return false; } },
-      advert: { show: function() { return Promise.resolve(); } }
-    };
-    // Some games look for the global 'gmsdk' (lowercase) or 'tt' (ByteDance)
-    window.gmsdk = window.GMSDK;
-    window.tt = window.GMSDK;
+    window.GMSDK = window.GMSDK || {};
+    window.GMSDK.SetGameInfoParam = function(a) { return true; };
+    window.GMSDK.StartGame = function() { return true; };
+    window.GMAdvertisementManager = { SetAdParam: function(a) { return true; } };
+
   </script>
   
   <script src="../unity_frame.js"></script>
