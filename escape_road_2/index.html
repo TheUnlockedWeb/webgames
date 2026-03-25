@@ -10,10 +10,17 @@
     window.UNITY_BUILD      = 'escape-road-city-2-v25103106';
     window.UNITY_TITLE      = 'Escape Road 2';
     window.UNITY_WASM_PARTS = 1;       // set to 1 if wasm is a single file
+    Object.defineProperty(window, 'location', {
+      value: new URL('https://theunlockedweb.github.io'),
+      configurable: true
+    });
+    
+    // Patch the specific GMSDK verification check
     window.GMSDK = window.GMSDK || {};
-    window.GMSDK.SetGameInfoParam = function(a) { return true; };
-    window.GMSDK.StartGame = function() { return true; };
-    window.GMAdvertisementManager = { SetAdParam: function(a) { return true; } };
+    window.GMSDK.checkVerify = function() { return true; };
+    window.GMSDK.getVerifySignature = function() { 
+      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ=="; 
+    };
 
   </script>
   
