@@ -10,28 +10,29 @@
     window.UNITY_BUILD      = 'escape-road-city-2-v25103106';
     window.UNITY_TITLE      = 'Escape Road 2';
     window.UNITY_WASM_PARTS = 1;       // set to 1 if wasm is a single file
-    Object.defineProperty(window, 'location', {
-      value: new URL('https://theunlockedweb.github.io'),
-      configurable: true
-    });
     
-    // Patch the specific GMSDK verification check
-    window.GMSDK = {
-    // This is the specific function the error is complaining about
-    GetVeryfiedSignature: function() {
-      console.log("GMSDK: Signature verification bypassed!");
-      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ==";
+  // 1. Fix the "Signature is not called" error
+  window.GMSDK = {
+    GetVeryfiedSignature: function() { 
+      console.log("Bypassing Signature"); 
+      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ=="; 
     },
-    // Adding this as a backup in case it checks via a different naming convention
-    getVerifySignature: function() { return this.GetVeryfiedSignature(); },
-    checkVerify: function() { return true; },
-    Init: function() { return Promise.resolve({code: 0}); },
-    StartGame: function() { return true; }
+    StartGame: function() { return true; },
+    Init: function() { return Promise.resolve({code: 0}); }
+  };
+  window.GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
+
+  // 2. Fix the "firebaseLogEventParameter is not defined" error
+  window.firebaseLogEventParameter = function(name, params) {
+    console.log("Firebase Log (Mocked):", name, params);
   };
 
-  // Some Unity-JS bridges look for the function on the window object directly
-  window.GM_SDK_GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
-  window.GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
+  // 3. Fix general GMAnalytics crashes (preventing the "Locked" state)
+  window.GMAnalytics = {
+    LogEventParameter: function(name, params) { return true; },
+    LogEvent: function(name) { return true; }
+  };
+
 
   </script>
   
