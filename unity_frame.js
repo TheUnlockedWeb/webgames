@@ -13,6 +13,13 @@
  * IMPORTANT: use window.UNITY_BUILD, NOT const — const doesn't attach to window.
  */
 
+var firebaseLogEvent                 = window.firebaseLogEvent                 || function() {};
+var firebaseSetCurrentScreen         = window.firebaseSetCurrentScreen         || function() {};
+var firebaseSetUserId                = window.firebaseSetUserId                || function() {};
+var firebaseSetUserProperty          = window.firebaseSetUserProperty          || function() {};
+var firebaseGetToken                 = window.firebaseGetToken                 || function() {};
+var firebaseGetAnalyticsInstanceId   = window.firebaseGetAnalyticsInstanceId   || function() {};
+
 (function () {
   /* ── Config ─────────────────────────────────────────────── */
   const BUILD       = window.UNITY_BUILD;
@@ -43,29 +50,6 @@
     app:  () => window.firebase,
     auth: () => ({ onAuthStateChanged: () => {}, signInAnonymously: () => Promise.resolve() }),
   };
-
-  // Bare globals Unity might call (e.g. firebaseLogEvent, firebaseSetUserId...)
-  // Intercept ALL missing globals with a Proxy so no name ever throws.
-  try {
-    window = new Proxy(window, {
-      get(target, prop) {
-        const val = target[prop];
-        if (val !== undefined) return typeof val === 'function' ? val.bind(target) : val;
-        // Unknown property — if it looks like a firebase function, return a no-op
-        if (typeof prop === 'string' && prop.startsWith('firebase')) {
-          console.log('[Unity] Intercepted missing global:', prop);
-          return (...args) => console.log('[Unity]', prop, ...args);
-        }
-        return val;
-      }
-    });
-  } catch(e) {
-    // window proxy not supported — fall back to manually stubbing known names
-    [
-      'firebaseLogEvent','firebaseSetCurrentScreen','firebaseSetUserId',
-      'firebaseSetUserProperty','firebaseGetToken','firebaseGetAnalyticsInstanceId',
-    ].forEach(fn => { if (!window[fn]) window[fn] = (...a) => console.log('[Unity]', fn, ...a); });
-  }
 
   /* ── Inject <head> assets ───────────────────────────────── */
   document.title = TITLE + ' — TheUnlockedWeb';
