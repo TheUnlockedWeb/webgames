@@ -19,6 +19,8 @@ var firebaseSetUserId                = window.firebaseSetUserId                |
 var firebaseSetUserProperty          = window.firebaseSetUserProperty          || function() {};
 var firebaseGetToken                 = window.firebaseGetToken                 || function() {};
 var firebaseGetAnalyticsInstanceId   = window.firebaseGetAnalyticsInstanceId   || function() {};
+var firebaseLogEventParameter        = window.firebaseLogEventParameter        || function() {};
+
 
 (function () {
   /* ── Config ─────────────────────────────────────────────── */
