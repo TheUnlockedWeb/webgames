@@ -16,11 +16,22 @@
     });
     
     // Patch the specific GMSDK verification check
-    window.GMSDK = window.GMSDK || {};
-    window.GMSDK.checkVerify = function() { return true; };
-    window.GMSDK.getVerifySignature = function() { 
-      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ=="; 
-    };
+    window.GMSDK = {
+    // This is the specific function the error is complaining about
+    GetVeryfiedSignature: function() {
+      console.log("GMSDK: Signature verification bypassed!");
+      return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ==";
+    },
+    // Adding this as a backup in case it checks via a different naming convention
+    getVerifySignature: function() { return this.GetVeryfiedSignature(); },
+    checkVerify: function() { return true; },
+    Init: function() { return Promise.resolve({code: 0}); },
+    StartGame: function() { return true; }
+  };
+
+  // Some Unity-JS bridges look for the function on the window object directly
+  window.GM_SDK_GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
+  window.GetVeryfiedSignature = window.GMSDK.GetVeryfiedSignature;
 
   </script>
   
