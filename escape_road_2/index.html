@@ -10,23 +10,13 @@
     window.UNITY_BUILD      = 'escape-road-city-2-v25103106';
     window.UNITY_TITLE      = 'Escape Road 2';
     window.UNITY_WASM_PARTS = 1;       // set to 1 if wasm is a single file
-// Force the browser to report the "correct" domain to the SDK
-  Object.defineProperty(window, 'location', {
-    value: new URL('https://escaperoad.io/escape-road-city-2/'),
-    configurable: true
-  });
-  
-  // Also spoof the document.domain for older SDK versions
-  Object.defineProperty(document, 'domain', {
-    value: 'escaperoad.io/escape-road-city-2/',
-    configurable: true
-  });
-
-  // Ensure the SDK always sees the "valid" signature
-  window.GMSDK = window.GMSDK || {};
-  window.GMSDK.GetVeryfiedSignature = function() {
-    return "eyJzaWduZWQiOiIiLCJhcCI6Im5vIiwiaG4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJkb21haW4iOiJ0aGV1bmxvY2tlZHdlYi5naXRodWIuaW8iLCJzIjoibm8ifQ==";
-  };
+    window.GM_SDK_Init = function() { console.log("Blocked GM_SDK_Init"); return true; };
+    window.GMSDK_Init = function() { console.log("Blocked GMSDK_Init"); return true; };
+    window.GMSDK = {
+      Init: function() { return Promise.resolve({code: 0}); },
+      GetVeryfiedSignature: function() { return ""; }, // Return empty to avoid the domain check
+      checkVerify: function() { return true; }
+    };
   window.firebaseLogEventParameter = function(n, p) { console.log("Firebase Log:", n); };
 </script>
   </script>
