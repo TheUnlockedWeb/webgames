@@ -1,96 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="robots" content="noindex, nofollow">
-        <title>Drive Mad Unblocked on BirdHub</title>
-        <link rel="shortcut icon" type="image/png" href="menu-assets/favicon.jpg">
-        <style>
-            .background, .gameIframe {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vw;
-                z-index: -1;
-                pointer-events: none;
-                overflow: hidden;
-            }
-            .gameIframe {
-                display: none;
-                z-index: 9999;
-                border: none;
-            }
-            button {
-                width: min-content;
-                height: min-content;
-                margin: auto;
-                margin-left: 5vw;
-                margin-right: 5vw;
-                padding: 0;
-                border: none;
-                background-color:rgb(82, 44, 21);
-                border-radius: 5vw;
-                overflow: hidden;
-                cursor: pointer;
-                transition: 0.3s ease;
-            }
-            button img {
-                width: 20vw;
-                height: 20vw;
-            }
-            button:hover {
-                transform: scale(1.1);
-            }
-            .buttons {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                margin-top: 5vw;
-            }
-            .buttonsAndText {
-                display: flex;
-                justify-content: center;
-                text-align: center;
-                flex-direction: column;
-            }
-            .buttonsAndText h1 {
-                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-                color: black;
-                font-size: 3vw;
-                font-weight: bold;
-                margin: 0;
-                margin-top: 2vw;
-            }
-            .buttonsAndText p {
-                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-                color: black;
-                font-size: 2vw;
-                margin: 0;
-            }
-        </style>
-    </head>
-    <body>
-        <img class="background" src="menu-assets/menu-background.jpg"/> <!--background-->
-        <div class="buttons">
-            <div class="buttonsAndText">
-                <button onclick="window.location.href='drive-mad-classic'">
-                    <img src="menu-assets/classic-logo.png">
-                </button>
-                <h1>Play Drive Mad Classic</h1>
-                <p>- Original version</br>
-                    - 100 levels
-                </p>
-            </div>
-            <div class="buttonsAndText">
-                <button onclick="window.location.href='drive-mad-new'">
-                    <img src="menu-assets/new-logo.png">
-                </button>
-                <h1>Play Drive Mad Plus</h1>
-                <p>- New, revamped version</br>
-                    - 200 levels
-                </p>
-            </div>
-        </div>
-    </body>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Drive Mad Unblocked on BirdHub</title>
+<script type="text/javascript" src="Jump_Gamemonetize.js"></script>
+<meta name="description" content="">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="webapp/fancade.css">
+<link rel="icon" href="webapp/drive-mad-logo.jpg">
+</head>
+<body id="body">
+<div id="modal_parent">
+<div id="modal_content"><span id="modal_close_button">&times;</span>
+<div id="store_link_modal_content" class="modal_inner"></div>
+<div id="share_file_modal_content" class="modal_inner"></div>
+</div>
+</div>
+<div id="canvas_border" class="emscripten_border">
+<div id="play_content" class="middle center">
+<div class="edge">
+<div class="box">
+<div class="black"><img src="webapp/cover.jpg" class="cover">
+<p class="title">Drive Mad</p>
+<p class="author">Martin Magni</p>
+</div>
+</div>
+</div>
+<div id="progress_or_play"><progress id="progress" class="loading" value="0" max="100"></progress></div>
+<p class="description"></p>
+</div><canvas class="emscripten" id="canvas" tabindex="-1"></canvas>
+<div id="gradient"></div>
+<div id="webview_content"></div>
+</div>
+<script type="text/javascript" src="webapp/source_min.js"></script>
+<script type="text/javascript" src="webapp/index.js"></script>
+</body>
 </html>
