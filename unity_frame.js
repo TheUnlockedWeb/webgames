@@ -60,7 +60,7 @@ var firebaseLogEventParameter        = window.firebaseLogEventParameter        |
     ['preconnect', 'https://fonts.googleapis.com'],
     ['stylesheet', 'https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;600&display=swap'],
     ['stylesheet', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'],
-    ['stylesheet', _rel('.../assets/style.css')],
+    ['stylesheet', _rel('../../assets/style.css')],
   ];
 
   headLinks.forEach(([rel, href]) => {
