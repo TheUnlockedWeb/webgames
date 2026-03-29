@@ -267,17 +267,14 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Contact
+## Contact Us
 
-Jayden Wong - [@thejaydenproject](https://github.com/thejaydenproject)
+EthanUnlocked - [@ethanunlocked](https://github.com/EthanUnlocked690)
+LaDoodleInTheHat - [@ladoodleinthehat](https://github.com/LaDoodleInTheHat)
 
-Project Link: [https://github.com/thejaydenproject/type-or-die](https://github.com/thejaydenproject/type-or-die)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Acknowledgments
-
-* Inspired by **Final Sentence** on Steam.
+Project Link: [https://github.com/TheUnlockedWeb/webgames/tree/main/type_or_die](https://github.com/TheUnlockedWeb/webgames/tree/main/type_or_die)
+Webgames Code: [https://github.com/TheUnlockedWeb/webgames/tree/main](https://github.com/TheUnlockedWeb/webgames/tree/main)
+Main Website Code: [https://github.com/TheUnlockedWeb/theunlockedweb.github.io](https://github.com/TheUnlockedWeb/theunlockedweb.github.io)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
