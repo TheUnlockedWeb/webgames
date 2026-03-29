@@ -1,0 +1,22 @@
+<div class="container px-4">
+    <input 
+    style="background-color:#616060d8; color:white !important; border: 1px solid #2C2E31;"
+    type="text" [(ngModel)]="filterValue" placeholder="Search Pokemon" class="form-control shadow-none mx-auto mt-2" (input)="filterPokemonList()">
+
+  <ul style="overflow-y: auto;" class="list-group mx-auto mt-2">
+    <li *ngFor="let result of pokemonListFront" class="list-group-item mb-1 color-grey" >
+
+      <div class="d-flex justify-content-between">
+        <img src="{{result.url}}" 
+        class="img img-search  me-4" alt="Responsive image" >
+
+        <div class="my-auto press-start mx-auto" style="font-size:.6rem; color:white;text-align: center !important;">{{result.name}}</div>
+        <!-- on cree un btn angular material -->         
+
+        <button mat-icon-button style="color:rgb(63, 60, 60);" class="my-auto ms-2">
+          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="check"></mat-icon>
+        </button>
+    </div>
+    </li>
+</ul>
+</div>
