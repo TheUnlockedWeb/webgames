@@ -1,3 +1,0 @@
-Bug #01 - Switching tabs on phone
-due to duplicated ID resized is not possible. 
-We need to provide unique id to ensure correct behaviro

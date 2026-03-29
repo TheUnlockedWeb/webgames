@@ -1,5 +1,0 @@
-Roadmap :
-Assets creation
-Dialog Box
-Api Implementation
-split in component
