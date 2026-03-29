@@ -1,7 +1,3 @@
-<a id="readme-top"></a>
-
-<div align="center">
-
   <h3 align="center">Type or Die</h3>
 
   <p align="center">
