@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GRID-LOCK // PROTOCOL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRID-LOCK // ASSET EDITION</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-wrap">
-        <div class="stats">DEATHS: <span id="death-count">0</span></div>
-        <canvas id="stage"></canvas>
-        <div id="msg">REACH THE GREEN ZONE</div>
+
+    <div id="ui">
+        <div class="stat-box">DEATH_COUNT: <span id="count">0</span></div>
     </div>
+
+    <div id="game-container">
+        <canvas id="stage"></canvas>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
