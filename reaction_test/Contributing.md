@@ -8,4 +8,4 @@
 
 ## How can I get on the list of contributors?
 
-- after your PR is merged, you will be automatically become a contributor and will be appeared in the Readme.md as the contributor.
+- after your PR is merged, you will be automatically become a contributor and will be appeared in the README.md as the contributor.
