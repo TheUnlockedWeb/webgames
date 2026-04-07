@@ -8,7 +8,7 @@ You can even click the Steal button. This is where you can type a GD players Use
 ---
 
 Here is a preview of what you will experience:
-<img width="2879" height="1579" alt="Screenshot 2026-04-07 093845" src="https://github.com/user-attachments/assets/d595afc9-3a0c-4a53-9686-38f04c5c95cf" />
+<img width="3500" height="1579" alt="Screenshot 2026-04-07 093845" src="https://github.com/user-attachments/assets/d595afc9-3a0c-4a53-9686-38f04c5c95cf" />
 
 ---
 
