@@ -1,0 +1,31 @@
+/* * This CSS file is responsible for defining and styling custom fonts for the web page. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500&display=swap');
+
+/* ? Define custom font 'Lilita One' */
+@font-face {
+    font-family: 'Lilita One';
+    src: url('../fonts/lilita-one/lilita-one.woff') format('woff2'),
+        url('../fonts/lilita-one/lilita-one.woff2') format('woff');
+}
+
+/* ? Define custom font 'Nougat' */
+@font-face {
+    font-family: 'Nougat';
+    src: url('../fonts/nougat/nougat.woff2') format('woff2'),
+        url('../fonts/nougat/nougat.woff') format('woff');
+}
+
+/* ? Apply 'Lilita One' font to elements with the class 'font-lilita-one' */
+.font-lilita-one {
+    font-family: 'Lilita One', sans-serif;
+}
+
+/* ? Apply 'Nougat' font to elements with the class 'font-nougat' */
+.font-nougat {
+    font-family: 'Nougat', sans-serif;
+}
+
+/* ? Apply 'Nanum Gothic' font to elements with the class 'font-nanum-gothic' */
+.font-nanum-gothic {
+    font-family: 'Barlow Condensed', sans-serif;
+}
