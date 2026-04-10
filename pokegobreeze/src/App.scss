@@ -1,0 +1,161 @@
+.caption {
+  text-decoration: none !important;
+
+  @apply tw-text-[12px] tw-block;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.loading {
+  animation: loading-spin 1s linear infinite;
+}
+
+@keyframes loading-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.link-url {
+  color: #0d6efd !important;
+
+  @apply tw-cursor-pointer;
+}
+
+.link-url:hover {
+  color: #0000ee !important;
+}
+
+img.pokemon-main-sprite {
+  @apply tw-w-full tw-h-[205px] tw-object-contain;
+}
+
+img.sprite-type {
+  @apply tw-w-full tw-h-9 tw-object-contain;
+}
+
+img.pokemon-sprite-accordion {
+  @apply tw-w-full tw-h-12.5 tw-object-contain;
+}
+
+img.pokemon-navigate-sprite {
+  @apply tw-h-15 tw-object-contain;
+}
+
+img.pokemon-sprite-small {
+  @apply tw-w-full tw-h-4 tw-object-contain;
+}
+
+img.pokemon-sprite-medium {
+  @apply tw-w-full tw-h-16 tw-object-contain;
+}
+
+img.pokemon-sprite,
+img.pokemon-sprite-large {
+  @apply tw-w-full tw-h-24 tw-object-contain;
+}
+
+img.pokemon-sprite-counter {
+  @apply tw-w-full tw-h-16 tw-object-contain;
+}
+
+img.pokemon-sprite-model {
+  @apply tw-w-full tw-h-20 tw-object-contain;
+}
+
+img.sprite-type-large,
+img.pokemon-sprite-raid {
+  @apply tw-w-full tw-h-32 tw-object-contain;
+}
+
+img.block-spirit-timeline {
+  @apply tw-w-full tw-h-11 tw-object-contain;
+}
+
+img.frame-type-sprite {
+  @apply tw-w-full tw-h-10 tw-object-contain;
+}
+
+img.badge-type-sprite {
+  @apply tw-w-full tw-h-5 tw-object-contain;
+}
+
+.shadow-icon,
+.purified-icon {
+  @apply tw-absolute tw-bottom-0;
+}
+
+.border-type-init {
+  @apply tw-border-solid tw-border tw-h-7.5;
+}
+
+.type-select-bg {
+  @apply tw-py-1 tw-px-2.5 tw-rounded-md tw-text-white tw-gap-x-1;
+}
+
+ul {
+  @apply tw-list-none;
+}
+
+.result {
+  @apply tw-absolute tw-z-[4] tw-w-[300px] tw-max-h-[570px] tw-overflow-y-auto;
+}
+
+.result-type ul,
+.result-weather ul,
+.result-move ul {
+  @apply tw-m-0 tw-p-0;
+}
+
+.card-pokemon {
+  @apply tw-p-2.5 tw-w-full tw-cursor-pointer;
+}
+
+.img-search {
+  margin: 0 5px;
+}
+
+.moveset-error {
+  @apply tw-w-full tw-h-full tw-opacity-50;
+}
+
+.moveset-error-msg {
+  transform: translate(-50%, -50%);
+
+  @apply tw-absolute tw-top-1/2 tw-left-1/2 tw-p-[15px] tw-rounded-lg tw-text-red-500;
+}
+
+.disable-card-move {
+  @apply tw-text-gray-500;
+}
+
+.ic {
+  padding: 1px 6px !important;
+  font-weight: bold !important;
+  text-shadow: none !important;
+  color: black !important;
+  width: fit-content !important;
+
+  @apply tw-inline-block tw-text-[10px] tw-text-center;
+}
+
+.type-border,
+.text-shadow-black {
+  text-shadow: 1px 1px black;
+}
+
+.type-border-white {
+  @apply tw-border-solid tw-border tw-border-white tw-rounded-full;
+}
+
+.popover-info {
+  background-color: var(--custom-pop-over);
+
+  @apply tw-p-4 tw-rounded-lg tw-text-default tw-shadow;
+}
