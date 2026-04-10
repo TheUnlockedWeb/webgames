@@ -1,0 +1,25 @@
+.iv-bg-group {
+  @apply tw-w-[99%] tw-inline-flex tw-gap-x-[5px];
+}
+
+.iv {
+  @apply tw-w-1/3;
+}
+
+.iv-bg-bar {
+  @apply tw-h-[13px];
+}
+
+.iv-bar {
+  background-color: #ef911d;
+
+  @apply tw-h-[13px];
+}
+
+.iv-first-child div {
+  @apply tw-rounded-l-[8px];
+}
+
+.iv-last-child div {
+  @apply tw-rounded-r-[8px];
+}
