@@ -1,0 +1,34 @@
+.table-moves-col {
+  @apply tw-h-[10%] tw-max-h-[700px] tw-overflow-y-auto;
+}
+
+.table-moves {
+  table-layout: -webkit-fixed;
+  table-layout: fixed;
+
+  @apply tw-w-full tw-min-w-[250px];
+}
+
+.table-moves thead {
+  @apply tw-sticky tw-top-0;
+}
+
+.table-moves thead tr th {
+  @apply tw-text-[16px] tw-py-[5px] tw-px-2.5 tw-h-[35px];
+}
+
+.table-moves tbody tr td {
+  @apply tw-font-bold;
+}
+
+.main-move {
+  @apply tw-w-2/5;
+}
+
+.text-origin {
+  font-weight: lighter !important;
+}
+
+.text-b-ic {
+  @apply tw-mr-2;
+}
