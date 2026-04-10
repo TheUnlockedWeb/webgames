@@ -1,0 +1,118 @@
+.title-leagues {
+  @apply tw-underline tw-font-bold;
+}
+
+.league {
+  @apply tw-w-max tw-h-max tw-relative tw-m-auto;
+}
+
+.season-league {
+  @apply tw-relative tw-whitespace-nowrap tw-overflow-x-auto tw-w-max;
+}
+
+.group-rank-league {
+  @apply tw-inline-block;
+}
+
+.rank-header {
+  @apply tw-p-2 tw-font-bold;
+}
+
+.reward-league {
+  @apply tw-sticky tw-left-0 tw-z-2;
+}
+
+.badge-league {
+  transform: translateY(-65%);
+
+  @apply tw-absolute tw-top-[65%] tw-right-[7%] tw-border-[5px] tw-border-[#b2b2b2] tw-rounded-full;
+}
+
+.badge-league img {
+  @apply tw-p-[5px];
+}
+
+.sub-badge {
+  @apply tw-rounded-full tw-border-[3.5px] tw-border-white;
+}
+
+li.unique-type ul {
+  @apply tw-p-0;
+}
+
+.great-league {
+  background-image: linear-gradient(45deg, #2a3fa5 60%, #4b7ad6);
+}
+
+.ultra-league {
+  background-image: linear-gradient(45deg, #2f363c 60%, #7f898b);
+}
+
+.master-league {
+  background-image: linear-gradient(45deg, #4b228a 60%, #a388d0);
+}
+
+.img-link {
+  display: inline-block !important;
+
+  @apply tw-w-max tw-m-[5px];
+}
+
+.league-body.accordion-body div.sub-body {
+  @apply tw-py-4 tw-px-5;
+}
+
+
+.combat-league {
+  @apply tw-inline-block tw-w-16 tw-relative tw-mr-[5px];
+}
+
+.combat-league-info {
+  @apply tw-inline-block tw-w-24 tw-relative tw-mr-[5px];
+}
+
+.combat-league img.main-combat-league {
+  @apply tw-w-full tw-h-16 tw-object-contain;
+}
+
+.combat-league-info img.main-combat-league-info {
+  @apply tw-w-full tw-h-24 tw-object-contain;
+}
+
+.combat-center-league {
+  transform: translate(-50%, -40%);
+
+  @apply tw-absolute tw-top-[38%] tw-left-[49%];
+}
+
+.combat-center-league-info {
+  transform: translate(-49%, -40%);
+
+  @apply tw-absolute tw-top-[45%] tw-left-[49%];
+}
+
+.combat-center-league-text {
+  transform: translate(-50%, -30%);
+
+  @apply tw-absolute tw-top-[30%] tw-left-1/2 tw-text-white tw-font-medium tw-text-[20px];
+}
+
+.require-rank-info {
+  b {
+    @apply tw-text-red-600;
+  }
+
+  li {
+    @apply tw-list-none;
+  }
+}
+
+.combat-center-league-top {
+  transform: translateX(-50%);
+
+  @apply tw-absolute tw-left-1/2 tw-text-white tw-text-[10px];
+}
+
+.reward-info {
+  font-size: 14px !important;
+}
