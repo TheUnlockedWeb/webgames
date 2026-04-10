@@ -668,6 +668,8 @@ If you find this project helpful, please consider:
 
 ---
 
-**Made with ❤️ by the Pokémon GO community**
+**Made with ❤️ by the Pokémon GO community too**
+
+**Also, PLEASE like it because, you can tell by the File count in the Repository, this took forever!!!!!**
 
 *Pokémon and Pokémon GO are trademarks of Nintendo, Creatures Inc., and GAME FREAK inc.*
