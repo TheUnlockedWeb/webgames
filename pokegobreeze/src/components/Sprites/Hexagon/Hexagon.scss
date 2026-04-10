@@ -1,0 +1,39 @@
+.stats-border {
+  @apply tw-flex tw-justify-center tw-items-center;
+}
+
+.leader-text {
+  transform: translateX(-50%);
+
+  @apply tw-top-2.5 tw-left-1/2;
+}
+
+.attacker-text {
+  transform: translateY(-50%);
+
+  @apply tw-left-2.5 tw-top-1/4;
+}
+
+.consistence-text {
+  transform: translateY(50%);
+
+  @apply tw-left-2.5 tw-bottom-1/4;
+}
+
+.closer-text {
+  transform: translateX(-50%);
+
+  @apply tw-bottom-2.5 tw-left-1/2;
+}
+
+.charger-text {
+  transform: translateY(25%);
+
+  @apply tw-right-5 tw-bottom-1/4;
+}
+
+.switch-text {
+  transform: translateY(-25%);
+
+  @apply tw-right-5 tw-top-1/4;
+}
