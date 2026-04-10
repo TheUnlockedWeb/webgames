@@ -1,0 +1,23 @@
+.table-counter-container {
+  @apply tw-h-[600px];
+}
+
+.table-counter {
+  @apply tw-w-full tw-h-full;
+}
+
+.counter-none {
+  @apply tw-h-[550px];
+}
+
+.group-pokemon-sprite {
+  @apply tw-w-16;
+}
+
+.sub-header {
+  @apply tw-text-[16px] tw-relative tw-text-base tw-p-2.5;
+
+  span.sub-title {
+    @apply tw-font-bold;
+  }
+}
