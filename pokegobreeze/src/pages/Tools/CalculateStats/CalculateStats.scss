@@ -1,0 +1,35 @@
+.table-info {
+  @apply tw-w-full;
+}
+
+.table-info td:nth-child(1) {
+  @apply tw-w-1/2;
+}
+
+.battle-league td:nth-child(1) {
+  @apply tw-w-[35%];
+}
+
+.table-info thead tr {
+  @apply tw-font-bold;
+}
+
+.table-info tbody tr td:nth-child(1) {
+  @apply tw-font-bold;
+}
+
+.td-style {
+  @apply tw-h-full tw-py-[5px] tw-px-[10px];
+}
+
+.shadow-text {
+  @apply tw-text-[#c184ec] tw-font-medium;
+}
+
+.purified-text {
+  @apply tw-text-[#74e1e6] tw-font-medium;
+}
+
+.buddy-text {
+  @apply tw-text-[#f4e474] tw-font-medium;
+}
