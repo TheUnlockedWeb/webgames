@@ -1,0 +1,20 @@
+{
+  "projects": {
+    "default": "pokego-breeze"
+  },
+  "targets": {
+    "pokego-breeze": {
+      "hosting": {
+        "pokego-breeze-develop": [
+          "pokego-breeze-develop"
+        ],
+        "pokego-breeze-stage": [
+          "pokego-breeze-stage"
+        ],
+        "deploy": [
+          "pokego-breeze"
+        ]
+      }
+    }
+  }
+}
