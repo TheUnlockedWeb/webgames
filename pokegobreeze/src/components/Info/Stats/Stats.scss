@@ -1,0 +1,23 @@
+.progress {
+  @apply tw-min-w-[350px] tw-h-[30px] tw-my-2.5 tw-mx-0;
+}
+
+.progress-hover {
+  @apply tw-cursor-pointer;
+}
+
+.stats-text {
+  @apply tw-items-center tw-h-[30px] tw-ml-[1%];
+}
+
+.box-text span {
+  @apply tw-p-[3px] tw-rounded-[5px] tw-font-bold tw-bg-[#d3d3d3cc];
+}
+
+.rank-text {
+  @apply tw-items-center tw-h-[30px];
+
+  span {
+    @apply tw-mr-[1%];
+  }
+}
