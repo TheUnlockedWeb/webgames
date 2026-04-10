@@ -1,0 +1,17 @@
+.table-head {
+  vertical-align: nherit;
+
+  @apply tw-text-[18px] tw-py-[15px] tw-px-0 tw-text-center tw-font-bold;
+}
+
+.table-movesets-col {
+  @apply tw-relative tw-overflow-y-auto tw-h-auto;
+}
+
+td.data-table {
+  @apply tw-p-0;
+}
+
+.type-icon-small {
+  @apply tw-py-[5px] tw-px-2 tw-rounded-[5px] tw-text-white;
+}
