@@ -1,0 +1,60 @@
+.tab-body {
+  @apply tw-p-6;
+}
+
+.table-raid-cal thead tr th {
+  @apply tw-text-[16px] tw-h-[35px] tw-py-[5px] tw-px-2.5;
+}
+
+.table-raid-cal thead tr th:nth-child(1) {
+  width: 75px !important;
+  min-width: 75px !important;
+}
+
+.table-raid-cal tbody tr td {
+  text-align: center !important;
+  font-size: medium !important;
+}
+
+.table-raid-cal tbody tr td:nth-child(1) {
+  @apply tw-w-auto tw-min-w-0 tw-text-center tw-font-bold;
+}
+
+.sticky-left {
+  @apply tw-sticky tw-left-0;
+}
+
+.sticky-table-left tbody tr td:nth-child(1) {
+  @apply tw-sticky tw-left-0;
+}
+
+.text-iv {
+  color: white !important;
+  text-shadow: 1px 1px black;
+
+  @apply tw-font-normal;
+}
+
+.text-iv-bulk {
+  @apply tw-font-normal;
+}
+
+.border-type-stat {
+  @apply tw-p-2.5 tw-my-2.5 tw-mx-0;
+}
+
+.bp-left-border {
+  border-left: 2px solid red !important;
+}
+
+.bp-right-border {
+  border-right: 2px solid red !important;
+}
+
+.bp-top-border {
+  border-top: 2px solid red !important;
+}
+
+.bp-bottom-border {
+  border-bottom: 2px solid red !important;
+}
