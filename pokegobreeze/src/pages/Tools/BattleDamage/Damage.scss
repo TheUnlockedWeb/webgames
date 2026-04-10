@@ -1,0 +1,30 @@
+.table-result td:nth-child(1) {
+  width: 40% !important;
+}
+
+.battle-game {
+  @apply tw-m-0 tw-p-2.5;
+}
+
+.border-window {
+  @apply tw-p-[15px];
+}
+
+.result-move {
+  height: auto !important;
+  max-height: 250px !important;
+}
+
+.card-header {
+  cursor: auto !important;
+
+  @apply tw-text-center;
+}
+
+.caption-small {
+  @apply tw-text-[13px];
+}
+
+.dropdown-caption {
+  @apply tw-mt-[15px];
+}
