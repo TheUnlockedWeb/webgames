@@ -1,0 +1,15 @@
+.group-model {
+  @apply tw-p-[15px];
+}
+
+.model {
+  @apply tw-p-2.5 tw-inline-block tw-min-w-[50%];
+}
+
+.sub-group-model .gender {
+  @apply tw-w-auto tw-text-center tw-font-bold;
+}
+
+.group-model .desc {
+  @apply tw-w-full tw-text-center tw-font-bold;
+}
