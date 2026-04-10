@@ -1,0 +1,338 @@
+import React, { useEffect, useState } from 'react';
+
+import './News.scss';
+import {
+  generateParamForm,
+  getItemSpritePath,
+  getKeyWithData,
+  getTime,
+  getValidPokemonImgPath,
+  splitAndCapitalize,
+} from '../../utils/utils';
+import {
+  combineClasses,
+  getValueOrDefault,
+  isEqual,
+  isInclude,
+  isNotEmpty,
+  isNumber,
+  toNumber,
+  UniqValueInArray,
+} from '../../utils/extension';
+import APIService from '../../services/api.service';
+import { DateEvent, TitleName } from './enums/item-type.enum';
+import { IInformation, ITicketReward, RewardPokemon } from '../../core/models/information';
+import { ItemTicketRewardType, TicketRewardType } from '../../core/enums/information.enum';
+import { PokemonModelComponent } from '../../components/Info/Assets/models/pokemon-model.model';
+import { useTitle } from '../../utils/hooks/useTitle';
+import { INewsModel, IRewardNews, NewsModel, RewardNews } from './models/news.model';
+import { LinkToTop } from '../../components/Link/LinkToTop';
+import Candy from '../../components/Sprites/Candy/Candy';
+import { formNormal } from '../../utils/helpers/options-context.helpers';
+import { useDataStore } from '../../composables/useDataStore';
+import useAssets from '../../composables/useAssets';
+import AccordionMui from '../../components/Commons/Accordions/AccordionMui';
+import { Divider, Skeleton } from '@mui/material';
+import DOMPurify from 'dompurify';
+
+const News = () => {
+  useTitle({
+    title: 'PokéGO Breeze - News',
+    description:
+      'Stay up-to-date with the latest Pokémon GO news, events, and updates. Find information about upcoming events, rewards, and special features.',
+    keywords: [
+      'Pokémon GO news',
+      'Pokémon GO events',
+      'game updates',
+      'event rewards',
+      'special events',
+      'upcoming features',
+    ],
+  });
+  const { informationData } = useDataStore();
+  const { findAssetsById } = useAssets();
+
+  const [data, setData] = useState<INewsModel[]>([]);
+
+  useEffect(() => {
+    if (informationData.isLoaded && !isNotEmpty(data)) {
+      const result = mapDataInformation(informationData.data);
+      setData(result);
+    }
+  }, [informationData, data]);
+
+  const mapDataInformation = (information: IInformation[]) =>
+    information.map((info) =>
+      NewsModel.create({
+        ...info,
+        startTime: getTime(info.startTime),
+        endTime: getTime(info.endTime),
+        eventType: getDateEvent(info.startTime, info.endTime),
+        rewardNews: info.rewards?.map((reward) =>
+          RewardNews.create({
+            ...reward,
+            imageSrc: getItemSprite(reward),
+            title: getItemTitle(reward),
+            count: getItemCount(reward),
+          })
+        ),
+      })
+    );
+
+  const getItemTitle = (reward: ITicketReward | undefined) => {
+    let result: string | undefined;
+    if (reward?.type === TicketRewardType.Item && toNumber(reward.item?.item) === 0) {
+      result = reward?.item?.item.replace('ITEM_', '').replace('FREE_', '');
+    } else if (reward?.type === TicketRewardType.Pokemon) {
+      result = `#${reward.pokemon?.id}_${reward.pokemon?.pokemonId}${
+        reward.pokemon?.form && !isEqual(reward.pokemon?.form, formNormal()) ? `_${reward.pokemon?.form}` : ''
+      }`.replace(/_MR_/i, '_MR._');
+    } else if (reward?.type === TicketRewardType.PokeCoin) {
+      result = splitAndCapitalize(getKeyWithData(TicketRewardType, TicketRewardType.PokeCoin), /(?=[A-Z])/, '_');
+    } else if (reward?.type === TicketRewardType.Stardust) {
+      result = splitAndCapitalize(getKeyWithData(TicketRewardType, TicketRewardType.Stardust), /(?=[A-Z])/, '_');
+    } else if (reward?.type === TicketRewardType.Exp) {
+      result = TitleName.Exp;
+    } else if (reward?.type === TicketRewardType.Avatar) {
+      result = reward.avatarTemplateId;
+      if (!result && reward.neutralAvatarItemTemplate) {
+        result = getValueOrDefault(
+          String,
+          reward.neutralAvatarItemTemplate.neutralAvatarItemTemplateString1,
+          reward.neutralAvatarItemTemplate.neutralAvatarItemTemplateString2
+        )
+          .replaceAll('-', '_')
+          .replace('N_AVATAR_n_', '')
+          .replace('N_DISPLAY_n_', '')
+          .replace(/_\d{1}$/, '');
+      }
+    } else if (reward?.type === TicketRewardType.Candy) {
+      result = `#${reward.candy?.id}_${reward.candy?.pokemonId}`.replace(/_MR_/i, '_MR._');
+    }
+    return splitAndCapitalize(result, '_', ' ');
+  };
+
+  const getImageList = (pokemon: RewardPokemon | undefined) => {
+    const model = findAssetsById(pokemon?.id);
+    const result = UniqValueInArray(model?.image.map((item) => item.form)).map(
+      (value) => new PokemonModelComponent(value, model?.image)
+    );
+    if (pokemon?.costume && toNumber(pokemon.costume) === 0) {
+      const form = pokemon?.costume;
+      const imageList = result.find((poke) => isEqual(poke.form, form));
+      const image = imageList?.image.find((img) => isEqual(img.form, form))?.default;
+      if (image) {
+        return image;
+      }
+    }
+    const imageList = result.find((poke) =>
+      pokemon?.form ? isEqual(poke.form, pokemon.form) : isEqual(poke.form, formNormal())
+    );
+    const image = imageList?.image.find((img) =>
+      pokemon?.form ? isEqual(img.form, pokemon.form) : isEqual(img.form, formNormal())
+    )?.default;
+    if (image) {
+      return image;
+    }
+    return;
+  };
+
+  const getDateEvent = (dateStartString: string | undefined, dateEndString: string | undefined) => {
+    const currentDate = new Date();
+    let date = currentDate;
+    if (dateStartString) {
+      if (isNumber(dateStartString)) {
+        date = new Date(toNumber(dateStartString) * 1000);
+      } else {
+        date = new Date(dateStartString);
+      }
+    }
+
+    date = currentDate;
+    if (dateEndString) {
+      if (isNumber(dateEndString)) {
+        date = new Date(toNumber(dateEndString) * 1000);
+      } else {
+        date = new Date(dateEndString);
+      }
+    }
+    return currentDate > date ? DateEvent.End : DateEvent.Progressing;
+  };
+
+  const getItemSprite = (value: ITicketReward) => {
+    if (value.type === TicketRewardType.Pokemon) {
+      return getImageList(value.pokemon);
+    } else if (value.type === TicketRewardType.Stardust) {
+      return APIService.getItemSprite('stardust_painted');
+    } else if (value.type === TicketRewardType.PokeCoin) {
+      return APIService.getItemSprite('Item_COIN_01');
+    } else if (value.type === TicketRewardType.Item && value.item?.item) {
+      return getItemSpritePath(value.item.item);
+    }
+    return APIService.getPokeSprite();
+  };
+
+  const getItemCount = (value: ITicketReward) => {
+    switch (value.type) {
+      case TicketRewardType.Item:
+        return toNumber(value.item?.amount, 1);
+      case TicketRewardType.Stardust:
+        return toNumber(value.stardust);
+      case TicketRewardType.Exp:
+        return toNumber(value.exp);
+      case TicketRewardType.PokeCoin:
+        return toNumber(value.pokeCoin);
+      case TicketRewardType.Candy:
+        return toNumber(value.candy?.amount, 1);
+      default:
+        return 0;
+    }
+  };
+
+  const renderReward = (value: IRewardNews) => (
+    <div>
+      <div className="tw-w-full tw-h-full">
+        {value.type === TicketRewardType.Candy ? (
+          <div className="tw-flex tw-w-full tw-justify-center">
+            <Candy id={value.candy?.id} size={48} />
+          </div>
+        ) : (
+          <img
+            className="pokemon-sprite-medium tw-w-16"
+            alt="pokemon-sprite"
+            src={
+              value.type === TicketRewardType.Pokemon
+                ? APIService.getPokemonModel(value.imageSrc, value.pokemon?.id)
+                : value.imageSrc
+            }
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = getValidPokemonImgPath(e.currentTarget.src, value.pokemon?.id, value.imageSrc);
+            }}
+          />
+        )}
+      </div>
+      <p className="tw-mt-2 tw-font-bold">
+        <span className={value.type === TicketRewardType.Pokemon ? 'select-evo' : ''}>{value.title}</span>
+        {value.count > 0 && ` x${value.count}`}
+      </p>
+    </div>
+  );
+
+  const reload = (element: JSX.Element) => {
+    if (informationData.isLoaded) {
+      return element;
+    }
+    return (
+      <div className="tw-w-full tw-h-full counter-none tw-align-top">
+        <div className="text-origin tw-text-center">
+          <div className="slide-container">
+            <div className="slide-col !tw-flex tw-w-full tw-h-full tw-flex-col !tw-m-0 !tw-p-0 tw-gap-3">
+              {[...Array(3).keys()].map((index) => (
+                <Skeleton key={index} variant="rectangular" animation="wave" height={256} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="tw-container tw-mb-3">
+      <div className="info-main-container tw-pb-3 tw-mt-2">
+        <h1 className="tw-text-center tw-underline">News</h1>
+        {reload(
+          <div
+            className={combineClasses(
+              'tw-w-full tw-h-full',
+              isNotEmpty(data) ? 'tw-overflow-auto' : 'tw-overflow-hidden'
+            )}
+          >
+            {data
+              .filter((info) => info.giftAble || isInclude(info.id, ItemTicketRewardType.BattlePass))
+              .map((value, index) => (
+                <div className="info-news" key={index}>
+                  <div className="tw-relative info-container">
+                    <img alt="Info Background" className="info-background" src={value.backgroundImgUrl} />
+                    <img alt="Info Banner" className="info-banner-img" src={value.bannerUrl} />
+                  </div>
+                  <AccordionMui
+                    items={[
+                      {
+                        label: (
+                          <div className="tw-w-full tw-flex tw-justify-between tw-mr-3 tw-gap-y-3">
+                            <div className="tw-flex tw-items-center tw-justify-start tw-gap-x-2">
+                              {value.titleImgUrl && <img alt="Image League" height={50} src={value.titleImgUrl} />}
+                              <b>{value.title}</b>
+                            </div>
+                            <div className="tw-flex tw-items-center tw-justify-end">
+                              <div
+                                className={combineClasses(
+                                  'tw-p-1 tw-rounded-sm tw-text-sm',
+                                  value.eventType === DateEvent.End
+                                    ? 'info-event-ending'
+                                    : DateEvent.Progressing
+                                      ? 'info-event-progress'
+                                      : 'info-event-future'
+                                )}
+                              >
+                                <b>{getKeyWithData(DateEvent, value.eventType)}</b>
+                              </div>
+                            </div>
+                          </div>
+                        ),
+                        value: value.id,
+                        children: (
+                          <div className="sub-body">
+                            {value.desc && <p>{value.desc}</p>}
+                            <div className="tw-flex tw-justify-center">
+                              <h5>
+                                Start time: {value.startTime} | End time: {value.endTime}
+                              </h5>
+                            </div>
+                            {isNotEmpty(value.rewardNews) && (
+                              <>
+                                <h6 className="tw-underline">Rewards</h6>
+                                <div className="tw-w-full tw-text-center tw-inline-block tw-align-middle">
+                                  {value.rewardNews.map((value, i) => (
+                                    <div key={i} className="tw-inline-block tw-mx-2">
+                                      {value.type === TicketRewardType.Pokemon && value.pokemon ? (
+                                        <LinkToTop
+                                          className="select-evo"
+                                          to={`/pokemon/${value.pokemon.id}${generateParamForm(value.pokemon.form)}`}
+                                        >
+                                          {renderReward(value)}
+                                        </LinkToTop>
+                                      ) : (
+                                        renderReward(value)
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                            {value.detailsLink && (
+                              <>
+                                <Divider sx={{ my: 1 }} />
+                                <p
+                                  className="tw-mt-3"
+                                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value.detailsLink) }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        ),
+                      },
+                    ]}
+                  />
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default News;
