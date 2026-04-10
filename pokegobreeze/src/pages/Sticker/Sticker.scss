@@ -1,0 +1,23 @@
+.sticker-detail {
+  @apply tw-inline-block tw-m-2.5 tw-text-center tw-p-[5px];
+}
+
+.sticker-container {
+  @apply tw-my-[15px] tw-mx-0 tw-max-h-[75vh] tw-overflow-y-auto;
+}
+
+.sticker-container .sticker-group {
+  @apply tw-p-2.5;
+}
+
+.sticker-container h5 {
+  @apply tw-sticky tw-top-0 tw-py-[15px] tw-px-0 tw-z-2 tw-text-white;
+}
+
+.sticker-container h5 span {
+  @apply tw-ml-[15px];
+}
+
+.icon-shop {
+  @apply tw-absolute -tw-top-2.5 -tw-left-2.5 tw-p-[5px] tw-rounded-full tw-bg-orange-500;
+}
