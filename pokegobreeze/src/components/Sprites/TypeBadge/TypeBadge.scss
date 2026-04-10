@@ -1,0 +1,37 @@
+.type-badge-container {
+  @apply tw-opacity-100 tw-w-max;
+}
+
+.type-badge-container a:hover {
+  @apply tw-opacity-80;
+}
+
+.text-type-border {
+  @apply tw-mt-[5px] tw-ml-[42px] tw-mb-px;
+}
+
+.type-icon-border {
+  @apply tw-absolute tw-left-0 tw-p-2 tw-rounded-full;
+}
+
+.type-badge-border {
+  transform: translate(5px, 5px);
+
+  @apply tw-absolute -tw-top-[14px] -tw-right-[25px];
+}
+
+.type-badge-border .type-icon-small {
+  box-shadow: 1px 1px #00000080;
+}
+
+.type-icon-border img {
+  @apply tw-rounded-full;
+}
+
+.type-border {
+  @apply tw-ml-[35px] tw-w-max tw-p-2 tw-text-white tw-rounded-r-[10px];
+}
+
+.type-border span {
+  @apply tw-mx-2 tw-my-0;
+}
