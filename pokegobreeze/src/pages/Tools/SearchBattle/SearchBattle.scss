@@ -1,0 +1,47 @@
+.contain-poke-best-league {
+  @apply tw-m-2.5;
+}
+
+.poke-best-league {
+  @apply tw-p-2.5;
+}
+
+.best-poke-desc {
+  @apply tw-p-[13px];
+}
+
+.best-name {
+  @apply tw-py-0 tw-px-2.5;
+}
+
+.list-best-league li {
+  @apply tw-pl-8;
+}
+
+.evo-item-desc {
+  @apply tw-my-2.5 tw-mx-[5%];
+}
+
+.form-header {
+  @apply tw-py-4 tw-px-5 tw-text-start tw-font-bold;
+}
+
+.rank-max {
+  @apply tw-text-red-600 tw-bg-[#ecc8c8];
+}
+
+.rank-excellent {
+  @apply tw-text-[#8a2be2] tw-bg-[#ecc8ec];
+}
+
+.rank-great {
+  @apply tw-text-green-600 tw-bg-[#c8ecc8];
+}
+
+.rank-nice {
+  @apply tw-text-orange-600 tw-bg-[#ececc8];
+}
+
+.pokemon-best-league {
+  @apply tw-flex tw-justify-center tw-items-center tw-w-full;
+}
