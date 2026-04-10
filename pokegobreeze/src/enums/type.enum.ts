@@ -1,0 +1,139 @@
+export enum TypeMove {
+  Fast = 1,
+  Charge,
+  All,
+  None,
+}
+
+export enum TypeTheme {
+  Light = 'light',
+  Dark = 'dark',
+}
+
+export enum TypeRaid {
+  Pokemon,
+  Boss,
+}
+
+export enum TypeSex {
+  Genderless,
+  Male,
+  Female,
+}
+
+export enum TypeAction {
+  Prod,
+  Atk,
+  Def,
+  Sta,
+}
+
+export enum BuffType {
+  Target,
+  Attacker,
+}
+
+export enum GlobalType {
+  None = -1,
+  All,
+}
+
+export enum VariantType {
+  Default = 'default',
+  Error = 'error',
+  Success = 'success',
+  Warning = 'warning',
+  Info = 'info',
+  Dark = 'dark',
+  Light = 'light',
+  Determinate = 'determinate',
+  Danger = 'danger',
+  Standard = 'standard',
+  Secondary = 'secondary',
+  Outlined = 'outlined',
+  OutlinedSecondary = 'outlined-secondary',
+  Primary = 'primary',
+  Contained = 'contained',
+}
+
+export enum CardType {
+  Type,
+  Weather,
+  Move,
+}
+
+export enum MoveType {
+  None,
+  Shadow,
+  Purified,
+  Elite,
+  Special,
+  Exclusive,
+  Dynamax,
+  Unavailable,
+  Disable,
+}
+
+export enum PokemonType {
+  None,
+  Normal,
+  Shadow,
+  Purified,
+  Mega,
+  Primal,
+  GMax,
+  Buddy,
+  Lucky,
+}
+
+export enum PokemonClass {
+  None,
+  Legendary,
+  Mythic,
+  UltraBeast,
+}
+
+export enum ThrowType {
+  Normal,
+  Nice,
+  Great,
+  Excellent,
+}
+
+export enum ColumnType {
+  None = 1,
+  Ranking,
+  Id,
+  Released,
+  Name,
+  Type,
+  Atk,
+  Def,
+  Sta,
+  Prod,
+  PercentProd,
+  Percent,
+  DPS,
+  TDO,
+  FastMove,
+  ChargedMove,
+  Total,
+  CP,
+  MinCP,
+  MaxCP,
+  Level,
+  Hp,
+  Pokemon,
+  PowerPVE,
+  PowerPVP,
+  EnergyPVE,
+  EnergyPVP,
+  Power,
+}
+
+export enum LabelType {
+  Text,
+  Button,
+  Dropdown,
+  SplitButton,
+}
