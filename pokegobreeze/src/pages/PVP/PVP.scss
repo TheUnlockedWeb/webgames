@@ -1,0 +1,293 @@
+.pvp-container {
+  @apply tw-my-[15px] tw-mx-auto tw-mb-[5vh];
+}
+
+.pokemon-ranking-body hr {
+  @apply tw-text-white;
+}
+
+.ranking-container {
+  @apply tw-max-h-[70vh] tw-overflow-y-auto;
+}
+
+.card-container {
+  @apply tw-w-full tw-grid tw-overflow-x-auto;
+}
+
+.ranking-header {
+  @apply tw-sticky tw-top-0 tw-p-[15px] tw-z-[4] tw-cursor-pointer;
+}
+
+.ranking-header .ranking-selected {
+  @apply tw-underline;
+}
+
+.ranking-sort svg path {
+  @apply tw-hidden;
+}
+
+.ranking-sort:hover svg path {
+  @apply tw-inline-block;
+}
+
+.ranking-selected.ranking-sort svg path {
+  @apply tw-inline-block;
+}
+
+.ranking-group {
+  @apply tw-flex tw-justify-between tw-items-center;
+}
+
+.ranking-score {
+  @apply tw-py-[5px] tw-px-2.5 tw-rounded-lg tw-font-bold;
+}
+
+.ranking-container .accordion-item:first-of-type {
+  border-top: none !important;
+}
+
+.ranking-container .accordion-item:last-of-type {
+  border-bottom: none !important;
+}
+
+.ranking-container .accordion-item:first-of-type,
+.ranking-container .accordion-item:last-of-type {
+  border-radius: 0 !important;
+}
+
+.ranking-body {
+  @apply tw-py-5 tw-px-0;
+}
+
+.ranking-info {
+  @apply tw-py-0 tw-px-8;
+}
+
+.title-item-ranking {
+  @apply tw-flex tw-justify-between tw-items-center tw-w-full tw-pt-0 tw-pr-0 tw-pb-4 tw-pl-4;
+
+  h4 {
+    @apply tw-m-0;
+  }
+}
+
+.list-item-ranking {
+  @apply tw-flex tw-justify-between tw-w-full tw-py-4 tw-px-2 tw-items-center;
+}
+
+.list-item-ranking:hover {
+  @apply tw-opacity-90;
+}
+
+.status-ranking {
+  @apply tw-py-2.5;
+}
+
+.status-ranking div .progress {
+  @apply tw-min-w-0;
+}
+
+
+.ranking-link-group button {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.ranking-link-group button.active {
+  @apply tw-font-bold;
+}
+
+.ranking-link-group button:not(:first-of-type, :last-of-type) {
+  border-left: 0.5px solid black;
+  border-right: 0.5px solid black;
+}
+
+.ranking-link-group button:first-of-type {
+  border-left: 1px solid black;
+  border-right: 0.5px solid black;
+}
+
+.ranking-link-group button:last-of-type {
+  border-left: 0.5px solid black;
+  border-right: 1px solid black;
+}
+
+.moves-title {
+  @apply tw-py-2 tw-px-0 tw-font-bold tw-text-center;
+}
+
+.type-rank-list {
+  @apply tw-max-h-[300px] tw-overflow-y-auto;
+}
+
+.type-rank-item {
+  @apply tw-py-2 tw-px-2.5 tw-rounded-[5px] tw-my-[5px] tw-mx-2.5 tw-text-white;
+}
+
+.stats-container {
+  @apply tw-rounded-lg;
+}
+
+@media screen and (min-width <= 1200px) {
+  .stats-container {
+    @apply tw-my-0 tw-mx-2.5;
+  }
+}
+
+.group-selected {
+  @apply tw-whitespace-nowrap tw-overflow-x-auto tw-m-2.5 tw-flex tw-gap-x-2.5;
+}
+
+.card-ranking {
+  @apply tw-p-2.5;
+}
+
+.view-pokemon {
+  @apply tw-opacity-50 tw-cursor-pointer;
+}
+
+.view-pokemon:hover {
+  @apply tw-opacity-100;
+}
+
+.battle-bar {
+  @apply tw-h-[150px] tw-py-2.5 tw-px-0;
+}
+
+.battle-bar .battle-bar-container {
+  @apply tw-overflow-x-auto;
+}
+
+.battle-bar .battle-bar-container,
+.fit-timeline .tw-relative {
+  @apply tw-w-[calc(100%-20px)];
+}
+
+.battle-bar .battle-bar-container .tw-relative {
+  @apply tw-w-max;
+}
+
+.fast-attack {
+  @apply tw-border tw-border-solid tw-w-3 tw-h-3;
+}
+
+.charge-attack {
+  @apply tw-border tw-border-solid tw-rounded-full tw-w-3 tw-h-3;
+}
+
+.wait-attack {
+  @apply tw-w-3 tw-h-3;
+}
+
+.pokemon-battle-header {
+  @apply tw-p-2.5;
+}
+
+.battle-container {
+  @apply tw-overflow-y-auto tw-max-h-[80vh];
+}
+
+.battle-body-container {
+  transform: translateX(-50%);
+
+  @apply tw-absolute tw-left-1/2 tw-pb-2.5;
+}
+
+.turn-battle {
+  width: 100% !important;
+
+  @apply tw-flex;
+}
+
+.fast-attack-container {
+  @apply tw-flex tw-items-center tw-h-20;
+}
+
+.fast-attack-content {
+  @apply tw-w-fit tw-p-2.5 tw-rounded-[5px];
+}
+
+.wait-attack-container {
+  @apply tw-h-20 tw-min-w-5 tw-w-max;
+}
+
+
+.block-attack-container {
+  @apply tw-w-11;
+}
+
+.swipe-attack-container {
+  @apply tw-w-fit tw-p-[9px] tw-rounded-[5px] tw-border tw-border-solid;
+}
+
+.charged-attack-container {
+  @apply tw-flex tw-items-center tw-h-20;
+}
+
+.charged-attack-content {
+  @apply tw-w-fit tw-p-2.5 tw-rounded-[5px];
+}
+
+.winner-container,
+.loser-container {
+  @apply tw-p-2.5 tw-font-bold tw-w-full tw-text-center;
+}
+
+.dec-block {
+  @apply tw-text-[11px] tw-text-red-600;
+}
+
+.fit-timeline {
+  @apply tw-h-[150px] tw-py-2.5 tw-px-0;
+}
+
+.fit-timeline .timeline-fit-container div {
+  transform: translateY(-50%);
+
+  @apply tw-inline-block tw-absolute tw-top-1/2;
+}
+
+.bufs-container {
+  transform: translateY(-50%);
+
+  @apply tw-absolute -tw-right-2.5 tw-top-[calc(50%+15px)];
+}
+
+.icon-buff {
+  transform: translateX(-50%);
+
+  @apply -tw-top-5 tw-left-[11px];
+}
+
+.icon-buff-timeline {
+  display: flex !important;
+  transform: translateX(-50%);
+
+  @apply -tw-top-px tw-left-1/2 tw-text-[10px] tw-w-max tw-text-center tw-gap-[5px] tw-font-bold;
+}
+
+.bg-ref-pokemon {
+  @apply tw-p-2.5 tw-flex tw-flex-col tw-gap-y-2.5 tw-items-center;
+}
+
+.bg-type-moves {
+  @apply tw-flex tw-justify-center tw-gap-x-5;
+}
+
+.play-line {
+  transform: translateY(-50%);
+
+  @apply tw-w-px tw-h-full tw-absolute tw-top-1/2;
+}
+
+.btn-collapse-battle {
+  @apply tw-bg-white tw-rounded-full tw-absolute -tw-right-[15px] -tw-top-[15px] tw-cursor-pointer;
+}
+
+.battle-logo {
+  transform: scaleX(-1);
+
+  @apply tw-absolute tw-left-0;
+}
