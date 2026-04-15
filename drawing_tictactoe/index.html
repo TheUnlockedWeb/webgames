@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicTacToe</title>
+    <title>TicTacToe Drawing Project</title>
     
     <link rel="stylesheet" href="style/style.css">
     
@@ -14,15 +14,17 @@
 </head>
 <body>
 
-    <h1>TicTacToe Python Project</h1>
+    <h1>TicTacToe Drawing Project</h1>
     <h2>Any ideas to add to this? Suggest them in the suggestions tab!</h2>
     
     <button id="fullscreen-btn">View Fullscreen</button>
     
     <div id="turtle-container">
-        <div id="loading-msg" style="color: #666;">Running the Python File... please wait</div>
+        <div id="loading-msg">Running the Python File... please wait</div>
         
-        <div id="random-message" style="color: #888; font-style: italic; margin-top: 10px; min-height: 1.2em;"></div>
+        <div id="loader"></div>
+
+        <div id="random-message"></div>
     </div>
 
     <script type="py" src="python/main.py" config='{"packages": ["pyodide-turtle"]}'></script>
