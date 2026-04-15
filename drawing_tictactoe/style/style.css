@@ -1,3 +1,5 @@
+/* style/style.css */
+
 /* General page layout */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -53,18 +55,37 @@ h2 {
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column; /* Stack the loading msg and random msg vertically */
+    flex-direction: column; 
     justify-content: center;
     align-items: center;
     overflow: hidden; 
     position: relative;
 }
 
-/* --- New Animation Styles for Rotating Messages --- */
+/* --- Loading Spinner --- */
+#loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- Rotating Message Styles --- */
+#loading-msg {
+    color: #666;
+}
 
 #random-message {
     position: relative;
-    height: 30px; 
+    height: 40px; /* Increased by 10px as requested */
     width: 90%;
     margin-top: 10px;
     overflow: hidden;
@@ -78,29 +99,27 @@ h2 {
     color: #888;
     font-style: italic;
     text-align: center;
-    transition: all 0.8s ease-in-out; /* Controls the speed of the float/fade */
+    width: 100%;
+    transition: all 0.8s ease-in-out;
 }
 
-/* 1. Start state: Below and invisible */
+/* Float and Fade Animations */
 .msg-enter {
     opacity: 0;
     transform: translateY(20px);
 }
 
-/* 2. Middle state: Centered and visible */
 .msg-active {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 3. End state: Above and invisible */
 .msg-exit {
     opacity: 0;
     transform: translateY(-20px);
 }
 
 /* --- Fullscreen Instructions --- */
-
 #turtle-container:fullscreen {
     width: 100vw;
     height: 100vh;
