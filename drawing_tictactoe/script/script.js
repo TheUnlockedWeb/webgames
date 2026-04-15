@@ -1,11 +1,7 @@
 // script/script.js
 
-/**
- * Function to toggle the drawing container in and out of fullscreen mode
- */
 function toggleFullscreen() {
     const container = document.getElementById('turtle-container');
-
     if (!document.fullscreenElement) {
         container.requestFullscreen().catch(err => {
             console.error(`Error attempting to enable full-screen mode: ${err.message}`);
@@ -15,9 +11,6 @@ function toggleFullscreen() {
     }
 }
 
-/**
- * Event Listener setup
- */
 document.addEventListener('DOMContentLoaded', () => {
     // --- Fullscreen Button Logic ---
     const btn = document.getElementById('fullscreen-btn');
@@ -26,9 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Random Message Logic ---
-    const messageElement = document.getElementById('random-message');
+    const messageContainer = document.getElementById('random-message');
     
-    // Messages for the sequence
     const messages = [
         "EthanUnlocked's Python is improving by going to Coastal Learning Hub! Exactly how he made this game using Python!",
         "Play with a Friend or against AI!",
@@ -40,33 +32,45 @@ document.addEventListener('DOMContentLoaded', () => {
     let messageInterval;
 
     function changeMessage() {
-        if (messageElement && messages.length > 0) {
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            messageElement.textContent = messages[randomIndex];
+        if (!messageContainer || messages.length === 0) return;
+
+        // 1. Find the old message and make it float away
+        const oldMsg = messageContainer.querySelector('.msg-span');
+        if (oldMsg) {
+            oldMsg.classList.replace('msg-active', 'msg-exit');
+            // Remove it from the DOM after the animation finishes
+            setTimeout(() => oldMsg.remove(), 800);
         }
+
+        // 2. Create the new message span
+        const newMsg = document.createElement('span');
+        newMsg.className = 'msg-span msg-enter';
+        newMsg.textContent = messages[Math.floor(Math.random() * messages.length)];
+        
+        messageContainer.appendChild(newMsg);
+
+        // 3. Trigger the animation (using a tiny timeout to ensure the browser registers the change)
+        setTimeout(() => {
+            newMsg.classList.replace('msg-enter', 'msg-active');
+        }, 50);
     }
 
-    // Start the messages immediately and set the 5-second timer
+    // Start immediately and set the interval
     changeMessage();
     messageInterval = setInterval(changeMessage, 5000);
 
 
     // --- MutationObserver Logic ---
-    // This hides the loading elements once PyScript injects the canvas
     const container = document.getElementById('turtle-container');
     const observer = new MutationObserver((mutations) => {
         const loadingMsg = document.getElementById('loading-msg');
         const randomMsgDiv = document.getElementById('random-message');
         
         if (container.querySelector('canvas')) {
-            // Hide the main loading message
             if (loadingMsg) loadingMsg.style.display = 'none';
-            
-            // Hide the random message and stop the timer
             if (randomMsgDiv) randomMsgDiv.style.display = 'none';
             clearInterval(messageInterval); 
-
-            observer.disconnect(); // Stop watching once loaded
+            observer.disconnect();
         }
     });
 
