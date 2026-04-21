@@ -12,6 +12,14 @@
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     
     <script src="script/script.js" defer></script>
+
+    <style>
+        #turtle-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,17 +30,22 @@
     
     <div id="turtle-container"></div>
 
-    <!-- REQUIRED for turtle -->
+    <!-- Load turtle package -->
     <py-config>
 packages = ["pyodide-turtle"]
     </py-config>
 
     <py-script>
 from pyodide_turtle import *
+from js import document
 import random
 
-# --- Setup ---
+# --- Attach turtle to container ---
+container = document.getElementById("turtle-container")
+
 screen = Screen()
+container.appendChild(screen._root)
+
 screen.setup(600, 700)
 screen.title("Tic Tac Toe vs AI")
 
