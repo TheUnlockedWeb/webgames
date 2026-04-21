@@ -2,60 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicTacToe Drawing Project</title>
-    
-    <link rel="stylesheet" href="style/style.css">
-    
+    <title>Tic Tac Toe (PyScript)</title>
+
     <!-- PyScript -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-    
-    <script src="script/script.js" defer></script>
-
-    <style>
-        #turtle-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
 
-    <h1>TicTacToe Drawing Project</h1>
-    <h2>Any ideas to add to this? Suggest them in the suggestions tab!</h2>
-    
-    <button id="fullscreen-btn">View Fullscreen</button>
-    
-    <div id="turtle-container"></div>
+<h1>Tic Tac Toe</h1>
 
-    <!-- Load turtle package -->
-    <py-config>
-packages = ["pyodide-turtle"]
-    </py-config>
+<!-- IMPORTANT: target container -->
+<div id="turtle"></div>
 
-    <py-script>
+<script type="py" config='{"packages":["pyodide-turtle"]}'>
 from pyodide_turtle import *
-from js import document
 import random
 
-# --- Attach turtle to container ---
-container = document.getElementById("turtle-container")
-
+# Force mount to THIS div (critical)
 screen = Screen()
-container.appendChild(screen._root)
+screen._root.id = "turtle"
 
 screen.setup(600, 700)
-screen.title("Tic Tac Toe vs AI")
 
 t = Turtle()
 t.speed(0)
 t.hideturtle()
 
-# --- Game State ---
 current_player = "X"
-board = [" "] * 9 
+board = [" "] * 9
 game_over = False
 
 centers = {
@@ -64,19 +39,10 @@ centers = {
     6: (-100, -100),7: (0, -100),8: (100, -100)
 }
 
-# --- Settings ---
-mode = screen.textinput("Game Mode", "Type 'player' or 'bot':")
-if not mode:
-    mode = "player"
-mode = mode.lower()
+mode = "bot"
+difficulty = 2
 
-difficulty = 1
-if mode == "bot":
-    difficulty = screen.numinput("Difficulty", "1 (Easy) or 2 (Impossible):", 1, 1, 2)
-
-# --- Drawing ---
 def drawBoard():
-    t.pencolor("black")
     t.pensize(3)
     for x in [-50, 50]:
         t.penup(); t.goto(x, 150); t.pendown(); t.goto(x, -150)
@@ -85,100 +51,69 @@ def drawBoard():
     t.penup()
 
 def drawX():
-    t.pendown(); t.pencolor("blue"); t.pensize(3)
+    t.pendown()
     t.setheading(45); t.forward(40); t.back(80); t.forward(40)
     t.setheading(135); t.forward(40); t.back(80); t.forward(40)
-    t.setheading(0); t.penup()
+    t.penup()
 
 def drawO():
-    t.penup(); t.pencolor("green"); t.forward(35)
-    t.setheading(90); t.pendown(); t.pensize(3); t.circle(35)
+    t.penup(); t.forward(35)
+    t.setheading(90); t.pendown(); t.circle(35)
     t.penup(); t.setheading(0)
 
-# --- AI ---
-def botMove():
-    global current_player
-    if game_over: return
-    
-    empty = [i for i, s in enumerate(board) if s == " "]
-    if not empty: return
-
-    move = -1
-    wins = [(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
-
-    if difficulty == 2:
-        for a,b,c in wins:
-            line = [board[a], board[b], board[c]]
-            if line.count("O") == 2 and " " in line:
-                move = [a,b,c][line.index(" ")]
-
-        if move == -1:
-            for a,b,c in wins:
-                line = [board[a], board[b], board[c]]
-                if line.count("X") == 2 and " " in line:
-                    move = [a,b,c][line.index(" ")]
-
-    if move == -1:
-        move = random.choice(empty)
-
-    board[move] = "O"
-    t.goto(centers[move])
-    drawO()
-
-    if checkWin():
-        endGame(f"{current_player} WINS!")
-    elif " " not in board:
-        endGame("DRAW")
-    else:
-        current_player = "X"
-
-# --- Logic ---
 def checkWin():
     wins = [(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
     for a,b,c in wins:
         if board[a] == board[b] == board[c] and board[a] != " ":
-            t.pencolor("red"); t.pensize(10)
-            t.penup(); t.goto(centers[a]); t.pendown(); t.goto(centers[c])
             return True
     return False
 
 def endGame(msg):
     global game_over
     game_over = True
-    t.penup(); t.goto(0, 200)
+    t.goto(0, 200)
     t.write(msg, align="center", font=("Arial", 24, "bold"))
 
-def click(x, y):
+def botMove():
+    global current_player
+    empty = [i for i,s in enumerate(board) if s==" "]
+    if not empty: return
+    move = random.choice(empty)
+
+    board[move] = "O"
+    t.goto(centers[move])
+    drawO()
+
+    if checkWin():
+        endGame("O WINS")
+    else:
+        current_player = "X"
+
+def click(x,y):
     global current_player
     if game_over: return
 
     if -150 < x < 150 and -150 < y < 150:
-        col = int((x + 150) // 100)
-        row = int((150 - y) // 100)
-        i = row * 3 + col
+        col = int((x+150)//100)
+        row = int((150-y)//100)
+        i = row*3+col
 
         if board[i] == " ":
             board[i] = current_player
             t.goto(centers[i])
 
-            if current_player == "X":
+            if current_player=="X":
                 drawX()
-            else:
-                drawO()
 
             if checkWin():
-                endGame(f"{current_player} WINS!")
-            elif " " not in board:
-                endGame("DRAW")
+                endGame("X WINS")
             else:
-                current_player = "O" if current_player == "X" else "X"
-                if mode == "bot":
-                    botMove()
+                current_player = "O"
+                botMove()
 
-# --- Start ---
 drawBoard()
 screen.onscreenclick(click)
-    </py-script>
+</script>
 
 </body>
 </html>
