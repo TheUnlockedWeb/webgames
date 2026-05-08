@@ -1,0 +1,29 @@
+Pseudocode
+
+Defined the required variables used to track the state of the game
+Board
+
+Store cached element references
+Ex: The pokemon selected in each of the 9 squares
+
+How the initial game state should be initialized, with corresponding functions to represent the state of the game upon start
+
+The X and Y axis categories should be randomized
+
+The board should be blank
+
+PP should be at 9/9
+
+The game should be initialized properly upon page load
+
+Define how the game is won or lost as the user plays the game using required constants
+
+Define how the game works as players click on the squares in order to make selections. Will likely need a function to handle the click, and if possible provide a drop down of options for them to click on
+
+Define a function for the game to cross check whether a selection is correct or not against the canonical data
+
+Create a “Give Up” functionality 
+
+Create a “Randomize” functionality
+
+Time permitting, make the page that the game is played on pokemon themed 
