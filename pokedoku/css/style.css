@@ -1,0 +1,108 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+.game-tracker{
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 10px;
+}
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 4px;
+  }
+  .cell, .label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    font-size: 14px;
+    text-align: center;
+    padding: 6px;
+    background: white;
+  }
+  .label {
+    font-weight: bold;
+    background: beige;
+  }
+  .cell {
+    cursor: pointer;
+  }
+
+  button {
+    padding: 0px 0px 0px 0px;
+  }
+
+  .PP {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .difficulty-buttons {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+  }
+  
+  .difficulty-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .difficulty-btn img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.2s ease;
+  }
+  
+  .difficulty-btn:hover img {
+    transform: scale(1.1);
+  }
+
+  .difficulty-label {
+    text-align: center;
+  }
+
+  #instructions {
+    background-color: #f7f7f7;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 500px;
+    margin-top: 30px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  #instructions h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  #instructions ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  #instructions li {
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    line-height: 1.6;
+    font-size: 16px;
+    color: #444;
+  }
+
+  #instructions li:last-child {
+    border-bottom: none;
+  }
