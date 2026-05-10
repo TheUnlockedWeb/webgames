@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>soundboard67</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #22c55e;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        #everything {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header Styling */
+        .title {
+            font-weight: 900;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 2rem;
+            background: linear-gradient(to bottom right, #fff, #64748b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Info Box */
+        .infobox {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        #soundInfo {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        #soundName {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        #soundOrigin {
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        .instructions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* Grid Styling */
+        .iconbox {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+            padding: 10px;
+        }
+
+        .sound {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sound:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(51, 65, 85, 0.9);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .sound:active {
+            transform: scale(0.95);
+        }
+
+        .sound img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+        }
+
+        /* Loading State */
+        #iconboxLoading {
+            grid-column: 1 / -1;
+            padding: 3rem;
+            color: var(--text-dim);
+        }
+
+        footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        /* Responsive Mobile Tweak */
+        @media (max-width: 600px) {
+            .instructions {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body style="text-align: center">
+
+    <div id="everything">
+        <h1 class="title" id="caption">soundboard67</h1>
+
+        <div class="infobox">
+            <div id="soundInfo">
+                <span id="soundName">Select a Sound</span>
+                <span id="soundOrigin"></span>
+            </div>
+            <div class="instructions">
+                <p>Left click to add sound</p>
+                <p>Right click to preview</p>
+            </div>
+        </div>
+
+        <div id="main">
+            <div class="iconbox" id="icons">
+                <div class="sound" soundname="Vine Boom" soundorigin="Meme" sound="sounds/boom.wav">
+                    <img alt="Vine Boom" src="https://thirtydollar.website/assets/boom.png">
+                </div>
+                <div class="sound" soundname="Bruh" soundorigin="Meme" sound="sounds/bruh.wav">
+                    <img alt="Bruh" src="https://thirtydollar.website/assets/bruh.png">
+                </div>
+                <div class="sound" soundname="Bong" soundorigin="Taco Bell" sound="sounds/bong.wav">
+                    <img alt="Bong" src="https://thirtydollar.website/assets/bong.png">
+                </div>
+                <div class="sound" soundname="Skeleton" soundorigin="Minecraft" sound="sounds/skeleton.wav">
+                    <img alt="Skeleton" src="https://thirtydollar.website/assets/1f480.svg">
+                </div>
+                <div class="sound" soundname="Error" soundorigin="Windows XP" sound="sounds/error.wav">
+                    <img alt="Error" src="https://thirtydollar.website/assets/1f6ab.svg">
+                </div>
+                <div class="sound" soundname="Pizza" soundorigin="CalebCity" sound="sounds/pizza.wav">
+                    <img alt="Pizza" src="https://thirtydollar.website/assets/1f355.svg">
+                </div>
+                <div class="sound" soundname="Moai" soundorigin="Easter Island" sound="sounds/moai.wav">
+                    <img alt="Moai" src="https://thirtydollar.website/assets/🗿.png">
+                </div>
+                <div class="sound" soundname="Alert" soundorigin="Metal Gear" sound="sounds/alert.wav">
+                    <img alt="Alert" src="https://thirtydollar.website/assets/2757.svg">
+                </div>
+                <div class="sound" soundname="8" soundorigin="Stanley Parable" sound="sounds/eight.wav">
+                    <img alt="8" src="https://thirtydollar.website/assets/eight.png">
+                </div>
+                <div class="sound" soundname="Mr Beast" soundorigin="Meme" sound="sounds/mrbeast.wav">
+                    <img alt="MR BEAST" src="https://thirtydollar.website/assets/mrbeast.png">
+                </div>
+                <div class="sound" soundname="Oof" soundorigin="Roblox" sound="sounds/oof.wav">
+                    <img alt="Oof" src="https://thirtydollar.website/assets/oof.png">
+                </div>
+                <div class="sound" soundname="Metal Pipe" soundorigin="Meme" sound="sounds/metalpipe.wav">
+                    <img alt="Pipe" src="https://thirtydollar.website/assets/metalpipe.png">
+                </div>
+                </div>
+        </div>
+
+        <footer>
+            &copy; 2026 soundboard67 - A modern take on a classic.
+        </footer>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Update Info on Hover
+            $('.sound').hover(function() {
+                const name = $(this).attr('soundname');
+                const origin = $(this).attr('soundorigin');
+                $('#soundName').text(name);
+                $('#soundOrigin').text(origin ? '(' + origin + ')' : '');
+            }, function() {
+                // Optional: clear or keep last hovered
+            });
+
+            // Mock click sound trigger
+            $('.sound').on('click', function() {
+                console.log("Playing: " + $(this).attr('soundname'));
+                // Add your audio playing logic here
+            });
+            
+            // Prevent context menu on right click for preview
+            $('.sound').on('contextmenu', function(e) {
+                e.preventDefault();
+                console.log("Previewing: " + $(this).attr('soundname'));
+            });
+        });
+    </script>
+</body>
+</html>
