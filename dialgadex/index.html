@@ -1,0 +1,543 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+    <title>DialgaDex</title>
+    <meta name="description" content="Ranking lists, moveset data, calculation tools, and everything else you need to tackle raids in Pokémon Go." />
+    
+    <link rel="icon" type="image/png" href="/res/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/res/favicon.svg" />
+    <link rel="shortcut icon" href="/res/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/res/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="DialgaDex" />
+    <link rel="manifest" href="/res/site.webmanifest" />
+
+    <link rel="stylesheet" href="/styles/darkmode.css">
+    <link rel="stylesheet" href="/styles/switch.css">
+    <link rel="stylesheet" href="/styles/togglebutton.css">
+    <link rel="stylesheet" href="/styles/tooltips.css">
+    <link rel="stylesheet" href="/styles/autocomplete.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/mobile.css" media="screen and (max-width:900px)">
+
+    <!--<link rel="preload" href="https://raw.githubusercontent.com/mgrann03/pokemon-resources/main/pogo_pkm_names.json" as="fetch" crossorigin />-->
+    <link rel="preload" href="https://raw.githubusercontent.com/mgrann03/pokemon-resources/main/pogo_pkm.min.json" as="fetch" crossorigin />
+    <link rel="preload" href="https://raw.githubusercontent.com/mgrann03/pokemon-resources/main/pogo_fm.json" as="fetch" crossorigin />
+    <link rel="preload" href="https://raw.githubusercontent.com/mgrann03/pokemon-resources/main/pogo_cm.json" as="fetch" crossorigin />
+    <link rel="preload" href="/locales/en.json" as="fetch" crossorigin />
+    <link rel="preload" href="/locales/pokedata/en.json" as="fetch" crossorigin />
+
+    <script src="/lib/jquery-3.6.0.min.js"></script>
+    <script src="/lib/autoComplete.js"></script>
+    <script src="/lib/jenks.js"></script>
+    
+    <script src="/scripts/dataload.js"></script>
+    <script src="/scripts/translation.js"></script>
+    <script src="/scripts/settings.js"></script>
+    <script src="/scripts/pokemon_enums.js"></script>
+    <script src="/scripts/pokemon_utils.js"></script>
+    <script src="/scripts/dialogs.js"></script>
+    <script src="/scripts/calc.js"></script>
+    <script src="/scripts/rankings.js"></script>
+    <script src="/scripts/pokedex.js"></script>
+    <script src="/scripts/moves.js"></script>
+    <script src="index.js"></script>
+    
+    <script src="/components/type-selector.js"></script>
+</head>
+
+<body class="darkmode">
+<div id=loading-bar-c><div id=loading-bar></div></div>
+<div id=overlay></div>
+<div id="filter-settings" style="display: none;">
+    <div class="settings-list">
+        <div class="settings-subtitle" data-i18n="filters.species.title">Species Filters</div>
+        <span class="tooltip tooltip-bottom"><span data-i18n="filters.species.unreleased">Unreleased</span>
+            <span class="tooltiptext" data-i18n="filters.species.unreleased-tooltip">Include Pokémon found in the Game Master but not yet available in game</span>
+        </span>
+            <label class="switch">
+                <input type=checkbox value=unreleased unchecked>
+                <span class="slider"></span>
+            </label>
+        <span data-i18n="filters.species.mega">Mega/Primal</span>
+            <label class="switch">
+                <input type=checkbox value=mega checked>
+                <span class="slider"></span>
+            </label>
+        <span data-i18n="filters.species.shadow">Shadow</span>
+            <label class="switch">
+                <input type=checkbox value=shadow checked>
+                <span class="slider"></span>
+            </label>
+        <span class="tooltip tooltip-bottom"><span data-i18n="filters.species.legendary">Legendary</span>
+            <span class="tooltiptext" data-i18n="filters.species.legendary-tooltip">Also includes Mythical Pokémon and Ultrabeasts</span>
+        </span>
+            <label class="switch">
+                <input type=checkbox value=legendary checked>
+                <span class="slider"></span>
+            </label>
+    </div>
+    <div class="settings-list">
+        <div class="settings-subtitle" data-i18n="filters.moves.title">Move Filters</div>
+        <span class="tooltip tooltip-bottom"><span data-i18n="filters.moves.elite">Elite Moves*</span>
+            <span class="tooltiptext" data-i18n="filters.moves.elite-tooltip">Allow moves with limited availability<br>
+                (Requires Special event or Elite TMs)</span>
+        </span>
+            <label class="switch">
+                <input type=checkbox value=elite checked>
+                <span class="slider"></span>
+            </label>
+        <span class="labeltext tooltip tooltip-bottom"><span data-i18n="filters.moves.mixed">Mixed Types</span>
+            <span class="tooltiptext" data-i18n="filters.moves.mixed-tooltip">Allow fast and charged moves with different types</span>
+        </span>
+            <label class="switch">
+                <input type=checkbox value=mixed id=chk-mixed checked>
+                <span class="slider"></span>
+            </label>
+        <span class="labeltext tooltip tooltip-bottom"><span data-i18n="filters.moves.off">Off Types</span>
+            <span class="tooltiptext" data-i18n="filters.moves.off-tooltip">Allow movesets where neither the fast nor charged move matches the target type</span>
+        </span>
+            <label class="switch">
+                <input type=checkbox value=offtype id=chk-offtype>
+                <span class="slider"></span>
+            </label>
+        <span class="tooltip tooltip-bottom"><span data-i18n="filters.moves.suboptimal">Suboptimal Moves</span>
+            <span class="tooltiptext" data-i18n="filters.moves.suboptimal-tooltip">Allow multiple movesets per Pokémon</span>
+        </span>
+            <label class="switch tooltip tooltip-bottom">
+                <input type=checkbox value=suboptimal id=chk-suboptimal unchecked>
+                <span class="slider"></span>
+            </label>
+    </div>
+    <div class="settings-list">
+        <div class="settings-subtitle" data-i18n="filters.display.title">Display Settings</div>
+        <span class="tooltip tooltip-bottom" id=settings-group-header><span data-i18n="filters.display.group">Group Species</span>
+            <span class="tooltiptext"><div style="display: inline-grid; grid-template-columns: auto auto auto; column-gap: 5px;">
+                <span data-i18n="terms.enabled">Enabled</span><span>→</span><span data-i18n="filters.display.group-enabled">Compare suboptimal movesets to that Pokémon's best moveset</span>
+                <span data-i18n="terms.disabled">Unchecked</span><span>→</span><span data-i18n="filters.display.group-disabled">Compare all movesets to each other</span></div></span>
+        </span>
+            <label class="switch tooltip tooltip-bottom" id=settings-group>
+                <input type=checkbox value=grouped id=chk-grouped disabled>
+                <span class="slider" ></span>
+            </label>
+        <span class="tooltip tooltip-bottom" id=settings-compare-header><span data-i18n="filters.display.baseline">Baseline</span>
+            <span class="tooltiptext" data-i18n="filters.display.baseline-tooltip">Sets the "100%" reference Pokémon</span>
+        </span>
+            <div class="col" id=settings-compare>
+                <span id=cmp-budget class="settings-opt settings-opt-sel unselectable tooltip"><span data-i18n="filters.display.budget">Budget</span>
+                    <span class="tooltiptext">
+                        <p data-i18n="filters.display.budget-tooltip.title">Compare to the top "cheap" Pokémon</p>
+                        <ul>
+                            <li data-i18n="filters.display.budget-tooltip.mega">No Megas</li>
+                            <li data-i18n="filters.display.budget-tooltip.shadow">No Shadows</li>
+                            <li data-i18n="filters.display.budget-tooltip.legendary">No Legendaries</li>
+                            <li data-i18n="filters.display.budget-tooltip.type">Must be on-type</li>
+                        </ul>
+                    </span>
+                </span>
+                <span id=cmp-espace class="settings-opt unselectable tooltip">ESpace
+                    <span class="tooltiptext">
+                        <p data-i18n="filters.display.espace-tooltip.title">Compare to the top "available-ish" Pokémon</p>
+                        <ul>
+                            <li data-i18n="filters.display.espace-tooltip.slegend">No Shadow Legendaries</li>
+                            <li data-i18n="filters.display.espace-tooltip.rmythic">No Research Mythics</li>
+                            <li data-i18n="filters.display.espace-tooltip.energy">No Energy Gimmicks (Mega/Fusion/Crowned)</li>
+                            <li data-i18n="filters.display.espace-tooltip.ascent">No Dragon Ascent</li>
+                            <li data-i18n="filters.display.espace-tooltip.type">Must be on-type</li>
+                        </ul>
+                        <p><i><span data-i18n="filters.display.espace-tooltip.authorlink">Defined by</span> <a href="https://reddit.com/u/Elastic_Space">/u/Elastic_Space</a></i></p>
+                        <p><i><span data-i18n="filters.display.espace-tooltip.graphiclink">Used in infographics by</span> <a href="https://reddit.com/u/bulbavisual">/u/bulbavisual</a></i></p>
+                    </span>
+                </span>
+                <span id=cmp-top class="settings-opt unselectable tooltip"><span data-i18n="filters.display.best">Best</span>
+                    <span class="tooltiptext" data-i18n="filters.display.best-tooltip">Compare to the absolute best Pokémon</span>
+                </span>
+            </div>
+        <span class="tooltip tooltip-bottom" id=settings-tiermethod-header><span data-i18n="filters.display.tiers">Tiers</span>
+            <span class="tooltiptext" data-i18n="filters.display.tiers-tooltip">Determines how tiers are computed.<br>Depends on comparison Pokémon.</span>
+            </span>
+            <div class="col" id=settings-tiermethod>
+                <span id=tier-jenks class="settings-opt settings-opt-sel unselectable tooltip">Jenks
+                    <span class="tooltiptext" data-i18n="filters.display.jenks-tooltip">Algorithmic tiers based on minimum variance</span></span>
+                <!--<span id=tier-broad class="settings-opt unselectable tooltip">Broad
+                    <span class="tooltiptext">Broad tiers based on hardcoded breakpoints</span></span>-->
+                <span id=tier-espace class="settings-opt unselectable tooltip">ESpace
+                    <span class="tooltiptext">
+                        <p data-i18n="filters.display.espace-tiers">Tiers with hardcoded breakpoints at every 10%</p>
+                        <p><i><span data-i18n="filters.display.espace-tooltip.authorlink">Defined by</span> <a href="https://reddit.com/u/Elastic_Space">/u/Elastic_Space</a></i></p>
+                    </span></span>
+                <span id=tier-abs class="settings-opt unselectable tooltip"><span data-i18n="filters.display.absolute">Absolute</span>
+                    <span class="tooltiptext">
+                        <p data-i18n="filters.display.absolute-tooltip.title">Absolute tiers based on only the displayed rating</p>
+                        <ul>
+                            <li data-i18n="filters.display.absolute-tooltip.contextless">Ignores context (comparison Pokémon, type)</li>
+                            <li data-i18n="filters.display.absolute-tooltip.baseline">Tuned to overall "All-type" rankings</li>
+                            <li data-i18n="filters.display.absolute-tooltip.purpose">Best for comparing across different types</li>
+                        </ul></span></span>
+            </div>
+    </div>
+</div>
+<dialog class="card" id="type-affinity-popup" style="white-space: nowrap;">
+<form autocomplete=off>
+    <div class="card-header">
+        <div class="card-title" data-i18n="type-affinity.title">Type Affinity</div>
+        <div class="drawer absolute-right v-middle dialog-close">
+            <img class="drawer-icon" src="imgs/close.svg" alt="X Button to close the dialog" />
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="affinity-table">
+            <span>&nbsp;</span>
+            <span class="affinity-header" data-i18n="type-affinity.weakness">Boss<br>Weakness</span>
+            <span class="affinity-header" data-i18n="type-affinity.damage">Boss<br>Damage</span>
+        </div>
+    </div>
+</form>
+</dialog>
+<dialog class="card" id="moveset-edit" style="white-space: nowrap;">
+<form autocomplete=off>
+    <div class="card-header">
+        <div class="card-title" data-i18n="moveset-editor.title">Edit Moveset</div>
+        <div class="drawer absolute-right v-middle dialog-close">
+            <img class="drawer-icon" src="imgs/close.svg" alt="X Button to close the dialog" />
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="column-l">
+                <h3 data-i18n="terms.fast-move-plural">Fast Moves</h3>
+                <div style="position: relative; margin-bottom: 0.5em;">
+                    <input id=fm-search-box class=search-box type=text aria-label="FM Search">
+                    <img class="inlaid-icon search-icon" src="imgs/search.svg" alt="" />
+                </div>
+                <ul class="move-select" id="fm-select"></ul>
+            </div>
+            <div class="column-r">
+                <h3 data-i18n="terms.charged-move-plural">Charged Moves</h3>
+                <div style="position: relative; margin-bottom: 0.5em;">
+                    <input id=cm-search-box class=search-box type=text aria-label="CM Search">
+                    <img class="inlaid-icon search-icon" src="imgs/search.svg" alt="" />
+                </div>
+                <ul class="move-select" id="cm-select"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer buttons">
+        <input type="button" value="Reset" id="move-reset" data-i18n="moveset-editor.reset">
+        <input type="submit" value="Apply" data-i18n="moveset-editor.apply" autofocus formmethod="dialog">
+    </div>
+</form>
+</dialog>
+<dialog class="card" id="move-edit" style="white-space: nowrap;">
+<form autocomplete=off>
+    <div class="card-header">
+        <div class="card-title" id="move-edit-title" data-i18n="move-editor.edit.title">Edit Move Data</div>
+        <div class="drawer absolute-right v-middle dialog-close">
+            <img class="drawer-icon" src="imgs/close.svg" alt="X Button to close the dialog" />
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="move-form">
+            <label for="any-search-box"><span data-i18n="terms.name">Name</span>:</label>
+                <div style="position: relative;">
+                    <input type=text class=search-box name="display_name" id="any-search-box" aria-label="Move Name">
+                    <img class="inlaid-icon search-icon" src="imgs/search.svg" alt="" />
+                    <input type=hidden name="name" id="move-edit-name">
+                </div>
+            <label for="move-edit-type"><span data-i18n="terms.type">Type</span>:</label>
+                <div class="row" style="gap: 1em; white-space-collapse: collapse;">
+                    <select type="select" class="type-text bg-Normal" name="type" id="move-edit-type">
+                        <option value="Normal" class="bg-Normal" data-i18n="pokedata.types.Normal">Normal</option>
+                        <option value="Fire" class="bg-Fire" data-i18n="pokedata.types.Fire">Fire</option>
+                        <option value="Water" class="bg-Water" data-i18n="pokedata.types.Water">Water</option>
+                        <option value="Grass" class="bg-Grass" data-i18n="pokedata.types.Grass">Grass</option>
+                        <option value="Electric" class="bg-Electric" data-i18n="pokedata.types.Electric">Electric</option>
+                        <option value="Ice" class="bg-Ice" data-i18n="pokedata.types.Ice">Ice</option>
+                        <option value="Fighting" class="bg-Fighting" data-i18n="pokedata.types.Fighting">Fighting</option>
+                        <option value="Poison" class="bg-Poison" data-i18n="pokedata.types.Poison">Poison</option>
+                        <option value="Ground" class="bg-Ground" data-i18n="pokedata.types.Ground">Ground</option>
+                        <option value="Flying" class="bg-Flying" data-i18n="pokedata.types.Flying">Flying</option>
+                        <option value="Psychic" class="bg-Psychic" data-i18n="pokedata.types.Psychic">Psychic</option>
+                        <option value="Bug" class="bg-Bug" data-i18n="pokedata.types.Bug">Bug</option>
+                        <option value="Rock" class="bg-Rock" data-i18n="pokedata.types.Rock">Rock</option>
+                        <option value="Ghost" class="bg-Ghost" data-i18n="pokedata.types.Ghost">Ghost</option>
+                        <option value="Dragon" class="bg-Dragon" data-i18n="pokedata.types.Dragon">Dragon</option>
+                        <option value="Dark" class="bg-Dark" data-i18n="pokedata.types.Dark">Dark</option>
+                        <option value="Steel" class="bg-Steel" data-i18n="pokedata.types.Steel">Steel</option>
+                        <option value="Fairy" class="bg-Fairy" data-i18n="pokedata.types.Fairy">Fairy</option>
+                    </select>
+                    <input type="checkbox" class="toggling" value="fast" name="kind" id="move-edit-kind">
+                    <label class="togglebutton" for="move-edit-kind" tabindex="0">
+                        <div class="action">
+                            <span class="option-1" data-i18n="terms.fast">Fast</span>
+                            <span class="option-2" data-i18n="terms.charged">Charged</span>
+                        </div>
+                    </label>
+                </div>
+            <label for="move-edit-power"><span data-i18n="terms.power">Power</span>:</label>
+                <div class="num-input-group">
+                    <input type="button" data-id="move-edit-power" class="minus" value="–" />
+                    <input type=number name="power" id="move-edit-power" min=0 max=50 step=1 >
+                    <input type="button" data-id="move-edit-power" class="plus" value="+" />
+                </div>
+            <label for="move-edit-energy"><span data-i18n="terms.energy">Energy</span>:</label>
+                <div>
+                    <div class="bar-bg unselectable" id="move-edit-energybar"></div>
+                    <div class="num-input-group" id="move-edit-energygroup">
+                        <input type="button" data-id="move-edit-energy" class="minus" value="–" />
+                        <input type=number name="energy" id="move-edit-energy" min=0 max=100 step=1 >
+                        <input type="button" data-id="move-edit-energy" class="plus" value="+" />
+                    </div>
+                </div>
+            <label for="move-edit-duration"><span data-i18n="terms.duration">Duration</span>:</label>
+                <div class="num-input-group">
+                    <input type="button" data-id="move-edit-duration" class="minus" value="–" />
+                    <input type=number name="duration" id="move-edit-duration" min=0.5 max=5 step=0.5 >
+                    <input type="button" data-id="move-edit-duration" class="plus" value="+" />
+                </div>
+        </div>
+    </div>
+    <div class="card-footer buttons">
+        <input type="button" value="Clear" id="move-edit-clear" data-i18n="move-editor.clear">
+        <input type="button" value="Apply" id="move-edit-apply" style="background-color: var(--col-widget);" autofocus data-i18n="move-editor.apply">
+        <input type="button" value="Delete" id="move-edit-delete" data-i18n="move-editor.delete.action" style="background-color: var(--col-red);" hidden>
+    </div>
+</form>
+</dialog>
+<dialog class="card" id="search-string-popup" style="white-space: nowrap;">
+<form autocomplete=off>
+    <div class="card-header">
+        <div class="card-title" data-i18n="search-string.title">Generate Search String</div>
+        <div class="drawer absolute-right v-middle dialog-close">
+            <img class="drawer-icon" src="imgs/close.svg" alt="X Button to close the dialog" />
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="column-l">
+                <h3 data-i18n="search-string.settings">Settings</h3>
+                <div class="settings-list">
+                    <span data-i18n="search-string.incl-moves">Check Movesets</span>
+                        <label class="switch">
+                            <input type=checkbox value=include-movesets id=chk-include-movesets>
+                            <span class="slider"></span>
+                        </label>
+                    <span data-i18n="search-string.elite-only">Check Elite Moves Only</span>
+                        <label class="switch">
+                            <input type=checkbox value=elite-movesets id=chk-elite-movesets checked disabled>
+                            <span class="slider"></span>
+                        </label>
+                    <span class="settings-span" data-i18n="search-string.min-tier">Minimum Tier</span>
+                    <div class="tier-selector settings-span">
+                        <label class="tier-C tier-label">
+                            <input type=radio name=min-tier value=C />C
+                        </label>
+                        <label class="tier-B tier-label">
+                            <input type=radio name=min-tier value=B />B
+                        </label>
+                        <label class="tier-A tier-label">
+                            <input type=radio name=min-tier value=A checked />A
+                        </label>
+                        <label class="tier-S tier-label">
+                            <input type=radio name=min-tier value=S />S+
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="column-r col">
+                <h3 data-i18n="search-string.result-title">Search String</h3>
+                <textarea id=search-string-result readonly></textarea>
+            </div>
+        </div>
+        <details id="search-string-issues">
+            <summary><h3 data-i18n="search-string.issues">Possible Issues</h3></summary>
+            <div id="string-length-issue" class="issue-highlight" data-i18n="search-string.length-issue">Generated search string exceeds the 5000 character limit.<br/>Try tweaking the settings to be more restrictive.</div>
+            <div class="row">
+                <div class="column-l col" id="search-string-included-col">
+                    <h4 data-i18n="search-string.incl-msg">Incorrectly Included</h4>
+                    <div class="pkm-list" id="search-string-included"></div>
+                </div>
+                <div class="column-r col" id="search-string-excluded-col">
+                    <h4 data-i18n="search-string.excl-msg">Incorrectly Excluded</h4>
+                    <div class="pkm-list" id="search-string-excluded"></div>
+                </div>
+            </div>
+        </details>
+    </div>
+    <div class="card-footer buttons">
+        <input type="button" value="Copy" id="search-string-copy" style="background-color: var(--col-widget);" autofocus data-i18n="search-string.copy">
+    </div>
+</form>
+</dialog>
+<header>
+    <div class="site-size" id="header-content">
+        <a id="header-left" href="/">
+            <div class="header-area">
+                <img class="unselectable" id=logo src="imgs/dialga.png" alt="Site Logo depicting Dialga">
+                <h2 id="site-name">Dialga<span class="contrast">Dex</span></h2>
+            </div>
+        </a>
+        <div class="header-area" id="header-right">
+            <form id=poke-search autocomplete=off class="v-middle">
+                <input id=poke-search-box class=search-box type=text aria-label="Pokémon Search">
+                <img class="inlaid-icon search-icon" src="imgs/search.svg" alt="" />
+            </form>
+            <nav>
+                <div id=site-settings-icon class="drawer v-middle">
+                    <img class="drawer-icon" src="imgs/settings.svg" alt="Cogwheel button to open site settings" />
+                    <div class="drawer-popup" id=settings >
+                        <!--<div class=settings-title>Settings</div>-->
+                        <div class=settings-list>
+                            <div class=settings-subtitle data-i18n="settings.calculation">Calculation Settings</div>
+                            <span data-i18n="settings.metric">PvE Metric</span>
+                                <div class="col">
+                                    <span id=metric-dps class="settings-opt tooltip unselectable"><span data-i18n="terms.dps">DPS</span>
+                                        <span class="tooltiptext">
+                                            <div class="tooltip-title" data-i18n="settings.dps-tooltip.title">Damage Per Second</div>
+                                            <ul>
+                                                <li data-i18n="settings.dps-tooltip.explanation">Speed of damage output</li>
+                                                <li data-i18n="settings.dps-tooltip.characteristic">Favors glass cannons</li>
+                                            </ul></span></span>
+                                    <span id=metric-tdo class="settings-opt tooltip unselectable"><span data-i18n="terms.tdo">TDO</span>
+                                        <span class="tooltiptext">
+                                            <div class="tooltip-title" data-i18n="settings.tdo-tooltip.title">Total Damage Output</div>
+                                            <ul>
+                                                <li data-i18n="settings.tdo-tooltip.explanation">Amount of damage done before fainting</li>
+                                                <li data-i18n="settings.tdo-tooltip.characteristic">Favors bulk</li>
+                                            </ul></span></span>
+                                    <span id=metric-edps class="settings-opt tooltip settings-opt-sel unselectable"><span data-i18n="terms.edps">eDPS</span>
+                                        <span class="tooltiptext">
+                                            <div class="tooltip-title" data-i18n="settings.edps-tooltip.title">Effective DPS</div>
+                                            <p data-i18n="settings.edps-tooltip.characteristic">In an infinite-length raid, this is the actual DPS that would be
+                                                achieved when accounting for the time lost relobbying.
+                                            </p></span></span>
+                                </div>
+                            <span data-i18n="settings.level">Pokémon Level</span>
+                                <div class="col">
+                                    <div class="setting-value">
+                                        <span id=lvl-30 class="settings-opt unselectable">30</span>
+                                        <span id=lvl-40 class="settings-opt settings-opt-sel unselectable">40</span>
+                                        <span id=lvl-50 class="settings-opt unselectable">50</span>
+                                    </div>
+                                    <span id=lvl-xl-budget class="settings-opt unselectable tooltip"><span data-i18n="settings.budget50-tooltip.title">Budget50</span>
+                                        <span class="tooltiptext">
+                                            <div class="tooltip-title" data-i18n="settings.budget50-tooltip.explanation">Level 50 for Budget Pokémon</div>
+                                            <ul>
+                                                <li data-i18n="settings.budget50-tooltip.lv40">Use stats at Level 40 for Legendaries</li>
+                                                <li data-i18n="settings.budget50-tooltip.lv50">Use stats at Level 50 for non-Legendaries</li>
+                                                <li data-i18n="settings.budget50-tooltip.characteristic">Helps adjust for the scarcity of rare XL candies</li>
+                                            </ul></span></span>
+                                </div>
+                                <!--<span id=lvl-both class="settings-opt unselectable tooltip">40+50
+                                    <span class="tooltiptext">Shows both level 40 and level 50 entries in type ranks, otherwise uses level 40 for PokeDex</span></span>-->
+                            <!--<div class=settings-subtitle><i>Beta</i> Features</div>-->
+                            <span class="tooltip tooltip-left"><span data-i18n="settings.pp-tooltip.title">Party Power</span>
+                                <span class="tooltiptext">
+                                    <p data-i18n="settings.pp-tooltip.explanation">Size of Party for party power boosts</p>
+                                    <p><i data-i18n="settings.pp-tooltip.characteristic">Boosts charged damage based on the ratio of fast:charged moves</i></p></span>
+                            </span>
+                                <div class=setting-value>
+                                    <span id=pp-1 class="settings-opt settings-opt-sel unselectable">1</span>
+                                    <span id=pp-2 class="settings-opt unselectable">2</span>
+                                    <span id=pp-3 class="settings-opt unselectable">3</span>
+                                    <span id=pp-4 class="settings-opt unselectable">4</span>
+                                </div>
+                            <span class="tooltip tooltip-left"><span data-i18n="settings.affinity-tooltip.title">Type Affinity</span>
+                                <span class="tooltiptext">
+                                    <p data-i18n="settings.affinity-tooltip.explanation">Use real high-tier raid bosses when calculating rankings</p>
+                                    <p data-i18n="settings.affinity-tooltip.characteristic">Takes into account the actual types, attack types, attack strengths, and stats of
+                                        raid bosses based on the current scenario.</p></span>
+                            </span>
+                                <label class="switch">
+                                    <input type="checkbox" value="affinity" id="settings-affinity" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            <span class="tooltip tooltip-left" id="settings-teamsize-header"><span  data-i18n="settings.team-tooltip.title">Raid Team Size</span>
+                                <span class="tooltiptext">
+                                    <p data-i18n="settings.team-tooltip.explanation">Size of battle team for computing eDPS</p>
+                                    <p><i data-i18n="settings.team-tooltip.characteristic">Computes eDPS as if N identical copies of the Pokémon were in a battle team, and relobbying only occurred after each Nth death</i></p></span>
+                            </span>
+                                <div class="col" id="settings-teamsize">
+                                    <span id=rt-6 class="settings-opt settings-opt-sel unselectable" data-i18n="settings.6stack">6-Stack</span>
+                                    <span id=rt-1 class="settings-opt unselectable" data-i18n="settings.solo">Solo</span>
+                                    <span id=rt-m1 class="settings-opt unselectable tooltip"><span data-i18n="settings.megasolo-tooltip.title">MegaSolo</span>
+                                        <span class="tooltiptext">
+                                        <p data-i18n="settings.megasolo-tooltip.explanation">Use a 6-mon team for everything but Megas, which fight solo</p></span></span>
+                                </div>
+                            <span class="tooltip tooltip-left" id="settings-relobby-header"><span data-i18n="settings.relobby-tooltip.title">Relobby Time</span>
+                                <span class="tooltiptext" data-i18n="settings.relobby-tooltip.explanation">Time spent max reviving a full raid team and rejoining the battle</span>
+                            </span>
+                                <input type="number" id=relobby-time class="settings-num" value="10" min="0" max="300" step="1">
+                            <div class=settings-subtitle data-i18n="settings.site">Site Settings</div>
+                            <span data-i18n="settings.preview">Data Preview</span>
+                                <label class="switch">
+                                    <input type="checkbox" value="speculative" id="settings-speculative" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            <span data-i18n="settings.darkmode">Dark Mode</span>
+                                <label class="switch">
+                                    <input type="checkbox" value="theme" id="settings-darkmode" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            <span data-i18n="settings.language">Language</span>
+                                <div class="col">
+                                    <div class="setting-grid3">
+                                        <span id=lang-en class="settings-opt settings-opt-sel unselectable">EN</span>
+                                        <span id=lang-es class="settings-opt unselectable">ES</span>
+                                        <span id=lang-fr class="settings-opt unselectable">FR</span>
+                                        <span class="settings-opt unselectable"></span>
+                                        <span id=lang-de class="settings-opt unselectable">DE</span>
+                                        <span id=lang-it class="settings-opt unselectable">IT</span>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div id=menu-icon class="drawer v-middle">
+                    <img class="drawer-icon" src="imgs/menu.svg" alt="Menu button to open navigation menu to different pages" />
+                    <div class="drawer-popup" id="nav-drawer">
+                        <ul class="menu">
+                            <li><a id=rankings-link href="/?strongest" data-i18n="site.links.rankings">Attacker Rankings</a></li>
+                            <li><a id=moves-link href="/?moves" data-i18n="site.links.moves">Move Data</a></li>
+                            <li><a id=typechart-link href="/?typechart" data-i18n="site.links.types">Type Chart</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </nav>
+    </div>
+</header>
+<div id=site class="site-size">
+    
+    <div id=pokedex-page class="page"></div>
+    <div id=strongest class="page"></div>
+    <div id=move-data class="page"></div>
+    <div id=type-matrix class="page"></div>
+    <div id=about class="page"></div>
+    <div id=faq class="page"></div>
+
+    <!-- footer -->
+    <div id=footer>
+        <p data-i18n="site.disclaimer">DialgaDex is not affiliated with The Pokémon Company, Niantic, Scopely, Pokémon Go, or any other such entities.<br/>
+            Pokémon is a trademark of Nintendo. All such trademarks are the property of their respective owners.</p>
+        <nav id=footer-links>
+            <a id=faq-link href="/?faq" data-i18n="site.links.FAQ">FAQ</a>
+            •
+            <a id=contact-link href="/?about#contact" data-i18n="site.links.contact">Contact</a>
+            •
+            <a id=credits-link href="/?about#credits" data-i18n="site.links.credits">Credits</a>
+            •
+            <a id=privacy-link href="/?about#privacy" data-i18n="site.links.privacy">Privacy</a>
+            •
+            <a id=help-link href="/?about#help" data-i18n="site.links.help">Help</a>
+        </nav>
+    </div>
+
+</div>
+<div id="help-button">?</div>
+</body>
+
+</html>
+
