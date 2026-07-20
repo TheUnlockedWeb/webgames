@@ -9,7 +9,7 @@
       .game-container { position: relative; width: 960px; height: 600px; box-shadow: 0px 10px 30px rgba(0,0,0,0.5); }
       #unity-canvas { width: 100%; height: 100%; background: #231f20; display: block; }
 
-      /* Custom Screen Overlay - Hidden by default */
+      /* Custom Screen Overlay - Hidden during Unity boot and default splash */
       #custom-intro-screen {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background-color: #1a1a1a; display: none; flex-direction: column;
@@ -30,7 +30,7 @@
 
       <!-- Custom Loading Overlay -->
       <div id="custom-intro-screen">
-        <div class="loader-text">PREPARING MATCH...</div>
+        <div class="loader-text">LOADING GAME...</div>
         <div class="loader-bar-container">
           <div id="custom-bar-fill" class="loader-bar-fill"></div>
         </div>
@@ -57,32 +57,38 @@
       createUnityInstance(canvas, config, (progress) => {
         // Silent framework download
       }).then((unityInstance) => {
-        console.log("Unity Ready. Launching custom screen...");
         
-        // 1. Show the screen overlay instantly
-        introScreen.style.display = "flex";
-        
-        // 2. Animate the bar precisely for 8.5 seconds
-        let startTimestamp = null;
-        const duration = 8500; // 8.5 seconds in milliseconds
-
-        function animateBar(timestamp) {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const elapsed = timestamp - startTimestamp;
-          const progressPercent = Math.min((elapsed / duration) * 100, 100);
+        // 1. Unity's engine is fully ready, but the default 2-second splash screen is playing. 
+        // We delay your custom screen by 2500ms (2.5s) to ensure the Unity splash finishes completely.
+        setTimeout(() => {
+          console.log("Unity Splash finished. Launching custom loading screen...");
           
-          barFill.style.width = progressPercent + "%";
+          // 2. Show your custom loading screen overlay
+          introScreen.style.display = "flex";
+          
+          // 3. Animate the bar precisely for 8.5 seconds (8500ms)
+          let startTimestamp = null;
+          const duration = 8500;
 
-          if (elapsed < duration) {
-            requestAnimationFrame(animateBar);
-          } else {
-            // 3. Time's up! Fade overlay out
-            introScreen.style.opacity = "0";
-            setTimeout(() => { introScreen.style.display = "none"; }, 500);
+          function animateBar(timestamp) {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const elapsed = timestamp - startTimestamp;
+            const progressPercent = Math.min((elapsed / duration) * 100, 100);
+            
+            barFill.style.width = progressPercent + "%";
+
+            if (elapsed < duration) {
+              requestAnimationFrame(animateBar);
+            } else {
+              // 4. Time's up! Fade custom overlay out to reveal the actual game
+              introScreen.style.opacity = "0";
+              setTimeout(() => { introScreen.style.display = "none"; }, 500);
+            }
           }
-        }
-        
-        requestAnimationFrame(animateBar);
+          
+          requestAnimationFrame(animateBar);
+          
+        }, 2500); // 2.5 second delay blocks the overlay until the default Unity logo vanishes
 
       }).catch((error) => {
         console.error("Failed to load Unity game:", error);
