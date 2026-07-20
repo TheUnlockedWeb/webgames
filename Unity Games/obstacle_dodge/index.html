@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>Obstacle Dodge</title>
+    <style>
+      body { margin: 0; background-color: #111; display: flex; justify-content: center; align-items: center; height: 100vh; }
+      #unity-canvas { width: 960px; height: 600px; background: #231f20; box-shadow: 0px 10px 30px rgba(0,0,0,0.5); }
+    </style>
+  </head>
+  <body>
+
+    <!-- The Canvas Tag Unity draws into -->
+    <canvas id="unity-canvas"></canvas>
+
+    <!-- 1. Loads the script from your custom folder -->
+    <script src="Game Loader Scripts/obstacle-dodge.loader.js"></script>
+
+    <script>
+      // 2. Updated paths to point to 'Game Loader Scripts'
+      var config = {
+        dataUrl: "Game Loader Scripts/obstacle-dodge.data",
+        frameworkUrl: "Game Loader Scripts/obstacle-dodge.framework.js",
+        codeUrl: "Game Loader Scripts/obstacle-dodge.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Obstacle Dodge",
+        productVersion: "1.0",
+      };
+
+      const canvas = document.querySelector("#unity-canvas");
+      
+      createUnityInstance(canvas, config, (progress) => {
+        console.log("Loading: " + Math.round(100 * progress) + "%");
+      }).then((unityInstance) => {
+        console.log("Game successfully loaded!");
+      }).catch((error) => {
+        console.error("Failed to boot Unity instance:", error);
+      });
+    </script>
+
+  </body>
+</html>
