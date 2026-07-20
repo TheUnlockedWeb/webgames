@@ -93,6 +93,9 @@
       }).catch((error) => {
         console.error("Failed to load Unity game:", error);
       });
+      window.onload = function() {
+  alert("⚠️ WARNING: This game contains flashing lights and fast obstacles!");
+  };
     </script>
 
   </body>
