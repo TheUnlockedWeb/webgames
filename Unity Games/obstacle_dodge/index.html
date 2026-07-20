@@ -4,21 +4,42 @@
     <meta charset="utf-8">
     <title>Obstacle Dodge</title>
     <style>
-      /* Colors the screen dark and centers your game canvas perfectly */
-      body { margin: 0; background-color: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-      #unity-canvas { width: 960px; height: 600px; background: #231f20; box-shadow: 0px 10px 30px rgba(0,0,0,0.5); }
+      body { margin: 0; background-color: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+      
+      .game-container { position: relative; width: 960px; height: 600px; box-shadow: 0px 10px 30px rgba(0,0,0,0.5); }
+      #unity-canvas { width: 100%; height: 100%; background: #231f20; display: block; }
+
+      /* Custom Screen Overlay - Hidden by default */
+      #custom-intro-screen {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: #1a1a1a; display: none; flex-direction: column;
+        justify-content: center; align-items: center; z-index: 10;
+        transition: opacity 0.5s ease; pointer-events: none;
+      }
+
+      /* Animated 8.5 Second Bar Styling */
+      .loader-bar-container { width: 300px; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top: 20px; }
+      .loader-bar-fill { height: 100%; width: 0%; background: #ff4757; }
+      .loader-text { color: #fff; font-size: 16px; font-weight: bold; letter-spacing: 1px; }
     </style>
   </head>
   <body>
 
-    <!-- This is the HTML canvas tag where your game draws its graphics -->
-    <canvas id="unity-canvas"></canvas>
+    <div class="game-container">
+      <canvas id="unity-canvas"></canvas>
 
-    <!-- 1. This imports the main loader file Unity generated for you -->
+      <!-- Custom Loading Overlay -->
+      <div id="custom-intro-screen">
+        <div class="loader-text">PREPARING MATCH...</div>
+        <div class="loader-bar-container">
+          <div id="custom-bar-fill" class="loader-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
     <script src="Build/Obstacle Dodge.loader.js"></script>
 
     <script>
-      // 2. These paths point exactly to your unique Unity 6 file names
       var config = {
         dataUrl: "Build/Obstacle Dodge.data.unityweb",
         frameworkUrl: "Build/Obstacle Dodge.framework.js.unityweb",
@@ -30,12 +51,39 @@
       };
 
       const canvas = document.querySelector("#unity-canvas");
+      const introScreen = document.querySelector("#custom-intro-screen");
+      const barFill = document.querySelector("#custom-bar-fill");
       
-      // 3. This initializes and launches the Unity engine on the webpage
       createUnityInstance(canvas, config, (progress) => {
-        console.log("Loading progress: " + Math.round(100 * progress) + "%");
+        // Silent framework download
       }).then((unityInstance) => {
-        console.log("Game successfully loaded inside your subfolder!");
+        console.log("Unity Ready. Launching custom screen...");
+        
+        // 1. Show the screen overlay instantly
+        introScreen.style.display = "flex";
+        
+        // 2. Animate the bar precisely for 8.5 seconds
+        let startTimestamp = null;
+        const duration = 8500; // 8.5 seconds in milliseconds
+
+        function animateBar(timestamp) {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const elapsed = timestamp - startTimestamp;
+          const progressPercent = Math.min((elapsed / duration) * 100, 100);
+          
+          barFill.style.width = progressPercent + "%";
+
+          if (elapsed < duration) {
+            requestAnimationFrame(animateBar);
+          } else {
+            // 3. Time's up! Fade overlay out
+            introScreen.style.opacity = "0";
+            setTimeout(() => { introScreen.style.display = "none"; }, 500);
+          }
+        }
+        
+        requestAnimationFrame(animateBar);
+
       }).catch((error) => {
         console.error("Failed to load Unity game:", error);
       });
