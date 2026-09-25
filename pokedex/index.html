@@ -56,9 +56,36 @@
         </button>
 
 
+        <!-- Navigation Tabs -->
+        <nav
+            class="navbar"
+            aria-label="Main navigation"
+        >
+            <button
+                class="navbar-tab active"
+                type="button"
+                data-navbar-tab="pokedex"
+                id="pokedexNavTab"
+            >
+                Pokédex
+            </button>
+
+            <button
+                class="navbar-tab"
+                type="button"
+                data-navbar-tab="appraisal"
+                id="appraisalNavTab"
+                disabled
+                title="Coming soon"
+            >
+                Appraisal System
+            </button>
+        </nav>
+
+
         <nav
             class="topbar-actions"
-            aria-label="Main navigation"
+            aria-label="Settings"
         >
 
             <button
@@ -579,21 +606,117 @@
 
 
             <!-- =============================================
+                 DISPLAY SETTINGS
+                 ============================================= -->
+
+            <section
+                class="settings-card"
+                aria-labelledby="displaySettingsTitle"
+            >
+
+                <h2 id="displaySettingsTitle">
+                    Display
+                </h2>
+
+
+                <!-- Compact Mode -->
+
+                <div class="setting-row">
+
+                    <div>
+
+                        <h3>
+                            Compact Card Layout
+                        </h3>
+
+                        <p>
+                            Show more Pokémon per page with
+                            smaller cards.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            id="compactModeSetting"
+                            type="checkbox"
+                        >
+
+                        <span aria-hidden="true"></span>
+
+                        <span class="sr-only">
+                            Enable compact layout
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- Show Pokédex Numbers -->
+
+                <div class="setting-row">
+
+                    <div>
+
+                        <h3>
+                            Show Pokédex Numbers
+                        </h3>
+
+                        <p>
+                            Display Pokédex numbers on cards.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            id="showDexNumberSetting"
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span aria-hidden="true"></span>
+
+                        <span class="sr-only">
+                            Show Pokédex numbers
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
                  DATA INFORMATION
                  ============================================= -->
 
             <section class="settings-card">
 
                 <h2>
-                    Pokédex Data
+                    About
                 </h2>
 
                 <p class="muted">
+                    <strong>Complete Pokédex v1.0</strong>
+                </p>
+
+                <p class="muted">
                     Pokémon information is loaded dynamically
-                    from PokéAPI. The Pokédex is designed to
-                    discover available species, varieties and
-                    forms from the API instead of maintaining
-                    a small hard-coded Pokémon list.
+                    from <a href="https://pokeapi.co/" target="_blank" rel="noopener noreferrer">PokéAPI</a>.
+                    The Pokédex is designed to discover available
+                    species, varieties and forms from the API
+                    instead of maintaining a hard-coded Pokémon list.
+                </p>
+
+                <p class="muted">
+                    Pokémon cries are sourced from official
+                    game releases. Mega Evolution and Gigantamax
+                    cries are included where available.
                 </p>
 
             </section>
