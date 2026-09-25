@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,19 +10,34 @@
 
     <meta
         name="description"
-        content="A modern Pokémon Pokédex powered by PokéAPI."
+        content="A complete Pokémon Pokédex featuring Pokémon, forms, evolutions, games, shiny Pokémon, Mega Evolutions, Gigantamax forms, cries, stats and more."
     >
+
+    <meta name="theme-color" content="#e33535">
 
     <title>Pokédex</title>
 
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- JavaScript is loaded with defer so the HTML loads first -->
+    <script src="app.js" defer></script>
 </head>
 
 <body>
 
-    <!-- =========================================================
-         HEADER
-    ========================================================== -->
+    <!-- =====================================================
+         ACCESSIBILITY
+         ===================================================== -->
+
+    <a class="skip-link" href="#mainContent">
+        Skip to main content
+    </a>
+
+
+    <!-- =====================================================
+         TOP NAVIGATION
+         ===================================================== -->
 
     <header class="topbar">
 
@@ -30,7 +45,7 @@
             id="homeButton"
             class="brand"
             type="button"
-            aria-label="Open Pokédex"
+            aria-label="Return to Pokédex"
         >
             <span
                 class="pokeball-logo"
@@ -41,38 +56,48 @@
         </button>
 
 
-        <button
-            id="settingsButton"
-            class="icon-button"
-            type="button"
-            aria-label="Open settings"
-            title="Settings"
+        <nav
+            class="topbar-actions"
+            aria-label="Main navigation"
         >
-            ⚙
-        </button>
+
+            <button
+                id="settingsButton"
+                class="icon-button"
+                type="button"
+                aria-label="Open settings"
+                title="Settings"
+            >
+                ⚙
+            </button>
+
+        </nav>
 
     </header>
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN APPLICATION
-    ========================================================== -->
+         ===================================================== -->
 
-    <main class="app">
+    <main
+        id="mainContent"
+        class="app"
+    >
 
-
-        <!-- =====================================================
-             POKÉDEX VIEW
-        ====================================================== -->
+        <!-- =================================================
+             NATIONAL POKÉDEX VIEW
+             ================================================= -->
 
         <section
             id="dexView"
             class="view active"
+            aria-labelledby="dexTitle"
         >
 
             <!-- Hero -->
 
-            <section class="hero">
+            <div class="hero">
 
                 <div class="hero-text">
 
@@ -80,13 +105,14 @@
                         NATIONAL POKÉDEX
                     </p>
 
-                    <h1>
+                    <h1 id="dexTitle">
                         Gotta catch them all.
                     </h1>
 
                     <p class="hero-copy">
-                        Explore Pokémon, forms, shiny sprites,
-                        evolutions and more.
+                        Explore Pokémon, forms, evolutions,
+                        shiny Pokémon, Mega Evolutions,
+                        Gigantamax forms, games and more.
                     </p>
 
                 </div>
@@ -94,40 +120,47 @@
 
                 <!-- Search -->
 
-                <label class="search-box">
+                <div class="search-area">
 
-                    <span class="sr-only">
-                        Search Pokémon
-                    </span>
-
-                    <input
-                        id="searchInput"
-                        type="search"
-                        placeholder="Search Pokémon or #number…"
-                        autocomplete="off"
-                        spellcheck="false"
+                    <label
+                        class="search-box"
+                        for="searchInput"
                     >
 
-                    <button
-                        id="clearSearch"
-                        class="clear-search"
-                        type="button"
-                        aria-label="Clear search"
-                    >
-                        ×
-                    </button>
+                        <span class="sr-only">
+                            Search Pokémon
+                        </span>
 
-                </label>
+                        <input
+                            id="searchInput"
+                            type="search"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="Search Pokémon or Pokédex number..."
+                        >
 
-            </section>
+                        <button
+                            id="clearSearch"
+                            class="clear-search"
+                            type="button"
+                            aria-label="Clear search"
+                            title="Clear search"
+                        >
+                            ×
+                        </button>
+
+                    </label>
+
+                </div>
+
+            </div>
 
 
-            <!-- =================================================
-                 POKÉDEX FILTER TABS
-            ================================================== -->
+            <!-- =============================================
+                 MAIN POKÉDEX FILTERS
+                 ============================================= -->
 
             <nav
-                id="dexTabs"
                 class="tabs"
                 aria-label="Pokédex filters"
             >
@@ -151,14 +184,6 @@
                 <button
                     class="tab"
                     type="button"
-                    data-filter="gmax"
-                >
-                    Gmax
-                </button>
-
-                <button
-                    class="tab"
-                    type="button"
                     data-filter="mega"
                 >
                     Mega
@@ -167,9 +192,9 @@
                 <button
                     class="tab"
                     type="button"
-                    data-filter="mythical"
+                    data-filter="gmax"
                 >
-                    Mythical
+                    Gmax
                 </button>
 
                 <button
@@ -183,6 +208,14 @@
                 <button
                     class="tab"
                     type="button"
+                    data-filter="mythical"
+                >
+                    Mythical
+                </button>
+
+                <button
+                    class="tab"
+                    type="button"
                     data-filter="ultra-beast"
                 >
                     Ultra Beast
@@ -191,56 +224,62 @@
             </nav>
 
 
-            <!-- Results information -->
+            <!-- =============================================
+                 RESULTS INFORMATION
+                 ============================================= -->
 
             <div class="results-bar">
 
-                <span
+                <div
                     id="status"
                     role="status"
                     aria-live="polite"
                 >
-                    Loading Pokédex…
-                </span>
+                    Loading Pokédex...
+                </div>
 
-                <span
-                    id="resultCount"
-                    aria-live="polite"
-                ></span>
+                <div id="resultCount">
+                    0 Pokémon
+                </div>
 
             </div>
 
 
-            <!-- Pokémon cards -->
+            <!-- =============================================
+                 POKÉMON GRID
+                 JavaScript generates cards inside here.
+                 ============================================= -->
 
             <section
                 id="pokemonGrid"
                 class="pokemon-grid"
+                aria-label="Pokémon"
                 aria-live="polite"
-            ></section>
+            >
+            </section>
 
 
-            <!-- Load more -->
+            <!-- Load More -->
 
             <button
                 id="loadMore"
                 class="load-more hidden"
                 type="button"
             >
-                Load more
+                Load More Pokémon
             </button>
 
         </section>
 
 
-
-        <!-- =====================================================
-             POKÉMON DETAIL VIEW
-        ====================================================== -->
+        <!-- =================================================
+             INDIVIDUAL POKÉMON VIEW
+             ================================================= -->
 
         <section
             id="detailView"
             class="view"
+            aria-label="Pokémon details"
         >
 
             <button
@@ -252,19 +291,48 @@
             </button>
 
 
-            <div id="detailContent"></div>
+            <!--
+                JavaScript builds the selected Pokémon here.
+
+                This will include:
+
+                - Pokémon artwork
+                - Pokédex number
+                - Name
+                - Types
+                - Description
+                - Height
+                - Weight
+                - Abilities
+                - Base stats
+                - Evolution chain
+                - Forms / varieties
+                - Regional forms
+                - Mega Evolutions
+                - Gigantamax
+                - Shiny
+                - Games
+                - Cry
+                - Other API information
+            -->
+
+            <div
+                id="detailContent"
+                aria-live="polite"
+            >
+            </div>
 
         </section>
 
 
-
-        <!-- =====================================================
+        <!-- =================================================
              SETTINGS VIEW
-        ====================================================== -->
+             ================================================= -->
 
         <section
             id="settingsView"
             class="view"
+            aria-labelledby="settingsTitle"
         >
 
             <div class="settings-header">
@@ -277,14 +345,13 @@
                     ← Back
                 </button>
 
-
                 <div>
 
                     <p class="eyebrow">
-                        PREFERENCES
+                        POKÉDEX
                     </p>
 
-                    <h1>
+                    <h1 id="settingsTitle">
                         Settings
                     </h1>
 
@@ -293,9 +360,18 @@
             </div>
 
 
-            <!-- Appearance settings -->
+            <!-- =============================================
+                 APPEARANCE
+                 ============================================= -->
 
-            <div class="settings-card">
+            <section
+                class="settings-card"
+                aria-labelledby="appearanceSettingsTitle"
+            >
+
+                <h2 id="appearanceSettingsTitle">
+                    Appearance
+                </h2>
 
 
                 <!-- Theme -->
@@ -309,83 +385,90 @@
                         </h3>
 
                         <p>
-                            Use a light or dark Pokédex.
+                            Choose between light and dark mode.
                         </p>
 
                     </div>
 
+                    <label>
 
-                    <select
-                        id="themeSetting"
-                        aria-label="Theme"
-                    >
+                        <span class="sr-only">
+                            Theme
+                        </span>
 
-                        <option value="light">
-                            Light
-                        </option>
+                        <select id="themeSetting">
 
-                        <option value="dark">
-                            Dark
-                        </option>
+                            <option value="light">
+                                Light
+                            </option>
 
-                    </select>
+                            <option value="dark">
+                                Dark
+                            </option>
+
+                        </select>
+
+                    </label>
 
                 </div>
 
 
-
-                <!-- Sprite style -->
+                <!-- Sprite Style -->
 
                 <div class="setting-row">
 
                     <div>
 
                         <h3>
+                            Sprite Style
+                        </h3>
+
+                        <p>
+                            Choose modern artwork or classic
+                            pixel-style sprites.
+                        </p>
+
+                    </div>
+
+                    <label>
+
+                        <span class="sr-only">
                             Sprite style
-                        </h3>
+                        </span>
 
-                        <p>
-                            Choose smooth artwork or pixel-style sprites.
-                        </p>
+                        <select id="spriteSetting">
 
-                    </div>
+                            <option value="normal">
+                                Modern
+                            </option>
 
+                            <option value="pixel">
+                                Pixel
+                            </option>
 
-                    <select
-                        id="spriteSetting"
-                        aria-label="Sprite style"
-                    >
+                        </select>
 
-                        <option value="normal">
-                            Normal
-                        </option>
-
-                        <option value="pixel">
-                            Pixelated
-                        </option>
-
-                    </select>
+                    </label>
 
                 </div>
 
 
-
-                <!-- Animated sprites -->
+                <!-- Animated Sprites -->
 
                 <div class="setting-row">
 
                     <div>
 
                         <h3>
-                            Animated sprites
+                            Animated Sprites
                         </h3>
 
                         <p>
-                            Prefer animated sprites when available.
+                            Use animated sprites where an
+                            animation is available.
                         </p>
 
                     </div>
-
 
                     <label class="switch">
 
@@ -396,47 +479,181 @@
 
                         <span aria-hidden="true"></span>
 
+                        <span class="sr-only">
+                            Enable animated sprites
+                        </span>
+
                     </label>
 
                 </div>
 
-            </div>
+            </section>
 
 
+            <!-- =============================================
+                 AUDIO
+                 ============================================= -->
 
-            <!-- Data information -->
+            <section
+                class="settings-card"
+                aria-labelledby="audioSettingsTitle"
+            >
 
-            <div class="settings-card">
+                <h2 id="audioSettingsTitle">
+                    Audio
+                </h2>
 
-                <h3>
-                    About the data
-                </h3>
+
+                <!-- Automatic Cry -->
+
+                <div class="setting-row">
+
+                    <div>
+
+                        <h3>
+                            Play Cry Automatically
+                        </h3>
+
+                        <p>
+                            Play the Pokémon's cry when its
+                            page is opened.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            id="autoCrySetting"
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span aria-hidden="true"></span>
+
+                        <span class="sr-only">
+                            Automatically play Pokémon cries
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- Cry Volume -->
+
+                <div class="setting-row">
+
+                    <div>
+
+                        <h3>
+                            Cry Volume
+                        </h3>
+
+                        <p>
+                            Adjust Pokémon cry volume.
+                        </p>
+
+                    </div>
+
+                    <label class="volume-control">
+
+                        <span class="sr-only">
+                            Pokémon cry volume
+                        </span>
+
+                        <input
+                            id="cryVolumeSetting"
+                            type="range"
+                            min="0"
+                            max="100"
+                            value="80"
+                            step="1"
+                        >
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 DATA INFORMATION
+                 ============================================= -->
+
+            <section class="settings-card">
+
+                <h2>
+                    Pokédex Data
+                </h2>
 
                 <p class="muted">
-
-                    Pokémon information, species metadata,
-                    forms, sprites and cries are loaded from
-                    PokéAPI.
-
-                    The application does not need to store
-                    thousands of Pokémon images locally.
-
+                    Pokémon information is loaded dynamically
+                    from PokéAPI. The Pokédex is designed to
+                    discover available species, varieties and
+                    forms from the API instead of maintaining
+                    a small hard-coded Pokémon list.
                 </p>
 
-            </div>
+            </section>
 
         </section>
 
     </main>
 
 
+    <!-- =====================================================
+         GLOBAL LOADING OVERLAY
+         ===================================================== -->
 
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================== -->
+    <div
+        id="loadingOverlay"
+        class="loading-overlay hidden"
+        aria-hidden="true"
+    >
 
-    <script src="app.js"></script>
+        <div class="loading-dialog">
+
+            <span
+                class="pokeball-loader"
+                aria-hidden="true"
+            ></span>
+
+            <p id="loadingMessage">
+                Loading Pokémon...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TOAST / NOTIFICATION AREA
+         ===================================================== -->
+
+    <div
+        id="toastContainer"
+        class="toast-container"
+        aria-live="polite"
+        aria-atomic="true"
+    >
+    </div>
+
+
+    <!-- =====================================================
+         AUDIO
+
+         One audio element is reused for cries so opening
+         Pokémon repeatedly does not create lots of overlapping
+         Audio objects.
+         ===================================================== -->
+
+    <audio
+        id="pokemonCryPlayer"
+        preload="none"
+    ></audio>
 
 </body>
 </html>
-```
