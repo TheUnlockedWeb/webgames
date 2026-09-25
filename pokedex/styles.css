@@ -1,0 +1,3182 @@
+/* ============================================================
+   POKÉDEX — styles.css
+
+   Main stylesheet for the complete Pokédex application.
+
+   Sections:
+   01. Variables
+   02. Reset / Base
+   03. Accessibility
+   04. Top Navigation
+   05. Main Application
+   06. Hero
+   07. Search
+   08. Pokédex Filters
+   09. Results
+   10. Pokémon Grid
+   11. Pokémon Cards
+   12. Type Colours
+   13. Form / Category Badges
+   14. Detail Page
+   15. Detail Navigation
+   16. Information
+   17. Stats
+   18. Evolution
+   19. Forms
+   20. Shiny / Galleries
+   21. Games
+   22. Settings
+   23. Switches / Inputs
+   24. Loading
+   25. Toasts
+   26. Empty / Error States
+   27. Animations
+   28. Responsive Design
+   29. Reduced Motion
+   ============================================================ */
+
+
+/* ============================================================
+   01. VARIABLES
+   ============================================================ */
+
+:root {
+    color-scheme: light;
+
+    --bg: #f4f6fa;
+    --surface: #ffffff;
+    --surface-soft: #f8f9fc;
+    --surface-2: #eef1f6;
+    --surface-3: #e5e9f0;
+
+    --text: #151922;
+    --text-soft: #3f4858;
+    --muted: #697386;
+
+    --border: #dfe4ec;
+    --border-strong: #cbd2dc;
+
+    --accent: #e33535;
+    --accent-hover: #c82929;
+    --accent-soft: #fff0f0;
+
+    --success: #238636;
+    --warning: #d97706;
+    --danger: #d92d20;
+
+    --focus: rgba(227, 53, 53, 0.28);
+
+    --shadow-small:
+        0 3px 12px rgba(20, 30, 50, 0.06);
+
+    --shadow:
+        0 10px 30px rgba(20, 30, 50, 0.08);
+
+    --shadow-large:
+        0 20px 55px rgba(20, 30, 50, 0.13);
+
+    --radius-small: 9px;
+    --radius: 14px;
+    --radius-large: 20px;
+    --radius-xl: 26px;
+
+    --page-width: 1440px;
+
+    --transition-fast: 120ms ease;
+    --transition: 180ms ease;
+    --transition-slow: 300ms ease;
+
+
+    /* Pokémon type colours */
+
+    --type-normal: #929da3;
+    --type-fire: #ff9d55;
+    --type-water: #5090d6;
+    --type-electric: #f4d23c;
+    --type-grass: #63bc5a;
+    --type-ice: #73cec0;
+    --type-fighting: #ce416b;
+    --type-poison: #aa6bc8;
+    --type-ground: #d97845;
+    --type-flying: #8fa9de;
+    --type-psychic: #fa7179;
+    --type-bug: #91c12f;
+    --type-rock: #c5b78c;
+    --type-ghost: #5269ad;
+    --type-dragon: #0b6dc3;
+    --type-dark: #5a5465;
+    --type-steel: #5a8ea2;
+    --type-fairy: #ec8fe6;
+}
+
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+body.dark {
+    color-scheme: dark;
+
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-soft: #1b212a;
+    --surface-2: #212833;
+    --surface-3: #2a3340;
+
+    --text: #f3f5f7;
+    --text-soft: #c8ced8;
+    --muted: #99a4b3;
+
+    --border: #2b3441;
+    --border-strong: #3a4554;
+
+    --accent: #ef4b4b;
+    --accent-hover: #ff5c5c;
+    --accent-soft: rgba(239, 75, 75, 0.13);
+
+    --focus: rgba(239, 75, 75, 0.35);
+
+    --shadow-small:
+        0 3px 12px rgba(0, 0, 0, 0.16);
+
+    --shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+
+    --shadow-large:
+        0 20px 55px rgba(0, 0, 0, 0.36);
+}
+
+
+/* ============================================================
+   02. RESET / BASE
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+
+    min-width: 320px;
+    min-height: 100vh;
+
+    background: var(--bg);
+    color: var(--text);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    font-size: 16px;
+    line-height: 1.5;
+
+    transition:
+        background-color var(--transition),
+        color var(--transition);
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+img {
+    display: block;
+
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+select,
+input[type="checkbox"],
+input[type="range"] {
+    cursor: pointer;
+}
+
+button {
+    color: inherit;
+}
+
+button:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.55;
+}
+
+a {
+    color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+    overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    color: var(--text);
+}
+
+h2 {
+    margin:
+        0
+        0
+        16px;
+
+    font-size: 1.5rem;
+}
+
+h3 {
+    margin:
+        0
+        0
+        6px;
+}
+
+::selection {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   FOCUS STATES
+   ============================================================ */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
+
+
+/* ============================================================
+   03. ACCESSIBILITY
+   ============================================================ */
+
+.sr-only {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+}
+
+.skip-link {
+    position: fixed;
+
+    left: 16px;
+    top: -80px;
+
+    z-index: 10000;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    background: var(--text);
+    color: var(--surface);
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition: top var(--transition);
+}
+
+.skip-link:focus {
+    top: 16px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ============================================================
+   04. TOP NAVIGATION
+   ============================================================ */
+
+.topbar {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    min-height: 68px;
+
+    padding:
+        0
+        max(20px, calc((100vw - var(--page-width)) / 2));
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--surface) 92%,
+            transparent
+        );
+
+    border-bottom: 1px solid var(--border);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 8px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: 1.18rem;
+    font-weight: 900;
+
+    border-radius: 10px;
+}
+
+.brand:hover {
+    background: var(--surface-2);
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.icon-button {
+    width: 43px;
+    height: 43px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow-small);
+
+    font-size: 1.15rem;
+
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.icon-button:hover {
+    transform: translateY(-2px);
+
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+}
+
+
+/* ============================================================
+   POKÉBALL LOGO
+   ============================================================ */
+
+.pokeball-logo {
+    position: relative;
+
+    width: 29px;
+    height: 29px;
+
+    flex-shrink: 0;
+
+    display: inline-block;
+
+    border: 3px solid var(--text);
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            var(--accent) 0%,
+            var(--accent) 43%,
+            var(--text) 43%,
+            var(--text) 57%,
+            var(--surface) 57%,
+            var(--surface) 100%
+        );
+}
+
+.pokeball-logo::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    transform: translate(-50%, -50%);
+
+    border: 3px solid var(--text);
+    border-radius: 50%;
+
+    background: var(--surface);
+}
+
+
+/* ============================================================
+   05. MAIN APPLICATION
+   ============================================================ */
+
+.app {
+    width: min(var(--page-width), 94%);
+
+    margin: 0 auto;
+
+    padding:
+        36px
+        0
+        80px;
+}
+
+.view {
+    display: none;
+}
+
+.view.active {
+    display: block;
+
+    animation: view-enter 180ms ease;
+}
+
+
+/* ============================================================
+   06. HERO
+   ============================================================ */
+
+.hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 34px;
+
+    margin-bottom: 28px;
+}
+
+.hero-text {
+    max-width: 720px;
+}
+
+.eyebrow {
+    margin:
+        0
+        0
+        9px;
+
+    color: var(--accent);
+
+    font-size: 0.74rem;
+    font-weight: 900;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            2.4rem,
+            5vw,
+            4.4rem
+        );
+
+    line-height: 0.98;
+
+    letter-spacing: -0.045em;
+}
+
+.hero-copy {
+    max-width: 680px;
+
+    margin:
+        15px
+        0
+        0;
+
+    color: var(--muted);
+
+    font-size: 1rem;
+
+    line-height: 1.65;
+}
+
+
+/* ============================================================
+   07. SEARCH
+   ============================================================ */
+
+.search-area {
+    width: min(100%, 440px);
+
+    flex-shrink: 0;
+}
+
+.search-box {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+}
+
+.search-box input {
+    width: 100%;
+    height: 52px;
+
+    padding:
+        0
+        48px
+        0
+        17px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow);
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.search-box input::placeholder {
+    color: var(--muted);
+}
+
+.search-box input:hover {
+    border-color: var(--border-strong);
+}
+
+.search-box input:focus {
+    border-color: var(--accent);
+
+    box-shadow:
+        0 0 0 4px var(--focus),
+        var(--shadow);
+
+    outline: 0;
+}
+
+.clear-search {
+    position: absolute;
+
+    right: 8px;
+    top: 8px;
+
+    width: 36px;
+    height: 36px;
+
+    display: none;
+    place-items: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: transparent;
+    color: var(--muted);
+
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.clear-search.visible {
+    display: grid;
+}
+
+.clear-search:hover {
+    background: var(--surface-2);
+
+    color: var(--text);
+}
+
+
+/* ============================================================
+   08. POKÉDEX FILTERS
+   ============================================================ */
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.tab {
+    min-height: 39px;
+
+    padding:
+        8px
+        15px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-size: 0.88rem;
+    font-weight: 750;
+
+    box-shadow: var(--shadow-small);
+
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.tab:hover {
+    transform: translateY(-1px);
+
+    background: var(--surface-2);
+
+    border-color: var(--border-strong);
+}
+
+.tab.active {
+    background: var(--text);
+    color: var(--surface);
+
+    border-color: var(--text);
+}
+
+
+/* ============================================================
+   09. RESULTS
+   ============================================================ */
+
+.results-bar {
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding:
+        4px
+        2px
+        14px;
+
+    color: var(--muted);
+
+    font-size: 0.88rem;
+}
+
+
+/* ============================================================
+   10. POKÉMON GRID
+   ============================================================ */
+
+.pokemon-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(190px, 1fr)
+        );
+
+    gap: 17px;
+}
+
+
+/* ============================================================
+   11. POKÉMON CARDS
+   ============================================================ */
+
+.pokemon-card {
+    position: relative;
+
+    min-width: 0;
+    min-height: 280px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+
+    background: var(--surface);
+
+    box-shadow: var(--shadow);
+
+    isolation: isolate;
+
+    transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.pokemon-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 170px;
+    height: 170px;
+
+    right: -60px;
+    top: -60px;
+
+    z-index: -1;
+
+    border-radius: 50%;
+
+    background:
+        var(
+            --card-accent,
+            var(--surface-2)
+        );
+
+    opacity: 0.16;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px);
+
+    border-color: var(--border-strong);
+
+    box-shadow: var(--shadow-large);
+}
+
+.card-number {
+    position: absolute;
+
+    left: 15px;
+    top: 14px;
+
+    z-index: 3;
+
+    color: var(--muted);
+
+    font-size: 0.76rem;
+    font-weight: 850;
+
+    letter-spacing: 0.03em;
+}
+
+.card-main {
+    width: 100%;
+    min-height: 280px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding:
+        34px
+        13px
+        16px;
+
+    border: 0;
+
+    background: transparent;
+    color: inherit;
+
+    text-align: center;
+}
+
+.card-sprite-wrap {
+    width: 100%;
+    height: 155px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 3px;
+}
+
+.card-sprite {
+    width: 145px;
+    height: 145px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0
+            9px
+            7px
+            rgba(0, 0, 0, 0.08)
+        );
+
+    transition:
+        transform var(--transition),
+        filter var(--transition);
+}
+
+.pokemon-card:hover .card-sprite {
+    transform:
+        translateY(-3px)
+        scale(1.055);
+
+    filter:
+        drop-shadow(
+            0
+            12px
+            9px
+            rgba(0, 0, 0, 0.12)
+        );
+}
+
+.card-name {
+    width: 100%;
+
+    margin-bottom: 8px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 1.02rem;
+    font-weight: 900;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-subtitle {
+    margin:
+        -3px
+        0
+        8px;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+}
+
+
+/* ============================================================
+   PIXEL SPRITE MODE
+   ============================================================ */
+
+body.pixelated .card-sprite,
+body.pixelated .detail-sprite,
+body.pixelated .evo-img,
+body.pixelated .form-image,
+body.pixelated .gallery-card img {
+    image-rendering: pixelated;
+}
+
+
+/* ============================================================
+   12. TYPE BADGES
+   ============================================================ */
+
+.type-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+}
+
+.detail-type-row {
+    justify-content: flex-start;
+}
+
+.type-badge {
+    min-width: 57px;
+
+    padding:
+        5px
+        9px;
+
+    border-radius: 999px;
+
+    background: var(--surface-2);
+    color: #ffffff;
+
+    font-size: 0.65rem;
+    font-weight: 900;
+
+    letter-spacing: 0.04em;
+
+    line-height: 1;
+
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.type-normal {
+    background: var(--type-normal);
+}
+
+.type-fire {
+    background: var(--type-fire);
+}
+
+.type-water {
+    background: var(--type-water);
+}
+
+.type-electric {
+    background: var(--type-electric);
+    color: #3d3610;
+}
+
+.type-grass {
+    background: var(--type-grass);
+}
+
+.type-ice {
+    background: var(--type-ice);
+    color: #163d38;
+}
+
+.type-fighting {
+    background: var(--type-fighting);
+}
+
+.type-poison {
+    background: var(--type-poison);
+}
+
+.type-ground {
+    background: var(--type-ground);
+}
+
+.type-flying {
+    background: var(--type-flying);
+}
+
+.type-psychic {
+    background: var(--type-psychic);
+}
+
+.type-bug {
+    background: var(--type-bug);
+    color: #23300b;
+}
+
+.type-rock {
+    background: var(--type-rock);
+    color: #38311b;
+}
+
+.type-ghost {
+    background: var(--type-ghost);
+}
+
+.type-dragon {
+    background: var(--type-dragon);
+}
+
+.type-dark {
+    background: var(--type-dark);
+}
+
+.type-steel {
+    background: var(--type-steel);
+}
+
+.type-fairy {
+    background: var(--type-fairy);
+    color: #4a2146;
+}
+
+
+/* ============================================================
+   13. FORM / CATEGORY BADGES
+   ============================================================ */
+
+.form-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    margin-top: 8px;
+}
+
+.detail-form-badges {
+    justify-content: flex-start;
+}
+
+.form-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding:
+        5px
+        8px;
+
+    border-radius: 999px;
+
+    background: var(--accent-soft);
+    color: var(--accent);
+
+    font-size: 0.63rem;
+    font-weight: 900;
+
+    letter-spacing: 0.04em;
+
+    line-height: 1;
+
+    text-transform: uppercase;
+}
+
+.form-badge.mega {
+    background: #eee4ff;
+    color: #7145c7;
+}
+
+.form-badge.gmax {
+    background: #ffe5f3;
+    color: #c32776;
+}
+
+.form-badge.legendary {
+    background: #fff1cc;
+    color: #9c6900;
+}
+
+.form-badge.mythical {
+    background: #e9ddff;
+    color: #6c3db5;
+}
+
+.form-badge.ultra-beast {
+    background: #dff8f5;
+    color: #17796f;
+}
+
+.form-badge.shiny {
+    background: #fff7c9;
+    color: #8d7200;
+}
+
+body.dark .form-badge.mega {
+    background: rgba(139, 92, 246, 0.16);
+    color: #b99aff;
+}
+
+body.dark .form-badge.gmax {
+    background: rgba(236, 72, 153, 0.16);
+    color: #ff93ca;
+}
+
+body.dark .form-badge.legendary {
+    background: rgba(245, 158, 11, 0.15);
+    color: #ffc95c;
+}
+
+body.dark .form-badge.mythical {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c998ff;
+}
+
+body.dark .form-badge.ultra-beast {
+    background: rgba(45, 212, 191, 0.13);
+    color: #78e4d7;
+}
+
+body.dark .form-badge.shiny {
+    background: rgba(250, 204, 21, 0.13);
+    color: #f9dc58;
+}
+
+
+/* ============================================================
+   LOAD MORE
+   ============================================================ */
+
+.load-more {
+    display: block;
+
+    min-width: 170px;
+
+    margin:
+        28px
+        auto
+        0;
+
+    padding:
+        12px
+        20px;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: var(--text);
+    color: var(--surface);
+
+    font-weight: 850;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+.load-more:hover {
+    transform: translateY(-2px);
+}
+
+
+/* ============================================================
+   14. DETAIL PAGE
+   ============================================================ */
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    min-height: 42px;
+
+    padding:
+        9px
+        14px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow-small);
+
+    font-weight: 750;
+
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.back-button:hover {
+    transform: translateX(-2px);
+
+    background: var(--surface-2);
+
+    border-color: var(--border-strong);
+}
+
+.detail-shell {
+    overflow: hidden;
+
+    padding:
+        clamp(
+            20px,
+            4vw,
+            40px
+        );
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+
+    background: var(--surface);
+
+    box-shadow: var(--shadow-large);
+}
+
+.detail-hero {
+    display: grid;
+
+    grid-template-columns:
+        minmax(280px, 0.82fr)
+        minmax(0, 1.18fr);
+
+    align-items: center;
+
+    gap:
+        clamp(
+            28px,
+            5vw,
+            60px
+        );
+}
+
+.detail-art {
+    position: relative;
+
+    min-height: 370px;
+
+    display: grid;
+    place-items: center;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            var(--surface),
+            var(--surface-2)
+        );
+}
+
+.detail-art::before {
+    content: "";
+
+    position: absolute;
+
+    width: 290px;
+    height: 290px;
+
+    border:
+        44px
+        solid
+        color-mix(
+            in srgb,
+            var(--border) 42%,
+            transparent
+        );
+
+    border-radius: 50%;
+
+    opacity: 0.6;
+}
+
+.detail-art::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 50%;
+
+    height: 22px;
+
+    transform: translateY(-50%);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--border) 42%,
+            transparent
+        );
+
+    opacity: 0.6;
+}
+
+.detail-sprite {
+    position: relative;
+
+    z-index: 2;
+
+    width:
+        min(
+            90%,
+            390px
+        );
+
+    height: 350px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0
+            15px
+            12px
+            rgba(0, 0, 0, 0.12)
+        );
+}
+
+.detail-number {
+    color: var(--muted);
+
+    font-size: 0.9rem;
+    font-weight: 850;
+
+    letter-spacing: 0.04em;
+}
+
+.detail-title {
+    margin:
+        6px
+        0
+        13px;
+
+    font-size:
+        clamp(
+            2.6rem,
+            6vw,
+            5.2rem
+        );
+
+    line-height: 0.98;
+
+    letter-spacing: -0.045em;
+}
+
+.detail-form-name {
+    margin:
+        -3px
+        0
+        13px;
+
+    color: var(--muted);
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.detail-description {
+    max-width: 700px;
+
+    margin:
+        17px
+        0;
+
+    color: var(--muted);
+
+    line-height: 1.7;
+}
+
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin:
+        21px
+        0;
+}
+
+.action-button {
+    min-height: 41px;
+
+    padding:
+        9px
+        14px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-size: 0.88rem;
+    font-weight: 800;
+
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+
+    background: var(--surface-2);
+
+    border-color: var(--border-strong);
+}
+
+.action-button.primary {
+    border-color: var(--accent);
+
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.action-button.primary:hover {
+    background: var(--accent-hover);
+
+    border-color: var(--accent-hover);
+}
+
+
+/* ============================================================
+   15. DETAIL NAVIGATION
+   ============================================================ */
+
+.detail-tabs {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin:
+        34px
+        0
+        22px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-tab {
+    min-height: 40px;
+
+    padding:
+        8px
+        13px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-size: 0.86rem;
+    font-weight: 750;
+
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.detail-tab:hover {
+    transform: translateY(-1px);
+
+    background: var(--surface-2);
+}
+
+.detail-tab.active {
+    background: var(--text);
+    color: var(--surface);
+
+    border-color: var(--text);
+}
+
+.detail-panel {
+    min-height: 180px;
+
+    animation: panel-enter 160ms ease;
+}
+
+.detail-section {
+    margin-top: 25px;
+}
+
+.detail-section:first-child {
+    margin-top: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+}
+
+.section-heading h2 {
+    margin: 0;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.85rem;
+}
+
+
+/* ============================================================
+   16. INFORMATION
+   ============================================================ */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(160px, 1fr)
+        );
+
+    gap: 11px;
+
+    margin-top: 18px;
+}
+
+.info-item {
+    min-width: 0;
+
+    padding: 14px;
+
+    border: 1px solid transparent;
+    border-radius: 13px;
+
+    background: var(--surface-2);
+}
+
+.info-item small {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.035em;
+}
+
+.info-item strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.95rem;
+
+    text-transform: capitalize;
+
+    overflow-wrap: anywhere;
+}
+
+.description-card {
+    padding:
+        18px
+        20px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    background: var(--surface-soft);
+}
+
+.description-card p {
+    margin: 0;
+
+    color: var(--text-soft);
+
+    line-height: 1.75;
+}
+
+
+/* ============================================================
+   17. STATS
+   ============================================================ */
+
+.stats-list {
+    display: grid;
+
+    gap: 13px;
+
+    max-width: 850px;
+}
+
+.stat-row {
+    display: grid;
+
+    grid-template-columns:
+        120px
+        48px
+        minmax(120px, 1fr);
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.stat-name {
+    color: var(--text-soft);
+
+    font-size: 0.84rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.stat-value {
+    color: var(--text);
+
+    font-size: 0.88rem;
+    font-weight: 900;
+
+    text-align: right;
+}
+
+.stat-track {
+    height: 10px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: var(--surface-2);
+}
+
+.stat-fill {
+    width: var(--stat-percent, 0%);
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--stat-color, var(--accent));
+
+    transform-origin: left;
+
+    animation: stat-grow 500ms ease;
+}
+
+.stat-total {
+    margin-top: 17px;
+
+    color: var(--muted);
+
+    font-size: 0.88rem;
+}
+
+.stat-total strong {
+    color: var(--text);
+}
+
+
+/* ============================================================
+   18. EVOLUTION
+   ============================================================ */
+
+.evolution-line {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    padding:
+        12px
+        4px
+        18px;
+
+    scrollbar-width: thin;
+}
+
+.evolution-stage {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+.evo-node {
+    min-width: 145px;
+
+    padding: 12px;
+
+    border: 1px solid transparent;
+    border-radius: 16px;
+
+    background: transparent;
+    color: var(--text);
+
+    text-align: center;
+
+    transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        transform var(--transition-fast);
+}
+
+.evo-node:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--border);
+
+    background: var(--surface-2);
+}
+
+.evo-img {
+    width: 115px;
+    height: 115px;
+
+    margin:
+        0
+        auto
+        5px;
+
+    object-fit: contain;
+}
+
+.evo-name {
+    font-size: 0.9rem;
+    font-weight: 850;
+}
+
+.evo-number {
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: 0.7rem;
+}
+
+.evo-arrow {
+    flex-shrink: 0;
+
+    color: var(--muted);
+
+    font-size: 1.55rem;
+}
+
+.evolution-requirement {
+    max-width: 150px;
+
+    color: var(--muted);
+
+    font-size: 0.68rem;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+   BRANCHING EVOLUTIONS
+   ============================================================ */
+
+.evolution-tree {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.evolution-branch {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    overflow-x: auto;
+
+    padding-bottom: 8px;
+}
+
+
+/* ============================================================
+   19. FORMS
+   ============================================================ */
+
+.forms-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(180px, 1fr)
+        );
+
+    gap: 13px;
+}
+
+.form-card {
+    min-width: 0;
+
+    padding: 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    background: var(--surface-soft);
+    color: var(--text);
+
+    text-align: center;
+
+    transition:
+        transform var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+}
+
+button.form-card:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--border-strong);
+
+    background: var(--surface-2);
+}
+
+.form-card.active {
+    border-color: var(--accent);
+
+    box-shadow:
+        0 0 0 2px var(--focus);
+}
+
+.form-image {
+    width: 135px;
+    height: 135px;
+
+    margin:
+        0
+        auto
+        7px;
+
+    object-fit: contain;
+}
+
+.form-name {
+    font-weight: 850;
+
+    text-transform: capitalize;
+}
+
+.form-description {
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+}
+
+
+/* ============================================================
+   20. SHINY / GALLERIES
+   ============================================================ */
+
+.gallery {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(185px, 1fr)
+        );
+
+    gap: 13px;
+}
+
+.gallery-card {
+    min-width: 0;
+
+    padding: 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    background: var(--surface-soft);
+
+    text-align: center;
+}
+
+.gallery-card img {
+    width: 150px;
+    height: 150px;
+
+    margin:
+        0
+        auto
+        9px;
+
+    object-fit: contain;
+}
+
+.gallery-card strong {
+    display: block;
+
+    font-size: 0.88rem;
+}
+
+.gallery-card small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+}
+
+
+/* ============================================================
+   21. GAMES
+   ============================================================ */
+
+.games-intro {
+    max-width: 800px;
+
+    margin-bottom: 20px;
+
+    color: var(--muted);
+
+    line-height: 1.65;
+}
+
+.game-generations {
+    display: grid;
+
+    gap: 17px;
+}
+
+.game-generation {
+    padding: 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    background: var(--surface-soft);
+}
+
+.game-generation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 13px;
+}
+
+.game-generation-title {
+    margin: 0;
+
+    font-size: 1.05rem;
+}
+
+.game-generation-count {
+    color: var(--muted);
+
+    font-size: 0.75rem;
+}
+
+.game-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.game-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        7px
+        10px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-size: 0.78rem;
+    font-weight: 750;
+}
+
+.game-badge::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+}
+
+.game-version-group {
+    margin-top: 20px;
+}
+
+.game-version-group:first-child {
+    margin-top: 0;
+}
+
+.game-version-group h3 {
+    margin-bottom: 9px;
+
+    font-size: 0.92rem;
+}
+
+
+/* ============================================================
+   GAME AVAILABILITY NOTE
+   ============================================================ */
+
+.data-note {
+    margin-top: 18px;
+
+    padding:
+        13px
+        15px;
+
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+
+    background: var(--accent-soft);
+    color: var(--text-soft);
+
+    font-size: 0.82rem;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   22. SETTINGS
+   ============================================================ */
+
+.settings-header {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 27px;
+}
+
+.settings-header .back-button {
+    margin-bottom: 0;
+}
+
+.settings-header h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            2.2rem,
+            5vw,
+            3.2rem
+        );
+
+    letter-spacing: -0.035em;
+}
+
+.settings-card {
+    max-width: 880px;
+
+    margin-bottom: 17px;
+
+    padding:
+        22px
+        24px;
+
+    border: 1px solid var(--border);
+    border-radius: 19px;
+
+    background: var(--surface);
+
+    box-shadow: var(--shadow);
+}
+
+.settings-card > h2 {
+    margin-bottom: 10px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding:
+        20px
+        0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child {
+    border-bottom: 0;
+}
+
+.setting-row > div:first-child {
+    max-width: 590px;
+}
+
+.setting-row h3 {
+    margin:
+        0
+        0
+        5px;
+
+    font-size: 0.98rem;
+}
+
+.setting-row p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.85rem;
+
+    line-height: 1.55;
+}
+
+
+/* ============================================================
+   23. SWITCHES / INPUTS
+   ============================================================ */
+
+select {
+    min-width: 125px;
+
+    padding:
+        9px
+        34px
+        9px
+        11px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+select:hover {
+    border-color: var(--border-strong);
+}
+
+
+/* Toggle switch */
+
+.switch {
+    position: relative;
+
+    flex-shrink: 0;
+}
+
+.switch input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+}
+
+.switch > span:not(.sr-only) {
+    position: relative;
+
+    display: block;
+
+    width: 52px;
+    height: 29px;
+
+    border-radius: 999px;
+
+    background: var(--border-strong);
+
+    transition:
+        background var(--transition);
+}
+
+.switch > span:not(.sr-only)::after {
+    content: "";
+
+    position: absolute;
+
+    left: 3px;
+    top: 3px;
+
+    width: 23px;
+    height: 23px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.18);
+
+    transition:
+        transform var(--transition);
+}
+
+.switch input:checked +
+span:not(.sr-only) {
+    background: var(--accent);
+}
+
+.switch input:checked +
+span:not(.sr-only)::after {
+    transform: translateX(23px);
+}
+
+.switch input:focus-visible +
+span:not(.sr-only) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
+
+
+/* Volume */
+
+.volume-control {
+    min-width: 170px;
+
+    display: flex;
+    align-items: center;
+}
+
+.volume-control input[type="range"] {
+    width: 100%;
+
+    accent-color: var(--accent);
+}
+
+
+/* ============================================================
+   24. LOADING
+   ============================================================ */
+
+.loading-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: grid;
+    place-items: center;
+
+    padding: 20px;
+
+    background:
+        rgba(8, 12, 18, 0.52);
+
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.loading-dialog {
+    min-width: 210px;
+
+    padding:
+        26px
+        30px;
+
+    display: grid;
+    place-items: center;
+
+    gap: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow-large);
+
+    text-align: center;
+}
+
+.loading-dialog p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.88rem;
+}
+
+.pokeball-loader {
+    position: relative;
+
+    width: 47px;
+    height: 47px;
+
+    border: 4px solid var(--text);
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            var(--accent) 0%,
+            var(--accent) 43%,
+            var(--text) 43%,
+            var(--text) 57%,
+            var(--surface) 57%,
+            var(--surface) 100%
+        );
+
+    animation:
+        pokeball-spin
+        850ms
+        linear
+        infinite;
+}
+
+.pokeball-loader::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 12px;
+    height: 12px;
+
+    transform: translate(-50%, -50%);
+
+    border: 4px solid var(--text);
+    border-radius: 50%;
+
+    background: var(--surface);
+}
+
+
+/* ============================================================
+   SKELETON LOADING
+   ============================================================ */
+
+.skeleton {
+    min-height: 280px;
+
+    border-radius: var(--radius-large);
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--surface) 25%,
+            var(--surface-2) 50%,
+            var(--surface) 75%
+        );
+
+    background-size: 220% 100%;
+
+    animation:
+        skeleton-loading
+        1.25s
+        linear
+        infinite;
+}
+
+.skeleton-line {
+    height: 12px;
+
+    border-radius: 999px;
+
+    background: var(--surface-2);
+}
+
+
+/* ============================================================
+   INLINE LOADING
+   ============================================================ */
+
+.inline-loading {
+    min-height: 160px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--muted);
+
+    text-align: center;
+}
+
+.inline-spinner {
+    width: 30px;
+    height: 30px;
+
+    margin:
+        0
+        auto
+        10px;
+
+    border:
+        3px
+        solid
+        var(--border);
+
+    border-top-color: var(--accent);
+
+    border-radius: 50%;
+
+    animation:
+        simple-spin
+        700ms
+        linear
+        infinite;
+}
+
+
+/* ============================================================
+   25. TOASTS
+   ============================================================ */
+
+.toast-container {
+    position: fixed;
+
+    right: 18px;
+    bottom: 18px;
+
+    z-index: 1200;
+
+    width:
+        min(
+            380px,
+            calc(100vw - 36px)
+        );
+
+    display: grid;
+
+    gap: 9px;
+
+    pointer-events: none;
+}
+
+.toast {
+    padding:
+        13px
+        15px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow-large);
+
+    font-size: 0.84rem;
+
+    pointer-events: auto;
+
+    animation:
+        toast-enter
+        200ms
+        ease;
+}
+
+.toast.success {
+    border-left:
+        4px
+        solid
+        var(--success);
+}
+
+.toast.warning {
+    border-left:
+        4px
+        solid
+        var(--warning);
+}
+
+.toast.error {
+    border-left:
+        4px
+        solid
+        var(--danger);
+}
+
+
+/* ============================================================
+   26. EMPTY / ERROR STATES
+   ============================================================ */
+
+.empty-state,
+.error-state {
+    grid-column: 1 / -1;
+
+    min-height: 240px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 30px;
+
+    border: 1px dashed var(--border-strong);
+    border-radius: 18px;
+
+    background: var(--surface-soft);
+
+    text-align: center;
+}
+
+.empty-state-inner,
+.error-state-inner {
+    max-width: 520px;
+}
+
+.empty-state h2,
+.error-state h2 {
+    margin-bottom: 7px;
+}
+
+.empty-state p,
+.error-state p {
+    margin: 0;
+
+    color: var(--muted);
+
+    line-height: 1.6;
+}
+
+.status-error {
+    color: var(--danger);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+
+/* ============================================================
+   GENERIC CHIP LIST
+   ============================================================ */
+
+.chip-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+.chip {
+    padding:
+        6px
+        10px;
+
+    border-radius: 999px;
+
+    background: var(--surface-2);
+    color: var(--text-soft);
+
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   GENERIC DATA TABLE
+   ============================================================ */
+
+.table-scroll {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 0.84rem;
+}
+
+.data-table th,
+.data-table td {
+    padding:
+        10px
+        12px;
+
+    border-bottom: 1px solid var(--border);
+
+    text-align: left;
+}
+
+.data-table th {
+    color: var(--muted);
+
+    font-size: 0.72rem;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+}
+
+.data-table tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* ============================================================
+   27. ANIMATIONS
+   ============================================================ */
+
+@keyframes view-enter {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+@keyframes panel-enter {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(3px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+@keyframes skeleton-loading {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -20% 0;
+    }
+}
+
+@keyframes pokeball-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes simple-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes stat-grow {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes toast-enter {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(10px)
+            scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* ============================================================
+   28. RESPONSIVE DESIGN
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   LARGE TABLETS / SMALL LAPTOPS
+   ------------------------------------------------------------ */
+
+@media (max-width: 1050px) {
+
+    .pokemon-grid {
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(175px, 1fr)
+            );
+    }
+
+    .detail-hero {
+        grid-template-columns:
+            minmax(250px, 0.9fr)
+            minmax(0, 1.1fr);
+
+        gap: 30px;
+    }
+
+    .detail-art {
+        min-height: 330px;
+    }
+
+    .detail-sprite {
+        height: 310px;
+    }
+}
+
+
+/* ------------------------------------------------------------
+   TABLET
+   ------------------------------------------------------------ */
+
+@media (max-width: 800px) {
+
+    .topbar {
+        padding:
+            0
+            15px;
+    }
+
+    .app {
+        width: 94%;
+
+        padding-top: 25px;
+    }
+
+    .hero {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 22px;
+    }
+
+    .search-area {
+        width: 100%;
+    }
+
+    .detail-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-art {
+        min-height: 310px;
+    }
+
+    .detail-sprite {
+        height: 290px;
+    }
+
+    .detail-title {
+        font-size:
+            clamp(
+                2.5rem,
+                11vw,
+                4rem
+            );
+    }
+
+    .setting-row {
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .stat-row {
+        grid-template-columns:
+            100px
+            42px
+            minmax(100px, 1fr);
+    }
+}
+
+
+/* ------------------------------------------------------------
+   LARGE MOBILE
+   ------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+
+    .app {
+        width:
+            calc(
+                100% - 24px
+            );
+
+        padding-bottom: 55px;
+    }
+
+    .topbar {
+        min-height: 62px;
+    }
+
+    .brand {
+        font-size: 1.05rem;
+    }
+
+    .pokeball-logo {
+        width: 26px;
+        height: 26px;
+    }
+
+    .hero {
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        font-size:
+            clamp(
+                2.3rem,
+                12vw,
+                3.2rem
+            );
+    }
+
+    .tabs {
+        flex-wrap: nowrap;
+
+        width: calc(100vw - 12px);
+
+        margin-left: 0;
+
+        padding-bottom: 7px;
+
+        overflow-x: auto;
+
+        scrollbar-width: thin;
+    }
+
+    .tab {
+        flex-shrink: 0;
+    }
+
+    .results-bar {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+    .pokemon-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 11px;
+    }
+
+    .pokemon-card,
+    .card-main {
+        min-height: 245px;
+    }
+
+    .card-main {
+        padding:
+            31px
+            8px
+            13px;
+    }
+
+    .card-number {
+        left: 11px;
+        top: 11px;
+
+        font-size: 0.69rem;
+    }
+
+    .card-sprite-wrap {
+        height: 128px;
+    }
+
+    .card-sprite {
+        width: 120px;
+        height: 120px;
+    }
+
+    .card-name {
+        font-size: 0.9rem;
+    }
+
+    .type-badge {
+        min-width: 48px;
+
+        padding:
+            4px
+            6px;
+
+        font-size: 0.57rem;
+    }
+
+    .form-badge {
+        font-size: 0.56rem;
+    }
+
+    .detail-shell {
+        padding: 15px;
+
+        border-radius: 19px;
+    }
+
+    .detail-art {
+        min-height: 260px;
+
+        border-radius: 17px;
+    }
+
+    .detail-art::before {
+        width: 220px;
+        height: 220px;
+
+        border-width: 35px;
+    }
+
+    .detail-sprite {
+        width: 90%;
+        height: 245px;
+    }
+
+    .detail-tabs {
+        flex-wrap: nowrap;
+
+        overflow-x: auto;
+
+        padding-bottom: 10px;
+    }
+
+    .detail-tab {
+        flex-shrink: 0;
+    }
+
+    .info-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .forms-grid,
+    .gallery {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .form-image,
+    .gallery-card img {
+        width: 115px;
+        height: 115px;
+    }
+
+    .stat-row {
+        grid-template-columns:
+            82px
+            36px
+            minmax(80px, 1fr);
+
+        gap: 8px;
+    }
+
+    .stat-name {
+        font-size: 0.7rem;
+    }
+
+    .settings-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .settings-card {
+        padding:
+            18px
+            16px;
+    }
+
+    .setting-row {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .setting-row label:not(.switch) {
+        width: 100%;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    .volume-control {
+        width: 100%;
+    }
+
+    .game-generation {
+        padding: 14px;
+    }
+}
+
+
+/* ------------------------------------------------------------
+   SMALL MOBILE
+   ------------------------------------------------------------ */
+
+@media (max-width: 390px) {
+
+    .pokemon-grid {
+        gap: 8px;
+    }
+
+    .pokemon-card,
+    .card-main {
+        min-height: 225px;
+    }
+
+    .card-sprite-wrap {
+        height: 112px;
+    }
+
+    .card-sprite {
+        width: 105px;
+        height: 105px;
+    }
+
+    .card-name {
+        font-size: 0.82rem;
+    }
+
+    .type-row {
+        gap: 3px;
+    }
+
+    .type-badge {
+        min-width: 43px;
+
+        font-size: 0.52rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .forms-grid,
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-row {
+        grid-template-columns:
+            74px
+            30px
+            minmax(70px, 1fr);
+    }
+}
+
+
+/* ============================================================
+   29. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+    }
+}
