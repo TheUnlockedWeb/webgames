@@ -97,6 +97,8 @@ const state = {
 
     settings: loadSettings(),
 
+    selectedShiny: false,
+
     caches: {
         pokemon: new Map(),
         species: new Map(),
