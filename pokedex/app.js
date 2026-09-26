@@ -1810,7 +1810,11 @@ function renderPokemonDetail(
                     </div>
 
                     <h1 class="detail-title">
-                        ${escapeHtml(speciesName)}
+                        ${
+                            state.selectedShiny
+                                ? "Shiny "
+                                : ""
+                           }${escapeHtml(speciesName)}
                     </h1>
 
                     ${
