@@ -1319,59 +1319,100 @@ async function buildSpecialFormIndexes() {
    ============================================================ */
 
 async function applyFilter() {
-    const filter =
-        state.currentFilter;
+    const filters =
+        state.selectedFilters;
 
     let list =
         state.speciesList.filter(
             matchesSearch
         );
 
+    /*
+        Shiny is a display modifier rather than a
+        species category, so it does not remove Pokémon.
+    */
+    const categoryFilters =
+        [...filters].filter(
+            filter => filter !== "shiny"
+        );
+
     if (
-        filter === "legendary" ||
-        filter === "mythical"
+        categoryFilters.includes("legendary") ||
+        categoryFilters.includes("mythical")
     ) {
         await buildLegendaryIndex();
-
-        const index =
-            state.categoryIndexes[filter];
-
-        list =
-            list.filter(item =>
-                index.has(item.name)
-            );
     }
 
-    else if (filter === "ultra-beast") {
-        list =
-            list.filter(item =>
-                isUltraBeast(item)
-            );
-    }
-
-    else if (
-        filter === "mega" ||
-        filter === "gmax"
+    if (
+        categoryFilters.includes("mega") ||
+        categoryFilters.includes("gmax")
     ) {
         await buildSpecialFormIndexes();
+    }
 
-        const index =
-            state.categoryIndexes[filter];
+    /*
+        Multiple categories use AND/intersection logic.
 
-        list =
-            list.filter(item =>
-                index.has(item.name)
-            );
+        Example:
+        Legendary + Mega
+        = Pokémon that are BOTH Legendary AND have Mega forms.
+
+        Legendary + Mythical
+        = nothing, so "No Pokemon Found" is displayed.
+    */
+    for (const filter of categoryFilters) {
+        switch (filter) {
+            case "legendary":
+                list = list.filter(item =>
+                    state.categoryIndexes
+                        .legendary
+                        .has(item.name)
+                );
+                break;
+
+            case "mythical":
+                list = list.filter(item =>
+                    state.categoryIndexes
+                        .mythical
+                        .has(item.name)
+                );
+                break;
+
+            case "ultra-beast":
+                list = list.filter(item =>
+                    isUltraBeast(item)
+                );
+                break;
+
+            case "mega":
+                list = list.filter(item =>
+                    state.categoryIndexes
+                        .mega
+                        .has(item.name)
+                );
+                break;
+
+            case "gmax":
+                list = list.filter(item =>
+                    state.categoryIndexes
+                        .gmax
+                        .has(item.name)
+                );
+                break;
+        }
     }
 
     state.filteredSpecies = list;
 
     state.visibleCount =
-        Math.min(
-            state.visibleCount,
-            Math.max(
-                CONFIG.PAGE_SIZE,
-                list.length
+        Math.max(
+            CONFIG.PAGE_SIZE,
+            Math.min(
+                state.visibleCount,
+                Math.max(
+                    CONFIG.PAGE_SIZE,
+                    list.length
+                )
             )
         );
 
