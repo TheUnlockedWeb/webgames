@@ -980,9 +980,8 @@ async function buildPokemonCard(
     speciesReference,
     options = {}
 ) {
-    const {
-        shiny = false
-    } = options;
+   const shiny =
+       state.selectedFilters.has("shiny");
 
     try {
       const {
