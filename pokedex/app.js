@@ -1056,6 +1056,26 @@ async function buildPokemonCard(
                                 `
                                 : ""
                         }
+                        
+                        ${
+                            specialForm === "mega"
+                                ? `
+                                    <span class="form-badge mega">
+                                        Mega
+                                    </span>
+                                `
+                                : ""
+                        }
+                        
+                        ${
+                            specialForm === "gmax"
+                                ? `
+                                    <span class="form-badge gmax">
+                                        Gmax
+                                    </span>
+                                `
+                                : ""
+                        }
 
                         ${getSpeciesBadges(species)}
                     </div>
