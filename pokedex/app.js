@@ -985,13 +985,14 @@ async function buildPokemonCard(
     } = options;
 
     try {
-        const {
-            species,
-            pokemon
-        } =
-            await getDefaultPokemonForSpecies(
-                speciesReference
-            );
+      const {
+          species,
+          pokemon,
+          specialForm
+      } =
+          await getPokemonForGridCard(
+              speciesReference
+          );
 
         const sprite =
             getSprite(pokemon, shiny);
