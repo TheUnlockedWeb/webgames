@@ -1668,10 +1668,12 @@ async function openPokemon(
     pokemonNameOrId,
     options = {}
 ) {
-    const {
-        autoPlayCry =
-            state.settings.autoCry
-    } = options;
+      const {
+          autoPlayCry =
+              state.settings.autoCry,
+      
+          shiny = false
+      } = options;
 
     showView("detail");
 
