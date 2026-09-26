@@ -1758,7 +1758,10 @@ function renderPokemonDetail(
     species
 ) {
     const sprite =
-        getSprite(pokemon, false);
+    getSprite(
+        pokemon,
+        state.selectedShiny
+    );
 
     const speciesName =
         getEnglishName(
