@@ -1709,6 +1709,9 @@ async function openPokemon(
         state.selectedVariety =
             pokemon.name;
 
+        state.selectedShiny =
+            Boolean(shiny);
+
         state.currentDetailPanel =
             "info";
 
