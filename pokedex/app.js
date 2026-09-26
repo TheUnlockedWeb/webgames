@@ -781,6 +781,28 @@ function getAnimatedSprite(
         return "";
     }
 
+    /*
+        Pixel mode deliberately prefers the older
+        Generation V animated pixel sprites.
+
+        Modern mode prefers Showdown sprites.
+    */
+    if (state.settings.spriteStyle === "pixel") {
+        return firstValid(
+            shiny
+                ? pokemon.sprites?.versions
+                    ?.["generation-v"]
+                    ?.["black-white"]
+                    ?.animated
+                    ?.front_shiny
+                : pokemon.sprites?.versions
+                    ?.["generation-v"]
+                    ?.["black-white"]
+                    ?.animated
+                    ?.front_default
+        );
+    }
+
     return firstValid(
         shiny
             ? pokemon.sprites?.other
@@ -809,6 +831,32 @@ function getSprite(
     pokemon,
     shiny = false
 ) {
+    /*
+        Pixel mode is kept completely separate from
+        the modern artwork path so switching the setting
+        causes an obvious visual change.
+    */
+    if (state.settings.spriteStyle === "pixel") {
+        return (
+            getAnimatedSprite(pokemon, shiny) ||
+            firstValid(
+                shiny
+                    ? pokemon.sprites?.front_shiny
+                    : pokemon.sprites?.front_default,
+
+                shiny
+                    ? pokemon.sprites?.versions
+                        ?.["generation-v"]
+                        ?.["black-white"]
+                        ?.front_shiny
+                    : pokemon.sprites?.versions
+                        ?.["generation-v"]
+                        ?.["black-white"]
+                        ?.front_default
+            )
+        );
+    }
+
     return (
         getAnimatedSprite(pokemon, shiny) ||
         getStaticSprite(pokemon, shiny)
