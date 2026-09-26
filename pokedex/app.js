@@ -3619,6 +3619,80 @@ async function initializeApp() {
     }
 }
 
+/* ============================================================
+   41. MEGA AND GMAX SPRITES (BUG FIX)
+   ============================================================ */
+
+async function getPokemonForGridCard(
+    speciesReference
+) {
+    const wantsMega =
+        state.selectedFilters.has("mega");
+
+    const wantsGmax =
+        state.selectedFilters.has("gmax");
+
+    /*
+        If Mega is selected, use the actual Mega
+        Pokémon record rather than the base Pokémon.
+    */
+    if (wantsMega) {
+        await buildSpecialFormIndexes();
+
+        const megaForms =
+            state.categoryIndexes.mega
+                ?.get(speciesReference.name);
+
+        if (megaForms?.length) {
+            return {
+                species:
+                    await getSpecies(
+                        speciesReference.name
+                    ),
+
+                pokemon:
+                    megaForms[0].pokemon,
+
+                specialForm: "mega"
+            };
+        }
+    }
+
+    /*
+        Same for Gigantamax.
+    */
+    if (wantsGmax) {
+        await buildSpecialFormIndexes();
+
+        const gmaxForms =
+            state.categoryIndexes.gmax
+                ?.get(speciesReference.name);
+
+        if (gmaxForms?.length) {
+            return {
+                species:
+                    await getSpecies(
+                        speciesReference.name
+                    ),
+
+                pokemon:
+                    gmaxForms[0].pokemon,
+
+                specialForm: "gmax"
+            };
+        }
+    }
+
+    const normal =
+        await getDefaultPokemonForSpecies(
+            speciesReference
+        );
+
+    return {
+        ...normal,
+        specialForm: null
+    };
+}
 
 /* ============================================================
    START
