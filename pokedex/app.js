@@ -77,7 +77,7 @@ const state = {
 
     filteredSpecies: [],
 
-    currentFilter: "all",
+    selectedFilters: new Set(),
 
     searchQuery: "",
 
@@ -3199,24 +3199,60 @@ function renderGameGeneration(group) {
    ============================================================ */
 
 async function handleFilterClick(button) {
-    const filter =
-        button.dataset.filter;
+    const filter = button.dataset.filter;
 
     if (!filter) {
         return;
     }
 
-    document
-        .querySelectorAll(".tab")
-        .forEach(tab => {
-            tab.classList.toggle(
-                "active",
-                tab === button
-            );
-        });
+    const allButton =
+        document.querySelector(
+            '.tab[data-filter="all"]'
+        );
 
-    state.currentFilter =
-        filter;
+    /*
+        ALL is exclusive.
+
+        Clicking it clears every other filter.
+    */
+    if (filter === "all") {
+        state.selectedFilters.clear();
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(tab => {
+                tab.classList.toggle(
+                    "active",
+                    tab.dataset.filter === "all"
+                );
+            });
+    }
+    else {
+        /*
+            Toggle this individual filter without
+            affecting the other selected filters.
+        */
+        if (state.selectedFilters.has(filter)) {
+            state.selectedFilters.delete(filter);
+            button.classList.remove("active");
+        }
+        else {
+            state.selectedFilters.add(filter);
+            button.classList.add("active");
+        }
+
+        /*
+            ALL is active only when no filters
+            are selected.
+        */
+        const noFilters =
+            state.selectedFilters.size === 0;
+
+        allButton?.classList.toggle(
+            "active",
+            noFilters
+        );
+    }
 
     state.visibleCount =
         CONFIG.PAGE_SIZE;
