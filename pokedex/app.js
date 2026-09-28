@@ -933,6 +933,61 @@ function isUltraBeast(species) {
     return ultraBeasts.has(species.name);
 }
 
+/* ============================================================
+   COSTUME POKÉMON (Pokémon GO)
+   
+   Dynamically discovers costume forms from PokéAPI.
+   Costumes are identified by common naming patterns.
+   ============================================================ */
+
+const COSTUME_KEYWORDS = [
+    "cap",           // pikachu-original-cap, pikachu-alola-cap
+    "hat",           // any hat variant
+    "costume",       // generic costume
+    "gmax",          // gigantamax (treated as costume variant)
+    "rock-star",     // pikachu-rock-star
+    "belle",         // pikachu-belle
+    "pop-star",      // pikachu-pop-star
+    "phd",           // pikachu-phd
+    "libre",         // pikachu-libre
+    "cosplay",       // pikachu-cosplay
+];
+
+function isCostumeForm(formName) {
+    const name = String(formName).toLowerCase();
+    
+    return COSTUME_KEYWORDS.some(keyword =>
+        name.includes(keyword)
+    );
+}
+
+async function getCostumesForPokemon(pokemon) {
+    if (!pokemon.forms?.length) {
+        return [];
+    }
+
+    const costumes = [];
+
+    for (const formReference of pokemon.forms) {
+        try {
+            const form = await getPokemonForm(
+                formReference.name
+            );
+
+            if (isCostumeForm(form.name)) {
+                costumes.push(form);
+            }
+        }
+        catch {
+            /* Skip broken form */
+        }
+    }
+
+    return costumes.sort(
+        (a, b) =>
+            a.form_order - b.form_order
+    );
+}
 
 function getSpeciesBadges(species) {
     const badges = [];
