@@ -2027,13 +2027,35 @@ function renderPokemonDetail(
 
                     <div class="detail-actions">
 
-                        <button
-                            class="action-button primary"
-                            type="button"
-                            data-action="play-cry"
-                        >
-                            🔊 Play Cry
-                        </button>
+                  ${
+                      pokemon.name === "pikachu"
+                          ? `
+                              <button
+                                  class="action-button primary"
+                                  type="button"
+                                  data-action="play-pikachu-iconic"
+                              >
+                                  🔊 Play Cry
+                              </button>
+                  
+                              <button
+                                  class="action-button"
+                                  type="button"
+                                  data-action="play-cry-2025"
+                              >
+                                  🔊 Play 2025 Cry
+                              </button>
+                          `
+                          : `
+                              <button
+                                  class="action-button primary"
+                                  type="button"
+                                  data-action="play-cry-2025"
+                              >
+                                  🔊 Play Cry
+                              </button>
+                          `
+                  }
 
                     </div>
 
