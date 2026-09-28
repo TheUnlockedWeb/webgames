@@ -3692,15 +3692,9 @@ async function handleFilterClick(button) {
 
 /* ============================================================
    33. LOAD MORE
-   ============================================================ */
+   =========================================================== */
 
-async function loadMorePokemon() {
-    state.visibleCount +=
-        CONFIG.PAGE_SIZE;
-
-    await renderPokemonGrid();
-}
-
+/* Old code has been deleted, due to new loading systems
 
 /* ============================================================
    34. GLOBAL EVENT DELEGATION
