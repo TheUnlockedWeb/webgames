@@ -3883,6 +3883,19 @@ DOM.clearSearch?.addEventListener(
     clearSearch
 );
 
+DOM.searchSortSetting?.addEventListener(
+    "change",
+    async event => {
+        state.searchSort =
+            event.target.value;
+
+        state.visibleCount =
+            CONFIG.PAGE_SIZE;
+
+        await applyFilter();
+    }
+);
+
 
 /* ============================================================
    37. FILTER EVENTS
