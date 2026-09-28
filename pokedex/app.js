@@ -2071,7 +2071,7 @@ function renderPokemonDetail(
 
                 ${detailTabButton(
                     "games",
-                    "Games"
+                    "Game Appearances"
                 )}
 
             </nav>
