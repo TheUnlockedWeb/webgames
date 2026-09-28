@@ -141,7 +141,7 @@ const DOM = {
     status: document.querySelector("#status"),
     resultCount: document.querySelector("#resultCount"),
 
-    loadMore: document.querySelector("#loadMore"),
+    infiniteScrollSentinel: document.querySelector("#infiniteScrollSentinel"),
 
     themeSetting: document.querySelector("#themeSetting"),
     languageSetting: document.querySelector("#languageSetting"),
