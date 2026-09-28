@@ -1783,7 +1783,7 @@ function stopCry() {
 }
 
 
-async function playCry(pokemon = state.selectedPokemon) {
+async function playCry2025(pokemon = state.selectedPokemon) {
     if (!pokemon) {
         return;
     }
@@ -1825,6 +1825,34 @@ async function playCry(pokemon = state.selectedPokemon) {
     }
 }
 
+async function playPikachuIconicCry() {
+    const iconicCry =
+        "assets/audio/pikachu-pika-chu.mp3";
+
+    stopCry();
+
+    DOM.pokemonCryPlayer.src =
+        iconicCry;
+
+    DOM.pokemonCryPlayer.volume =
+        clamp(
+            Number(
+                state.settings.cryVolume
+            ) / 100,
+            0,
+            1
+        );
+
+    try {
+        await DOM.pokemonCryPlayer.play();
+    }
+    catch {
+        /*
+            The browser may block playback until
+            the user interacts with the page.
+        */
+    }
+}
 
 /* ============================================================
    21. OPEN POKÉMON
