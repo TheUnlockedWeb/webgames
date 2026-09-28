@@ -3929,9 +3929,10 @@ DOM.cryVolumeSetting?.addEventListener(
         saveSettings();
 
         applySettings();
+
+        previewCryVolume();
     }
 );
-
 
 DOM.languageSetting?.addEventListener(
     "change",
