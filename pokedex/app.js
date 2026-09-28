@@ -3834,12 +3834,63 @@ document
         );
     });
 
+/* ============================================================
+   INFINITE SCROLL
+   ============================================================ */
 
-DOM.loadMore?.addEventListener(
-    "click",
-    loadMorePokemon
-);
+let infiniteScrollLoading = false;
 
+async function loadNextPokemonPage() {
+    if (infiniteScrollLoading) {
+        return;
+    }
+
+    if (
+        state.visibleCount >=
+        state.filteredSpecies.length
+    ) {
+        return;
+    }
+
+    infiniteScrollLoading = true;
+
+    try {
+        state.visibleCount +=
+            CONFIG.PAGE_SIZE;
+
+        await renderPokemonGrid();
+    }
+    finally {
+        infiniteScrollLoading = false;
+    }
+}
+
+
+const infiniteScrollObserver =
+    new IntersectionObserver(
+        entries => {
+            const entry = entries[0];
+
+            if (
+                entry?.isIntersecting &&
+                DOM.dexView?.classList.contains("active")
+            ) {
+                loadNextPokemonPage();
+            }
+        },
+        {
+            root: null,
+            rootMargin: "700px 0px",
+            threshold: 0
+        }
+    );
+
+
+if (DOM.infiniteScrollSentinel) {
+    infiniteScrollObserver.observe(
+        DOM.infiniteScrollSentinel
+    );
+}
 
 /* ============================================================
    38. SETTINGS EVENTS
