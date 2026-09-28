@@ -3426,11 +3426,17 @@ document.addEventListener(
             );
 
         if (openPokemonButton) {
-            await openPokemon(
-                openPokemonButton
-                    .dataset
-                    .openPokemon
-            );
+         await openPokemon(
+             openPokemonButton
+                 .dataset
+                 .openPokemon,
+             {
+                 shiny:
+                     openPokemonButton
+                         .dataset
+                         .openShiny === "true"
+             }
+      );
 
             return;
         }
