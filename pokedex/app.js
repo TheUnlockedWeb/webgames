@@ -1868,6 +1868,8 @@ async function openPokemon(
         state.currentDetailPanel =
             "info";
 
+        await buildCostumeIndex();
+
         renderPokemonDetail(
             pokemon,
             species
