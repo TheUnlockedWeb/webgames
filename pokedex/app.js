@@ -1447,111 +1447,176 @@ async function applyFilter() {
    ============================================================ */
 
 async function renderPokemonGrid() {
-    if (state.loading) {
+    if (!DOM.pokemonGrid) {
         return;
     }
 
-    state.loading = true;
+    const total =
+        state.filteredSpecies.length;
 
-    const list =
-        state.filteredSpecies;
+    /*
+        Nothing matched the current combination.
 
-    const visible =
-        list.slice(
+        Example:
+        Legendary + Mythical
+    */
+    if (total === 0) {
+        DOM.pokemonGrid.innerHTML = `
+            <div class="empty-state">
+                <h2>No Pokemon Found</h2>
+
+                <p>
+                    Try removing one of the selected filters
+                    or changing your search.
+                </p>
+            </div>
+        `;
+
+        if (DOM.status) {
+            DOM.status.textContent =
+                "No Pokemon Found";
+        }
+
+        if (DOM.resultCount) {
+            DOM.resultCount.textContent =
+                "0 Pokémon";
+        }
+
+        if (DOM.loadMore) {
+            DOM.loadMore.classList.add(
+                "hidden"
+            );
+        }
+
+        return;
+    }
+
+
+    const visibleSpecies =
+        state.filteredSpecies.slice(
             0,
             state.visibleCount
         );
 
-    if (!visible.length) {
-        DOM.pokemonGrid.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-inner">
-                    <h2>No Pokémon found</h2>
 
-                    <p>
-                        Try a different Pokémon name,
-                        Pokédex number or category.
-                    </p>
-                </div>
-            </div>
-        `;
+    /*
+        Shiny is now controlled by the new
+        multi-filter Set.
 
-        DOM.resultCount.textContent =
-            "0 Pokémon";
-
-        DOM.loadMore.classList.add(
-            "hidden"
+        We DO NOT use state.currentFilter anymore.
+    */
+    const shiny =
+        state.selectedFilters.has(
+            "shiny"
         );
 
-        state.loading = false;
-
-        return;
-    }
 
     renderSkeletonCards(
-        Math.min(visible.length, 18)
+        Math.min(
+            visibleSpecies.length,
+            18
+        )
     );
 
-    const shiny =
-        state.currentFilter === "shiny";
 
     const cards = [];
 
+    /*
+        Load cards in batches so we don't hammer
+        PokéAPI with hundreds of simultaneous requests.
+    */
     for (
         let index = 0;
-        index < visible.length;
+        index < visibleSpecies.length;
         index += CONFIG.REQUEST_BATCH_SIZE
     ) {
         const batch =
-            visible.slice(
+            visibleSpecies.slice(
                 index,
                 index +
-                CONFIG.REQUEST_BATCH_SIZE
+                    CONFIG.REQUEST_BATCH_SIZE
             );
 
-        const html =
+        const batchCards =
             await Promise.all(
-                batch.map(item =>
-                    buildPokemonCard(
-                        item,
-                        { shiny }
-                    )
+                batch.map(
+                    speciesReference =>
+                        buildPokemonCard(
+                            speciesReference,
+                            {
+                                shiny
+                            }
+                        )
                 )
             );
 
-        cards.push(...html);
-
-        await sleep(
-            CONFIG.REQUEST_DELAY
+        cards.push(
+            ...batchCards.filter(Boolean)
         );
+
+        if (
+            index +
+                CONFIG.REQUEST_BATCH_SIZE <
+            visibleSpecies.length
+        ) {
+            await sleep(
+                CONFIG.REQUEST_DELAY
+            );
+        }
     }
+
 
     DOM.pokemonGrid.innerHTML =
         cards.join("");
 
-    const filterLabel =
-        state.currentFilter === "all"
-            ? "National Pokédex"
-            : prettyName(
-                state.currentFilter
-            );
 
-    DOM.status.textContent =
-        filterLabel;
+    /*
+        Build a readable label from all active filters.
+    */
+    const selected =
+        [...state.selectedFilters];
 
-    DOM.resultCount.textContent =
-        `${list.length.toLocaleString()} ${
-            list.length === 1
-                ? "Pokémon"
-                : "Pokémon"
-        }`;
 
-    DOM.loadMore.classList.toggle(
-        "hidden",
-        visible.length >= list.length
-    );
+    let filterLabel =
+        "National Pokédex";
 
-    state.loading = false;
+
+    if (selected.length > 0) {
+        filterLabel =
+            selected
+                .map(prettyName)
+                .join(" + ");
+    }
+
+
+    if (DOM.status) {
+        if (state.searchQuery) {
+            DOM.status.textContent =
+                `${filterLabel} • Search: "${state.searchQuery}"`;
+        }
+        else {
+            DOM.status.textContent =
+                filterLabel;
+        }
+    }
+
+
+    if (DOM.resultCount) {
+        DOM.resultCount.textContent =
+            `${total} ${
+                total === 1
+                    ? "Pokémon"
+                    : "Pokémon"
+            }`;
+    }
+
+
+    if (DOM.loadMore) {
+        DOM.loadMore.classList.toggle(
+            "hidden",
+            state.visibleCount >= total
+        );
+    }
 }
 
 
