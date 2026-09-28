@@ -112,7 +112,8 @@ const state = {
         legendary: null,
         mythical: null,
         mega: null,
-        gmax: null
+        gmax: null,
+        costumes: null
     }
 };
 
