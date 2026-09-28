@@ -1477,6 +1477,12 @@ async function applyFilter() {
                         .has(item.name)
                 );
                 break;
+
+           case "costumes":
+                list = list.filter(item =>
+                    state.categoryIndexes.costumes.has(item.name)
+                );
+                break;
         }
     }
 
