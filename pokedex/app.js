@@ -1430,6 +1430,68 @@ async function buildSpecialFormIndexes() {
 /* ============================================================
    17. APPLY FILTER
    ============================================================ */
+   const REGION_DEX_RANGES = {
+       kanto: [1, 151],
+       johto: [152, 251],
+       hoenn: [252, 386],
+       sinnoh: [387, 493],
+       unova: [494, 649],
+       kalos: [650, 721],
+       alola: [722, 809],
+       galar: [810, 905],
+       paldea: [906, Infinity]
+   };
+   
+   
+   function applySearchSort(list) {
+       let result = [...list];
+   
+       const mode =
+           state.searchSort || "number";
+   
+       if (mode === "az") {
+           return result.sort(
+               (a, b) =>
+                   prettyName(a.name)
+                       .localeCompare(
+                           prettyName(b.name)
+                       )
+           );
+       }
+   
+       if (mode === "za") {
+           return result.sort(
+               (a, b) =>
+                   prettyName(b.name)
+                       .localeCompare(
+                           prettyName(a.name)
+                       )
+           );
+       }
+   
+       if (mode.startsWith("region-")) {
+           const region =
+               mode.replace("region-", "");
+   
+           const range =
+               REGION_DEX_RANGES[region];
+   
+           if (range) {
+               const [minimum, maximum] =
+                   range;
+   
+               result = result.filter(
+                   pokemon =>
+                       pokemon.id >= minimum &&
+                       pokemon.id <= maximum
+               );
+           }
+       }
+   
+       return result.sort(
+           (a, b) => a.id - b.id
+       );
+   }
 
 async function applyFilter() {
     const filters =
