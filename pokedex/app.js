@@ -3863,6 +3863,33 @@ DOM.cryVolumeSetting?.addEventListener(
 );
 
 
+DOM.languageSetting?.addEventListener(
+    "change",
+    async event => {
+        state.settings.language =
+            event.target.value;
+
+        saveSettings();
+
+        applySettings();
+
+        await renderPokemonGrid();
+
+        if (
+            DOM.detailView
+                ?.classList
+                .contains("active") &&
+            state.selectedPokemon
+        ) {
+            renderPokemonDetail(
+                state.selectedPokemon,
+                state.selectedSpecies
+            );
+        }
+    }
+);
+
+
 /* ============================================================
    39. ERROR HANDLING
    ============================================================ */
