@@ -936,88 +936,107 @@ function isUltraBeast(species) {
 
 /* ============================================================
    COSTUME POKÉMON (Pokémon GO)
-   
-   Dynamically discovers costume forms from PokéAPI.
-   Costumes are identified by common naming patterns.
    ============================================================ */
 
 const COSTUME_KEYWORDS = [
-    "cap",           // pikachu-original-cap, pikachu-alola-cap
-    "hat",           // any hat variant
-    "costume",       // generic costume
-    "gmax",          // gigantamax (treated as costume variant)
-    "rock-star",     // pikachu-rock-star
-    "belle",         // pikachu-belle
-    "pop-star",      // pikachu-pop-star
-    "phd",           // pikachu-phd
-    "libre",         // pikachu-libre
-    "cosplay",       // pikachu-cosplay
+    "cap",
+    "hat",
+    "costume",
+    "rock-star",
+    "belle",
+    "pop-star",
+    "phd",
+    "libre",
+    "cosplay",
+    "original-cap",
+    "partner-cap",
+    "hoenn-cap",
+    "sinnoh-cap",
+    "unova-cap",
+    "kalos-cap",
+    "alola-cap"
 ];
 
 function isCostumeForm(formName) {
     const name = String(formName).toLowerCase();
-    
+
     return COSTUME_KEYWORDS.some(keyword =>
         name.includes(keyword)
     );
 }
 
-async function getCostumesForPokemon(pokemon) {
-    if (!pokemon.forms?.length) {
-        return [];
+async function buildCostumeIndex() {
+    if (state.categoryIndexes.costumes) {
+        return;
     }
 
-    const costumes = [];
+    const costumes = new Set();
 
-    for (const formReference of pokemon.forms) {
-        try {
-            const form = await getPokemonForm(
-                formReference.name
+    showLoading("Discovering costume forms...");
+
+    try {
+        const formListInitial =
+            await api("pokemon-form?limit=1");
+
+        const totalForms =
+            Number(formListInitial.count) || 0;
+
+        const formList =
+            await api(
+                `pokemon-form?limit=${totalForms}&offset=0`
             );
 
-            if (isCostumeForm(form.name)) {
-                costumes.push(form);
+        for (
+            let index = 0;
+            index < formList.results.length;
+            index += CONFIG.REQUEST_BATCH_SIZE
+        ) {
+            const batch =
+                formList.results.slice(
+                    index,
+                    index + CONFIG.REQUEST_BATCH_SIZE
+                );
+
+            const forms =
+                await Promise.all(
+                    batch.map(resource =>
+                        getPokemonForm(resource.name)
+                            .catch(() => null)
+                    )
+                );
+
+            for (const form of forms) {
+                if (!form) {
+                    continue;
+                }
+
+                if (!isCostumeForm(form.name)) {
+                    continue;
+                }
+
+                try {
+                    const pokemon =
+                        await getPokemon(
+                            form.pokemon.name
+                        );
+
+                    costumes.add(
+                        pokemon.species.name
+                    );
+                }
+                catch {
+                    // ignore broken form
+                }
             }
+
+            await sleep(CONFIG.REQUEST_DELAY);
         }
-        catch {
-            /* Skip broken form */
-        }
+
+        state.categoryIndexes.costumes = costumes;
     }
-
-    return costumes.sort(
-        (a, b) =>
-            a.form_order - b.form_order
-    );
-}
-
-function getSpeciesBadges(species) {
-    const badges = [];
-
-    if (species.is_legendary) {
-        badges.push(`
-            <span class="form-badge legendary">
-                Legendary
-            </span>
-        `);
+    finally {
+        hideLoading();
     }
-
-    if (species.is_mythical) {
-        badges.push(`
-            <span class="form-badge mythical">
-                Mythical
-            </span>
-        `);
-    }
-
-    if (isUltraBeast(species)) {
-        badges.push(`
-            <span class="form-badge ultra-beast">
-                Ultra Beast
-            </span>
-        `);
-    }
-
-    return badges.join("");
 }
 
 
