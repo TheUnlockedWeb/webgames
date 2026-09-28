@@ -412,6 +412,11 @@ function applySettings() {
                 1
             );
     }
+
+      if (DOM.languageSetting) {
+       DOM.languageSetting.value =
+           state.settings.language;
+   }
 }
 
 
