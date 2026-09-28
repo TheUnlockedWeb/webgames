@@ -1103,7 +1103,7 @@ async function buildPokemonCard(
                     class="card-main"
                     type="button"
                     data-open-pokemon="${escapeHtml(pokemon.name)}"
-                    aria-label="Open ${escapeHtml(getEnglishName(species.names, species.name))}"
+                    aria-label="Open ${escapeHtml(getLocalizedName(species.names, species.name))}"
                 >
 
                     <div class="card-sprite-wrap">
@@ -1114,7 +1114,7 @@ async function buildPokemonCard(
                                     <img
                                         class="card-sprite"
                                         src="${escapeHtml(sprite)}"
-                                        alt="${shiny ? "Shiny " : ""}${escapeHtml(getEnglishName(species.names, species.name))}"
+                                        alt="${shiny ? "Shiny " : ""}${escapeHtml(getLocalizedName(species.names, species.name))}"
                                         loading="lazy"
                                     >
                                 `
@@ -1125,7 +1125,7 @@ async function buildPokemonCard(
 
                     <div class="card-name">
                         ${escapeHtml(
-                            getEnglishName(
+                            getLocalizedName(
                                 species.names,
                                 species.name
                             )
@@ -1932,7 +1932,7 @@ function renderPokemonDetail(
     );
 
     const speciesName =
-        getEnglishName(
+        getLocalizedName(
             species.names,
             species.name
         );
@@ -2614,7 +2614,7 @@ async function renderEvolutionNode(
 
             <div class="evo-name">
                 ${escapeHtml(
-                    getEnglishName(
+                    getLocalizedName(
                         species?.names,
                         speciesName
                     )
@@ -2959,7 +2959,7 @@ function renderCosmeticFormCard(form) {
         );
 
     const englishName =
-        getEnglishName(
+        getLocalizedName(
             form.names,
             form.name
         );
@@ -3071,7 +3071,7 @@ async function renderCostumesPanel(panel) {
                 );
 
             const costumeName =
-                getEnglishName(
+                getLocalizedName(
                     costume.names,
                     costume.name
                 );
@@ -3532,7 +3532,7 @@ function renderGameGeneration(group) {
                                 .map(entry => `
                                     <span class="game-badge">
                                         ${escapeHtml(
-                                            getEnglishName(
+                                            getLocalizedName(
                                                 entry.version.names,
                                                 entry.version.name
                                             )
