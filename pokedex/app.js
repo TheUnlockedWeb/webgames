@@ -1590,7 +1590,8 @@ async function applyFilter() {
         }
     }
 
-    state.filteredSpecies = list;
+   list = applySearchSort(list);
+   state.filteredSpecies = list;
 
    state.visibleCount =
        Math.min(
