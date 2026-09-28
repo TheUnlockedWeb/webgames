@@ -2960,31 +2960,59 @@ function renderShinyPanel(panel) {
 function spriteGalleryCard(
     sprite,
     label,
-    alt
+    alt,
+    pokemonName = "",
+    shiny = false
 ) {
+    const imageContent = sprite
+        ? `
+            <img
+                src="${escapeHtml(sprite)}"
+                alt="${escapeHtml(alt)}"
+                loading="lazy"
+            >
+        `
+        : `
+            <div class="inline-loading">
+                No sprite available
+            </div>
+        `;
+
+    const content = `
+        ${imageContent}
+
+        <strong>
+            ${escapeHtml(label)}
+        </strong>
+    `;
+
+    /*
+        If no Pokémon name was supplied, this remains
+        a normal non-clickable gallery card.
+    */
+    if (!pokemonName) {
+        return `
+            <div class="gallery-card">
+                ${content}
+            </div>
+        `;
+    }
+
+    /*
+        Otherwise the gallery card becomes a button.
+
+        data-open-shiny is picked up by the click handler
+        we fixed in the previous step.
+    */
     return `
-        <div class="gallery-card">
-
-            ${
-                sprite
-                    ? `
-                        <img
-                            src="${escapeHtml(sprite)}"
-                            alt="${escapeHtml(alt)}"
-                        >
-                    `
-                    : `
-                        <div class="inline-loading">
-                            No sprite available
-                        </div>
-                    `
-            }
-
-            <strong>
-                ${escapeHtml(label)}
-            </strong>
-
-        </div>
+        <button
+            class="gallery-card"
+            type="button"
+            data-open-pokemon="${escapeHtml(pokemonName)}"
+            data-open-shiny="${shiny ? "true" : "false"}"
+        >
+            ${content}
+        </button>
     `;
 }
 
