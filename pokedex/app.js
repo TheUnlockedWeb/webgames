@@ -2926,17 +2926,21 @@ function renderShinyPanel(panel) {
 
             <div class="gallery">
 
-                ${spriteGalleryCard(
-                    normal,
-                    "Normal",
-                    prettyName(pokemon.name)
-                )}
-
-                ${spriteGalleryCard(
-                    shiny,
-                    "Shiny",
-                    `Shiny ${prettyName(pokemon.name)}`
-                )}
+            ${spriteGalleryCard(
+                normal,
+                "Normal",
+                prettyName(pokemon.name),
+                pokemon.name,
+                false
+            )}
+            
+            ${spriteGalleryCard(
+                shiny,
+                "Shiny",
+                `Shiny ${prettyName(pokemon.name)}`,
+                pokemon.name,
+                true
+            )}
 
             </div>
 
