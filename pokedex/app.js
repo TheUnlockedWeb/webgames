@@ -1446,6 +1446,11 @@ async function applyFilter() {
     ) {
         await buildSpecialFormIndexes();
     }
+    if (
+       categoryFilters.includes("costumes")
+    ) {
+        await buildCostumeIndex();
+    }
 
     /*
         Multiple categories use AND/intersection logic.
