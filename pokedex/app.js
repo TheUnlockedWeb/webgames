@@ -1582,13 +1582,7 @@ async function renderPokemonGrid() {
             DOM.resultCount.textContent =
                 "0 Pokémon";
         }
-
-        if (DOM.loadMore) {
-            DOM.loadMore.classList.add(
-                "hidden"
-            );
-        }
-
+       
         return;
     }
 
