@@ -267,21 +267,27 @@ function cleanFlavorText(text) {
 }
 
 
-function getEnglishName(names, fallback) {
-    const english = names?.find(
-        item => item.language?.name === "en"
+function getLocalizedName(names, fallback) {
+    const language =
+        state.settings.language || "en";
+
+    const localized =
+        names?.find(
+            item =>
+                item.language?.name === language
+        );
+
+    const english =
+        names?.find(
+            item =>
+                item.language?.name === "en"
+        );
+
+    return (
+        localized?.name ||
+        english?.name ||
+        prettyName(fallback)
     );
-
-    return english?.name || prettyName(fallback);
-}
-
-
-function getEnglishGenus(species) {
-    const english = species?.genera?.find(
-        item => item.language?.name === "en"
-    );
-
-    return english?.genus || "";
 }
 
 
