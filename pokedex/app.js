@@ -1852,6 +1852,16 @@ async function playPikachuIconicCry() {
             the user interacts with the page.
         */
     }
+      let volumePreviewTimer = null;
+   
+   function previewCryVolume() {
+       clearTimeout(volumePreviewTimer);
+   
+       volumePreviewTimer = window.setTimeout(
+           () => playPikachuIconicCry(),
+           80
+       );
+   }
 }
 
 /* ============================================================
@@ -3734,8 +3744,12 @@ document.addEventListener(
             switch (
                 action.dataset.action
             ) {
-                case "play-cry":
-                    await playCry();
+                case "play-pikachu-iconic":
+                    await playPikachuIconicCry();
+                    break;
+            
+                case "play-cry-2025":
+                    await playCry2025();
                     break;
             }
         }
