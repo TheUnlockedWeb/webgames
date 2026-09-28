@@ -1502,9 +1502,11 @@ async function applyFilter() {
                 );
                 break;
 
-           case "costumes":
+            case "costumes":
                 list = list.filter(item =>
-                    state.categoryIndexes.costumes.has(item.name)
+                    state.categoryIndexes
+                        .costumes
+                        .has(item.name)
                 );
                 break;
         }
