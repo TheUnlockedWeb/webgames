@@ -144,6 +144,7 @@ const DOM = {
     loadMore: document.querySelector("#loadMore"),
 
     themeSetting: document.querySelector("#themeSetting"),
+    languageSetting: document.querySelector("#languageSetting"),
     spriteSetting: document.querySelector("#spriteSetting"),
     animationSetting: document.querySelector("#animationSetting"),
     autoCrySetting: document.querySelector("#autoCrySetting"),
