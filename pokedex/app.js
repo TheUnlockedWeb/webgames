@@ -1527,17 +1527,17 @@ async function applyFilter() {
 
     state.filteredSpecies = list;
 
-    state.visibleCount =
-        Math.max(
-            CONFIG.PAGE_SIZE,
-            Math.min(
-                state.visibleCount,
-                Math.max(
-                    CONFIG.PAGE_SIZE,
-                    list.length
-                )
-            )
-        );
+   state.visibleCount =
+       Math.min(
+           Math.max(
+               state.visibleCount,
+               CONFIG.PAGE_SIZE
+           ),
+           Math.max(
+               list.length,
+               CONFIG.PAGE_SIZE
+           )
+       );
 
     await renderPokemonGrid();
 }
