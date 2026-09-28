@@ -1825,43 +1825,60 @@ async function playCry2025(pokemon = state.selectedPokemon) {
     }
 }
 
+let volumePreviewTimer = null;
+
 async function playPikachuIconicCry() {
-    const iconicCry =
-        "assets/audio/pikachu-pika-chu.mp3";
+    if (!DOM.pokemonCryPlayer) {
+        return;
+    }
 
-    stopCry();
-
-    DOM.pokemonCryPlayer.src =
-        iconicCry;
-
-    DOM.pokemonCryPlayer.volume =
-        clamp(
-            Number(
-                state.settings.cryVolume
-            ) / 100,
-            0,
-            1
-        );
-
+    /*
+        Use PokéAPI's Pikachu cry instead of depending
+        on a local MP3 file existing.
+    */
     try {
+        const pikachu = await getPokemon("pikachu");
+
+        const cry =
+            pikachu.cries?.latest ||
+            pikachu.cries?.legacy;
+
+        if (!cry) {
+            return;
+        }
+
+        stopCry();
+
+        DOM.pokemonCryPlayer.src = cry;
+
+        DOM.pokemonCryPlayer.volume =
+            clamp(
+                Number(state.settings.cryVolume) / 100,
+                0,
+                1
+            );
+
         await DOM.pokemonCryPlayer.play();
     }
-    catch {
-        /*
-            The browser may block playback until
-            the user interacts with the page.
-        */
+    catch (error) {
+        console.warn(
+            "Could not preview Pikachu cry:",
+            error
+        );
     }
-      let volumePreviewTimer = null;
-   
-   function previewCryVolume() {
-       clearTimeout(volumePreviewTimer);
-   
-       volumePreviewTimer = window.setTimeout(
-           () => playPikachuIconicCry(),
-           80
-       );
-   }
+}
+
+
+function previewCryVolume() {
+    clearTimeout(volumePreviewTimer);
+
+    volumePreviewTimer =
+        window.setTimeout(
+            () => {
+                playPikachuIconicCry();
+            },
+            120
+        );
 }
 
 /* ============================================================
