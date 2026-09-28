@@ -1917,7 +1917,7 @@ async function openPokemon(
         );
 
         if (autoPlayCry) {
-            playCry(pokemon);
+            playCry2025(pokemon);
         }
     }
     catch (error) {
