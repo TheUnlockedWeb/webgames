@@ -2122,6 +2122,10 @@ async function renderDetailPanel(panelName) {
                 renderShinyPanel(panel);
                 break;
 
+            case "costumes":
+                await renderCostumesPanel(panel);
+                break;
+
             case "games":
                 await renderGamesPanel(
                     panel
