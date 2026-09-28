@@ -2061,13 +2061,13 @@ function renderPokemonDetail(
                 )}
 
                 ${
-                    state.categoryIndexes.costumes?.has(species.name)
-                        ? detailTabButton(
-                            "costumes",
-                            "Costumes"
-                        )
-                        : ""
-                }
+                   state.categoryIndexes.costumes?.has(species.name)
+                       ? detailTabButton(
+                           "costumes",
+                           "Costumes"
+                       )
+                          : ""
+                 }
 
                 ${detailTabButton(
                     "games",
