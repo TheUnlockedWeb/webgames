@@ -2984,52 +2984,122 @@ function renderCosmeticFormCard(form) {
    29. SHINY PANEL
    ============================================================ */
 
-function renderShinyPanel(panel) {
+async function renderCostumesPanel(panel) {
     const pokemon =
         state.selectedPokemon;
 
-    const normal =
-        getSprite(pokemon, false);
+    const costumes =
+        await getCostumesForPokemon(pokemon);
 
-    const shiny =
-        getSprite(pokemon, true);
+    if (!costumes.length) {
+        panel.innerHTML = `
+            <section class="detail-section">
+
+                <h2>Costumes</h2>
+
+                <p class="muted">
+                    This Pokémon has no costume forms
+                    available in PokéAPI.
+                </p>
+
+            </section>
+        `;
+
+        return;
+    }
+
+    const costumeCards = [];
+
+    for (const costume of costumes) {
+        try {
+            const costumePokemon =
+                await getPokemon(
+                    costume.pokemon.name
+                );
+
+            const normalSprite =
+                getSprite(
+                    costumePokemon,
+                    false
+                );
+
+            const shinySprite =
+                getSprite(
+                    costumePokemon,
+                    true
+                );
+
+            const costumeName =
+                getEnglishName(
+                    costume.names,
+                    costume.name
+                );
+
+            costumeCards.push(`
+                <section class="costume-card">
+
+                    ${
+                        normalSprite
+                            ? `
+                                <img
+                                    class="form-image"
+                                    src="${escapeHtml(normalSprite)}"
+                                    alt="${escapeHtml(costumeName)}"
+                                    loading="lazy"
+                                >
+                            `
+                            : ""
+                    }
+
+                    <h3 class="form-name">
+                        ${escapeHtml(costumeName)}
+                    </h3>
+
+                    <p class="form-description">
+                        Costume Pokémon
+                    </p>
+
+                    <div class="gallery">
+
+                        ${spriteGalleryCard(
+                            normalSprite,
+                            "Normal",
+                            costumeName,
+                            costumePokemon.name,
+                            false
+                        )}
+
+                        ${spriteGalleryCard(
+                            shinySprite,
+                            "Shiny",
+                            `Shiny ${costumeName}`,
+                            costumePokemon.name,
+                            true
+                        )}
+
+                    </div>
+
+                </section>
+            `);
+        }
+        catch {
+            /* Skip unavailable costume */
+        }
+    }
 
     panel.innerHTML = `
         <section class="detail-section">
 
-            <h2>Normal & Shiny</h2>
+            <h2>Costumes</h2>
 
-            <div class="gallery">
+            <p class="muted">
+                Costume variants associated with this Pokémon.
+                Costume Pokémon can also be shiny.
+            </p>
 
-            ${spriteGalleryCard(
-                normal,
-                "Normal",
-                prettyName(pokemon.name),
-                pokemon.name,
-                false
-            )}
-            
-            ${spriteGalleryCard(
-                shiny,
-                "Shiny",
-                `Shiny ${prettyName(pokemon.name)}`,
-                pokemon.name,
-                true
-            )}
-
+            <div class="forms-grid">
+                ${costumeCards.join("")}
             </div>
-
-            ${
-                !shiny
-                    ? `
-                        <div class="data-note">
-                            PokéAPI does not currently provide
-                            a shiny sprite for this particular
-                            Pokémon/form.
-                        </div>
-                    `
-                    : ""
-            }
 
         </section>
     `;
