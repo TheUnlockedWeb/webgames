@@ -82,6 +82,8 @@ const state = {
 
     searchQuery: "",
 
+    searchSort: "number",
+   
     visibleCount: CONFIG.PAGE_SIZE,
 
     selectedPokemon: null,
