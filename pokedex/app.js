@@ -2032,6 +2032,13 @@ function renderPokemonDetail(
                     "Shiny"
                 )}
 
+                ${
+                state.categoryIndexes.costumes?.has(species.name)
+                ? detailTabButton(
+                    "costumes",
+                    "Costumes"
+                )}
+
                 ${detailTabButton(
                     "games",
                     "Games"
