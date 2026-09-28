@@ -63,7 +63,8 @@ const CONFIG = {
         spriteStyle: "normal",
         animations: false,
         autoCry: true,
-        cryVolume: 80
+        cryVolume: 80,
+        language: "en"
     }
 };
 
