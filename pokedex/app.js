@@ -147,6 +147,7 @@ const DOM = {
     infiniteScrollSentinel: document.querySelector("#infiniteScrollSentinel"),
 
     themeSetting: document.querySelector("#themeSetting"),
+    saveSettingsButton: document.querySelector("#saveSettingsButton"),
     languageSetting: document.querySelector("#languageSetting"),
     spriteSetting: document.querySelector("#spriteSetting"),
     animationSetting: document.querySelector("#animationSetting"),
