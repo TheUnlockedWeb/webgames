@@ -4008,6 +4008,38 @@ if (DOM.infiniteScrollSentinel) {
    38. SETTINGS EVENTS
    ============================================================ */
 
+DOM.saveSettingsButton?.addEventListener(
+    "click",
+    async () => {
+        state.settings =
+            readSettingsFromControls();
+
+        saveSettings();
+        applySettings();
+
+        state.visibleCount =
+            CONFIG.PAGE_SIZE;
+
+        await applyFilter();
+
+        if (
+            DOM.detailView
+                ?.classList
+                .contains("active") &&
+            state.selectedPokemon
+        ) {
+            await renderPokemonDetail(
+                state.selectedPokemon,
+                state.selectedSpecies
+            );
+        }
+
+        showToast(
+            "Settings saved."
+        );
+    }
+);
+
 DOM.themeSetting?.addEventListener(
     "change",
     event => {
