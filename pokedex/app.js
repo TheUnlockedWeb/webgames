@@ -98,6 +98,8 @@ const state = {
 
     initialized: false,
 
+    settingsDirty: false,
+
     settings: loadSettings(),
 
     selectedShiny: false,
