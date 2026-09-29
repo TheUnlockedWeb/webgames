@@ -3900,6 +3900,10 @@ DOM.settingsButton?.addEventListener(
 DOM.settingsBack?.addEventListener(
     "click",
     () => {
+        if (warnUnsavedSettings()) {
+            return;
+        }
+
         showView("dex");
     }
 );
