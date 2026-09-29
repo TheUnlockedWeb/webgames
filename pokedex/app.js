@@ -150,6 +150,8 @@ const DOM = {
 
     themeSetting: document.querySelector("#themeSetting"),
     saveSettingsButton: document.querySelector("#saveSettingsButton"),
+    saveSettingsBar: document.querySelector("#saveSettingsBar"),
+    unsavedSettingsMessage: document.querySelector("#unsavedSettingsMessage"),
     languageSetting: document.querySelector("#languageSetting"),
     spriteSetting: document.querySelector("#spriteSetting"),
     animationSetting: document.querySelector("#animationSetting"),
