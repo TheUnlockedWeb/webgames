@@ -4012,6 +4012,166 @@ if (DOM.infiniteScrollSentinel) {
    38. SETTINGS EVENTS
    ============================================================ */
 
+let volumePreviewTimer = null;
+
+
+function markSettingsDirty() {
+    state.settingsDirty = true;
+
+    DOM.saveSettingsBar?.classList.add(
+        "visible"
+    );
+
+    DOM.saveSettingsBar?.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+}
+
+
+function clearSettingsDirty() {
+    state.settingsDirty = false;
+
+    DOM.saveSettingsBar?.classList.remove(
+        "visible",
+        "warning"
+    );
+
+    DOM.saveSettingsBar?.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    if (DOM.unsavedSettingsMessage) {
+        DOM.unsavedSettingsMessage.textContent =
+            "You have unsaved changes";
+    }
+}
+
+
+function warnUnsavedSettings() {
+    if (!state.settingsDirty) {
+        return false;
+    }
+
+    if (DOM.unsavedSettingsMessage) {
+        DOM.unsavedSettingsMessage.textContent =
+            "Wait! You have unsaved changes";
+    }
+
+    DOM.saveSettingsBar?.classList.remove(
+        "warning"
+    );
+
+    /*
+        Force the browser to restart the animation.
+    */
+    void DOM.saveSettingsBar?.offsetWidth;
+
+    DOM.saveSettingsBar?.classList.add(
+        "warning",
+        "visible"
+    );
+
+    window.setTimeout(() => {
+        DOM.saveSettingsBar?.classList.remove(
+            "warning"
+        );
+    }, 500);
+
+    return true;
+}
+
+
+DOM.themeSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.spriteSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.animationSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.autoCrySetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.languageSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.cryVolumeSetting?.addEventListener(
+    "input",
+    event => {
+        markSettingsDirty();
+
+        const temporaryVolume =
+            clamp(
+                Number(event.target.value) / 100,
+                0,
+                1
+            );
+
+        if (DOM.pokemonCryPlayer) {
+            DOM.pokemonCryPlayer.volume =
+                temporaryVolume;
+        }
+
+        clearTimeout(volumePreviewTimer);
+
+        volumePreviewTimer =
+            window.setTimeout(
+                async () => {
+                    try {
+                        const pikachu =
+                            await getPokemon(
+                                "pikachu"
+                            );
+
+                        const cry =
+                            pikachu.cries?.latest ||
+                            pikachu.cries?.legacy;
+
+                        if (!cry) {
+                            return;
+                        }
+
+                        stopCry();
+
+                        DOM.pokemonCryPlayer.src =
+                            cry;
+
+                        DOM.pokemonCryPlayer.volume =
+                            temporaryVolume;
+
+                        await DOM.pokemonCryPlayer.play();
+                    }
+                    catch (error) {
+                        console.warn(
+                            "Could not preview cry volume:",
+                            error
+                        );
+                    }
+                },
+                180
+            );
+    }
+);
+
+
 DOM.saveSettingsButton?.addEventListener(
     "click",
     async () => {
@@ -4019,7 +4179,12 @@ DOM.saveSettingsButton?.addEventListener(
             readSettingsFromControls();
 
         saveSettings();
+
         applySettings();
+
+        applyInterfaceLanguage();
+
+        clearSettingsDirty();
 
         state.visibleCount =
             CONFIG.PAGE_SIZE;
@@ -4032,135 +4197,15 @@ DOM.saveSettingsButton?.addEventListener(
                 .contains("active") &&
             state.selectedPokemon
         ) {
-            await renderPokemonDetail(
+            renderPokemonDetail(
                 state.selectedPokemon,
                 state.selectedSpecies
             );
         }
 
         showToast(
-            "Settings saved."
+            t("settingsSaved")
         );
-    }
-);
-
-DOM.themeSetting?.addEventListener(
-    "change",
-    event => {
-        state.settings.theme =
-            event.target.value;
-
-        saveSettings();
-
-        applySettings();
-    }
-);
-
-
-DOM.spriteSetting?.addEventListener(
-    "change",
-    async event => {
-        state.settings.spriteStyle =
-            event.target.value;
-
-        saveSettings();
-
-        applySettings();
-
-        await renderPokemonGrid();
-
-        if (
-            DOM.detailView
-                ?.classList
-                .contains("active") &&
-            state.selectedPokemon
-        ) {
-            renderPokemonDetail(
-                state.selectedPokemon,
-                state.selectedSpecies
-            );
-        }
-    }
-);
-
-
-DOM.animationSetting?.addEventListener(
-    "change",
-    async event => {
-        state.settings.animations =
-            event.target.checked;
-
-        saveSettings();
-
-        applySettings();
-
-        await renderPokemonGrid();
-
-        if (
-            DOM.detailView
-                ?.classList
-                .contains("active") &&
-            state.selectedPokemon
-        ) {
-            renderPokemonDetail(
-                state.selectedPokemon,
-                state.selectedSpecies
-            );
-        }
-    }
-);
-
-
-DOM.autoCrySetting?.addEventListener(
-    "change",
-    event => {
-        state.settings.autoCry =
-            event.target.checked;
-
-        saveSettings();
-
-        applySettings();
-    }
-);
-
-
-DOM.cryVolumeSetting?.addEventListener(
-    "input",
-    event => {
-        state.settings.cryVolume =
-            Number(event.target.value);
-
-        saveSettings();
-
-        applySettings();
-
-        previewCryVolume();
-    }
-);
-
-DOM.languageSetting?.addEventListener(
-    "change",
-    async event => {
-        state.settings.language =
-            event.target.value;
-
-        saveSettings();
-
-        applySettings();
-
-        await renderPokemonGrid();
-
-        if (
-            DOM.detailView
-                ?.classList
-                .contains("active") &&
-            state.selectedPokemon
-        ) {
-            renderPokemonDetail(
-                state.selectedPokemon,
-                state.selectedSpecies
-            );
-        }
     }
 );
 
