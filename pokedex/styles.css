@@ -3180,3 +3180,91 @@ span:not(.sr-only) {
         transition-duration: 0.01ms !important;
     }
 }
+
+   /* ============================================================
+      UNSAVED SETTINGS BAR
+      ============================================================ */
+   
+   .save-settings-bar {
+       position: fixed;
+       left: 50%;
+       bottom: 18px;
+       z-index: 200;
+   
+       width: min(760px, calc(100% - 28px));
+   
+       transform: translate(-50%, calc(100% + 60px));
+       opacity: 0;
+       pointer-events: none;
+   
+       transition:
+           transform .25s ease,
+           opacity .25s ease;
+   }
+   
+   .save-settings-bar.visible {
+       transform: translate(-50%, 0);
+       opacity: 1;
+       pointer-events: auto;
+   }
+   
+   .save-settings-bar-inner {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       gap: 24px;
+   
+       padding: 16px 18px;
+   
+       background: var(--surface);
+       color: var(--text);
+   
+       border: 1px solid var(--border);
+       border-radius: 18px;
+   
+       box-shadow:
+           0 16px 50px rgba(0, 0, 0, .22);
+   }
+   
+   .save-settings-bar-inner p {
+       margin: 4px 0 0;
+       color: var(--muted);
+       font-size: .88rem;
+   }
+   
+   .save-settings-bar.warning {
+       animation: settingsBarShake .42s ease;
+   }
+   
+   @keyframes settingsBarShake {
+       0%, 100% {
+           margin-left: 0;
+       }
+   
+       20% {
+           margin-left: -10px;
+       }
+   
+       40% {
+           margin-left: 10px;
+       }
+   
+       60% {
+           margin-left: -7px;
+       }
+   
+       80% {
+           margin-left: 7px;
+       }
+   }
+   
+   @media (max-width: 620px) {
+       .save-settings-bar-inner {
+           align-items: stretch;
+           flex-direction: column;
+       }
+   
+       .save-settings-bar .action-button {
+           width: 100%;
+       }
+   }
