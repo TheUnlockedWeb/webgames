@@ -394,38 +394,6 @@ function applySettings() {
             state.settings.theme;
     }
 
-   function readSettingsFromControls() {
-    return {
-        ...state.settings,
-
-        theme:
-            DOM.themeSetting?.value ??
-            state.settings.theme,
-
-        language:
-            DOM.languageSetting?.value ??
-            state.settings.language,
-
-        spriteStyle:
-            DOM.spriteSetting?.value ??
-            state.settings.spriteStyle,
-
-        animations:
-            DOM.animationSetting?.checked ??
-            state.settings.animations,
-
-        autoCry:
-            DOM.autoCrySetting?.checked ??
-            state.settings.autoCry,
-
-        cryVolume:
-            Number(
-                DOM.cryVolumeSetting?.value ??
-                state.settings.cryVolume
-            )
-    };
-}
-
     if (DOM.spriteSetting) {
         DOM.spriteSetting.value =
             state.settings.spriteStyle;
@@ -459,6 +427,38 @@ function applySettings() {
        DOM.languageSetting.value =
            state.settings.language;
    }
+}
+
+function readSettingsFromControls() {
+    return {
+        ...state.settings,
+
+        theme:
+            DOM.themeSetting?.value ??
+            state.settings.theme,
+
+        language:
+            DOM.languageSetting?.value ??
+            state.settings.language,
+
+        spriteStyle:
+            DOM.spriteSetting?.value ??
+            state.settings.spriteStyle,
+
+        animations:
+            DOM.animationSetting?.checked ??
+            state.settings.animations,
+
+        autoCry:
+            DOM.autoCrySetting?.checked ??
+            state.settings.autoCry,
+
+        cryVolume:
+            Number(
+                DOM.cryVolumeSetting?.value ??
+                state.settings.cryVolume
+            )
+    };
 }
 
 
