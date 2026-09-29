@@ -824,36 +824,33 @@
                      SAVE SETTINGS
                      ============================================= -->
                 
-                <section class="settings-card">
-                
-                    <div class="setting-row">
-                
-                        <div>
-                
-                            <h3>
-                                Save Settings
-                            </h3>
-                
-                            <p>
-                                Apply and save your Pokédex preferences.
-                            </p>
-                
-                        </div>
-                
-                        <button
-                            id="saveSettingsButton"
-                            class="action-button primary"
-                            type="button"
-                        >
-                            Save Settings
-                        </button>
-                
+                            <div
+                id="saveSettingsBar"
+                class="save-settings-bar"
+                aria-hidden="true"
+            >
+                <div class="save-settings-bar-inner">
+            
+                    <div>
+                        <strong id="unsavedSettingsMessage">
+                            You have unsaved changes
+                        </strong>
+            
+                        <p>
+                            Save your changes before leaving Settings.
+                        </p>
                     </div>
-                
-                </section>
-
-        </section>
-
+            
+                    <button
+                        id="saveSettingsButton"
+                        class="action-button primary"
+                        type="button"
+                    >
+                        Save Settings
+                    </button>
+            
+                </div>
+            </div>
     </main>
 
 
