@@ -3902,6 +3902,17 @@ DOM.settingsButton?.addEventListener(
     }
 );
 
+window.addEventListener(
+    "beforeunload",
+    event => {
+        if (!state.settingsDirty) {
+            return;
+        }
+
+        event.preventDefault();
+        event.returnValue = "";
+    }
+);
 
 DOM.settingsBack?.addEventListener(
     "click",
