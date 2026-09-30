@@ -2121,13 +2121,9 @@ function renderPokemonDetail(
                         #${padDexNumber(species.id)}
                     </div>
 
-                    <h1 class="detail-title">
-                        ${
-                            state.selectedShiny
-                                ? "Shiny "
-                                : ""
-                           }${escapeHtml(speciesName)}
-                    </h1>
+                           <h1 class="detail-title">
+                               ${escapeHtml(speciesName)}
+                           </h1>
 
                     ${
                         varietyName
