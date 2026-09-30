@@ -46,11 +46,11 @@
 const CONFIG = {
     API_BASE: "https://pokeapi.co/api/v2/",
 
-    PAGE_SIZE: 60,
+    PAGE_SIZE: 24,
 
-    REQUEST_BATCH_SIZE: 12,
+    REQUEST_BATCH_SIZE: 24,
 
-    REQUEST_DELAY: 35,
+    REQUEST_DELAY: 10,
 
     SETTINGS_KEY: "complete-pokedex-settings-v1",
 
@@ -4086,39 +4086,58 @@ document
    ============================================================ */
 
 let infiniteScrollLoading = false;
-let infiniteScrollArmed = true;
+let infiniteScrollReady = true;
 
 
 async function loadNextPokemonPage() {
     if (
         infiniteScrollLoading ||
-        !infiniteScrollArmed
+        !infiniteScrollReady
     ) {
         return;
     }
 
+    const total =
+        state.filteredSpecies.length;
+
     if (
-        state.visibleCount >=
-        state.filteredSpecies.length
+        state.visibleCount >= total
     ) {
         return;
     }
 
     infiniteScrollLoading = true;
-    infiniteScrollArmed = false;
+    infiniteScrollReady = false;
 
     try {
         state.visibleCount =
             Math.min(
                 state.visibleCount +
                     CONFIG.PAGE_SIZE,
-                state.filteredSpecies.length
+                total
             );
 
         await renderPokemonGrid();
     }
+    catch (error) {
+        console.error(
+            "Infinite scroll failed:",
+            error
+        );
+    }
     finally {
         infiniteScrollLoading = false;
+
+        /*
+            Don't allow another load during the
+            same intersection/render cycle.
+        */
+        window.setTimeout(
+            () => {
+                infiniteScrollReady = true;
+            },
+            500
+        );
     }
 }
 
@@ -4133,17 +4152,12 @@ const infiniteScrollObserver =
                 return;
             }
 
-            /*
-                Re-arm only after the sentinel has
-                actually left the viewport again.
-            */
             if (!entry.isIntersecting) {
-                infiniteScrollArmed = true;
+                infiniteScrollReady = true;
                 return;
             }
 
             if (
-                infiniteScrollArmed &&
                 DOM.dexView
                     ?.classList
                     .contains("active")
@@ -4155,12 +4169,12 @@ const infiniteScrollObserver =
             root: null,
 
             /*
-                Smaller preloading distance prevents
-                several pages loading at once.
+                Don't start loading another 60 Pokémon
+                when the user is still 700px away.
             */
-            rootMargin: "250px 0px",
+            rootMargin: "100px 0px",
 
-            threshold: 0
+            threshold: 0.01
         }
     );
 
