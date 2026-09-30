@@ -1807,14 +1807,6 @@ async function renderPokemonGrid() {
                     : "Pokémon"
             }`;
     }
-
-
-    if (DOM.loadMore) {
-        DOM.loadMore.classList.toggle(
-            "hidden",
-            state.visibleCount >= total
-        );
-    }
 }
 
 
