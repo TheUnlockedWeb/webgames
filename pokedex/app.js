@@ -4386,6 +4386,8 @@ window.addEventListener(
 async function initializeApp() {
     applySettings();
 
+    applyInterfaceLanguage();
+
     renderSkeletonCards();
 
     try {
