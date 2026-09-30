@@ -851,11 +851,17 @@ async function loadSpeciesCatalogue() {
 async function getDefaultPokemonForSpecies(
     speciesReference
 ) {
-    const species =
-        await getSpecies(
-            speciesReference.name ||
-            speciesReference.id
-        );
+    const reference =
+        speciesReference.name ||
+        speciesReference.id;
+
+    const [
+        species,
+        pokemon
+    ] = await Promise.all([
+        getSpecies(reference),
+        getPokemon(reference)
+    ]);
 
     const defaultVariety =
         species.varieties?.find(
@@ -869,14 +875,22 @@ async function getDefaultPokemonForSpecies(
         );
     }
 
-    const pokemon =
-        await getPokemon(
-            defaultVariety.pokemon.name
-        );
+    /*
+        The direct Pokémon request normally resolves to
+        the default variety. If it doesn't, fall back to
+        the exact default variety from the species record.
+    */
+    const defaultPokemon =
+        pokemon.name ===
+        defaultVariety.pokemon.name
+            ? pokemon
+            : await getPokemon(
+                defaultVariety.pokemon.name
+            );
 
     return {
         species,
-        pokemon,
+        pokemon: defaultPokemon,
         variety: defaultVariety
     };
 }
