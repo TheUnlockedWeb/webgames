@@ -3365,3 +3365,152 @@ span:not(.sr-only) {
         translate(-50%, 0);
 }
 
+/* ============================================================
+   MAIN NAVIGATION
+   ============================================================ */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar-main {
+    display: flex;
+    align-items: stretch;
+    align-self: stretch;
+    gap: 26px;
+}
+
+.navbar {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.navbar-tab {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 14px;
+
+    border: 0;
+    border-radius: 0;
+
+    background: transparent;
+    color: var(--muted);
+
+    font-weight: 750;
+
+    transition:
+        color .15s ease,
+        background .15s ease;
+}
+
+.navbar-tab:hover:not(:disabled) {
+    color: var(--text);
+    background: var(--surface-2);
+}
+
+.navbar-tab.active {
+    color: var(--text);
+    background: transparent;
+}
+
+.navbar-tab.active::after {
+    content: "";
+
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+
+    height: 3px;
+
+    border-radius: 3px 3px 0 0;
+
+    background: var(--accent);
+}
+
+.navbar-upcoming {
+    position: relative;
+
+    display: flex;
+    align-items: stretch;
+}
+
+.navbar-upcoming .navbar-tab {
+    opacity: .55;
+}
+
+.navbar-coming-soon {
+    position: absolute;
+
+    left: 50%;
+    top: calc(100% + 8px);
+
+    z-index: 100;
+
+    padding: 6px 9px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow);
+
+    font-size: .72rem;
+    font-weight: 700;
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+        translate(-50%, -4px);
+
+    transition:
+        opacity .15s ease,
+        transform .15s ease,
+        visibility .15s ease;
+
+    pointer-events: none;
+}
+
+.navbar-upcoming:hover
+.navbar-coming-soon {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(-50%, 0);
+}
+
+.topbar-actions {
+    margin-left: auto;
+}
+
+
+@media (max-width: 720px) {
+    .topbar-main {
+        gap: 10px;
+    }
+
+    .navbar-tab {
+        padding: 0 8px;
+        font-size: .82rem;
+    }
+
+    .navbar-upcoming
+    .navbar-tab {
+        max-width: 90px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
