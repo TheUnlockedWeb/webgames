@@ -3276,3 +3276,92 @@ span:not(.sr-only) {
     -webkit-appearance: none;
     appearance: none;
 }
+
+/* ============================================================
+   NAVBAR — UPCOMING PAGES
+   ============================================================ */
+
+.navbar-coming-soon {
+    position: relative;
+}
+
+.navbar-tab-upcoming {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    opacity: .72;
+}
+
+.navbar-status {
+    padding: 3px 7px;
+
+    border-radius: 999px;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 12%,
+            var(--surface)
+        );
+
+    color: var(--accent);
+
+    font-size: .62rem;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.navbar-tooltip {
+    position: absolute;
+
+    left: 50%;
+    top: calc(100% + 10px);
+
+    z-index: 300;
+
+    min-width: 170px;
+
+    padding: 10px 12px;
+
+    transform:
+        translate(-50%, -4px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    box-shadow: var(--shadow);
+
+    font-size: .78rem;
+    text-align: center;
+
+    pointer-events: none;
+
+    transition:
+        opacity .16s ease,
+        transform .16s ease,
+        visibility .16s ease;
+}
+
+.navbar-tooltip strong {
+    display: block;
+    margin-top: 3px;
+    color: var(--accent);
+}
+
+.navbar-coming-soon:hover
+.navbar-tooltip {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(-50%, 0);
+}
+
