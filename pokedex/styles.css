@@ -3268,3 +3268,11 @@ span:not(.sr-only) {
            width: 100%;
        }
    }
+/* Hide browser-provided search clear button.
+   The Pokédex uses #clearSearch instead. */
+
+#searchInput::-webkit-search-cancel-button,
+#searchInput::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
