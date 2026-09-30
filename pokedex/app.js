@@ -1395,12 +1395,18 @@ async function buildSpecialFormIndexes() {
                 const megaForm =
                     form.is_mega === true;
 
-                const gmaxForm =
-                    triggerNames.includes(
-                        "gigantamax-factor"
-                    ) ||
-                    form.form_name === "gmax" ||
-                    form.name.endsWith("-gmax");
+                     const eternamaxForm =
+                         form.name === "eternatus-eternamax" ||
+                         form.form_name === "eternamax";
+                     
+                     
+                     const gmaxForm =
+                         triggerNames.includes(
+                             "gigantamax-factor"
+                         ) ||
+                         form.form_name === "gmax" ||
+                         form.name.endsWith("-gmax") ||
+                         eternamaxForm;
 
                 if (!megaForm && !gmaxForm) {
                     continue;
