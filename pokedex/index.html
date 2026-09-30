@@ -70,16 +70,32 @@
                 Pokédex
             </button>
 
-            <button
-                class="navbar-tab"
-                type="button"
-                data-navbar-tab="appraisal"
-                id="appraisalNavTab"
-                disabled
-                title="Coming soon"
-            >
-                Appraisal System
-            </button>
+            <div class="navbar-coming-soon">
+            
+                <button
+                    class="navbar-tab navbar-tab-upcoming"
+                    type="button"
+                    id="appraisalNavTab"
+                    disabled
+                    aria-describedby="appraisalComingSoon"
+                >
+                    <span>Appraisal</span>
+            
+                    <span class="navbar-status">
+                        Soon
+                    </span>
+                </button>
+            
+                <div
+                    id="appraisalComingSoon"
+                    class="navbar-tooltip"
+                    role="tooltip"
+                >
+                    Appraisal System
+                    <strong>Coming soon</strong>
+                </div>
+            
+            </div>
         </nav>
 
 
