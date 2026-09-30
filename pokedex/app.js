@@ -3872,6 +3872,12 @@ document.addEventListener(
 DOM.homeButton?.addEventListener(
     "click",
     () => {
+          if (
+       DOM.settingsView?.classList.contains("active") &&
+       warnUnsavedSettings()
+   ) {
+       return;
+   }
         stopCry();
 
         showView("dex");
