@@ -714,15 +714,24 @@ function showView(viewName) {
         settings: DOM.settingsView
     };
 
+    const targetView = views[viewName];
+
+    if (!targetView) {
+        console.error(
+            `Unknown or missing view: ${viewName}`
+        );
+        return;
+    }
+
     Object.values(views).forEach(view => {
         view?.classList.remove("active");
     });
 
-    views[viewName]?.classList.add("active");
+    targetView.classList.add("active");
 
     window.scrollTo({
         top: 0,
-        behavior: "smooth"
+        behavior: "auto"
     });
 }
 
