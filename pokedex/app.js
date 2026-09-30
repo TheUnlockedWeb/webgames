@@ -3968,9 +3968,14 @@ document
    ============================================================ */
 
 let infiniteScrollLoading = false;
+let infiniteScrollArmed = true;
+
 
 async function loadNextPokemonPage() {
-    if (infiniteScrollLoading) {
+    if (
+        infiniteScrollLoading ||
+        !infiniteScrollArmed
+    ) {
         return;
     }
 
@@ -3982,10 +3987,15 @@ async function loadNextPokemonPage() {
     }
 
     infiniteScrollLoading = true;
+    infiniteScrollArmed = false;
 
     try {
-        state.visibleCount +=
-            CONFIG.PAGE_SIZE;
+        state.visibleCount =
+            Math.min(
+                state.visibleCount +
+                    CONFIG.PAGE_SIZE,
+                state.filteredSpecies.length
+            );
 
         await renderPokemonGrid();
     }
@@ -3998,18 +4008,40 @@ async function loadNextPokemonPage() {
 const infiniteScrollObserver =
     new IntersectionObserver(
         entries => {
-            const entry = entries[0];
+            const entry =
+                entries[0];
+
+            if (!entry) {
+                return;
+            }
+
+            /*
+                Re-arm only after the sentinel has
+                actually left the viewport again.
+            */
+            if (!entry.isIntersecting) {
+                infiniteScrollArmed = true;
+                return;
+            }
 
             if (
-                entry?.isIntersecting &&
-                DOM.dexView?.classList.contains("active")
+                infiniteScrollArmed &&
+                DOM.dexView
+                    ?.classList
+                    .contains("active")
             ) {
                 loadNextPokemonPage();
             }
         },
         {
             root: null,
-            rootMargin: "700px 0px",
+
+            /*
+                Smaller preloading distance prevents
+                several pages loading at once.
+            */
+            rootMargin: "250px 0px",
+
             threshold: 0
         }
     );
