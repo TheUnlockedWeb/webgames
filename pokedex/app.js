@@ -4189,9 +4189,6 @@ if (DOM.infiniteScrollSentinel) {
    38. SETTINGS EVENTS
    ============================================================ */
 
-let volumePreviewTimer = null;
-
-
 function markSettingsDirty() {
     state.settingsDirty = true;
 
