@@ -46,7 +46,7 @@
 const CONFIG = {
     API_BASE: "https://pokeapi.co/api/v2/",
 
-    PAGE_SIZE: 24,
+    PAGE_SIZE: 18,
 
     REQUEST_BATCH_SIZE: 24,
 
