@@ -298,6 +298,113 @@ function getLocalizedName(names, fallback) {
     );
 }
 
+const UI_TRANSLATIONS = {
+    en: {
+        pokedex: "Pokédex",
+        nationalPokedex: "NATIONAL POKÉDEX",
+        heroTitle: "Gotta catch them all.",
+        heroCopy:
+            "Explore Pokémon, forms, evolutions, shiny Pokémon, Mega Evolutions, Gigantamax forms, games and more.",
+        searchPlaceholder:
+            "Search Pokémon or Pokédex number...",
+        all: "All",
+        shiny: "Shiny",
+        mega: "Mega",
+        gmax: "Gmax",
+        costumes: "Costumes",
+        legendary: "Legendary",
+        mythical: "Mythical",
+        ultraBeast: "Ultra Beast",
+        settings: "Settings",
+        appearance: "Appearance",
+        theme: "Theme",
+        language: "Language",
+        spriteStyle: "Sprite Style",
+        animatedSprites: "Animated Sprites",
+        audio: "Audio",
+        display: "Display",
+        saveSettings: "Save Settings",
+        unsaved: "You have unsaved changes",
+        unsavedWarning:
+            "Wait! You have unsaved changes",
+        settingsSaved: "Settings saved.",
+        back: "Back",
+        noPokemonFound: "No Pokemon Found"
+    },
+
+    fr: {
+        pokedex: "Pokédex",
+        nationalPokedex: "POKÉDEX NATIONAL",
+        heroTitle: "Attrapez-les tous !",
+        heroCopy:
+            "Explorez les Pokémon, leurs formes, évolutions, Pokémon chromatiques, Méga-Évolutions, formes Gigamax, jeux et plus encore.",
+        searchPlaceholder:
+            "Rechercher un Pokémon ou un numéro...",
+        all: "Tous",
+        shiny: "Chromatique",
+        mega: "Méga",
+        gmax: "Gigamax",
+        costumes: "Costumes",
+        legendary: "Légendaire",
+        mythical: "Fabuleux",
+        ultraBeast: "Ultra-Chimère",
+        settings: "Paramètres",
+        appearance: "Apparence",
+        theme: "Thème",
+        language: "Langue",
+        spriteStyle: "Style des sprites",
+        animatedSprites: "Sprites animés",
+        audio: "Audio",
+        display: "Affichage",
+        saveSettings: "Enregistrer",
+        unsaved: "Vous avez des modifications non enregistrées",
+        unsavedWarning:
+            "Attendez ! Vous avez des modifications non enregistrées",
+        settingsSaved: "Paramètres enregistrés.",
+        back: "Retour",
+        noPokemonFound: "Aucun Pokémon trouvé"
+    }
+};
+
+
+function t(key) {
+    const language =
+        state.settings.language || "en";
+
+    return (
+        UI_TRANSLATIONS[language]?.[key] ??
+        UI_TRANSLATIONS.en[key] ??
+        key
+    );
+}
+
+
+function applyInterfaceLanguage() {
+    document.documentElement.lang =
+        state.settings.language || "en";
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(element => {
+            const key =
+                element.dataset.i18n;
+
+            element.textContent =
+                t(key);
+        });
+
+    document
+        .querySelectorAll(
+            "[data-i18n-placeholder]"
+        )
+        .forEach(element => {
+            element.placeholder =
+                t(
+                    element.dataset
+                        .i18nPlaceholder
+                );
+        });
+}
 
 function getEnglishFlavorText(species) {
     if (!species?.flavor_text_entries?.length) {
