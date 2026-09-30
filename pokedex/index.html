@@ -39,7 +39,9 @@
          TOP NAVIGATION
          ===================================================== -->
 
-    <header class="topbar">
+<header class="topbar">
+
+    <div class="topbar-main">
 
         <button
             id="homeButton"
@@ -52,70 +54,61 @@
                 aria-hidden="true"
             ></span>
 
-            <span data-i18n="pokedex">Pokédex</span>
+            <span>Pokédex</span>
         </button>
 
 
-        <!-- Navigation Tabs -->
         <nav
             class="navbar"
             aria-label="Main navigation"
         >
-    <button class="navbar-tab active" 
-            type="button" 
-            data-navbar-tab="pokedex" 
-            id="pokedexNavTab" 
-            data-i18n="pokedex">
+            <button
+                class="navbar-tab active"
+                type="button"
+                data-navbar-tab="pokedex"
+                id="pokedexNavTab"
+            >
                 Pokédex
             </button>
 
-            <div class="navbar-coming-soon">
-            
+            <div class="navbar-upcoming">
+
                 <button
-                    class="navbar-tab navbar-tab-upcoming"
+                    class="navbar-tab"
                     type="button"
                     id="appraisalNavTab"
                     disabled
-                    aria-describedby="appraisalComingSoon"
-                >
-                    <span>Appraisal</span>
-            
-                    <span class="navbar-status">
-                        Soon
-                    </span>
-                </button>
-            
-                <div
-                    id="appraisalComingSoon"
-                    class="navbar-tooltip"
-                    role="tooltip"
                 >
                     Appraisal System
-                    <strong>Coming soon</strong>
-                </div>
-            
+                </button>
+
+                <span class="navbar-coming-soon">
+                    Coming soon
+                </span>
+
             </div>
+
         </nav>
 
+    </div>
 
-        <nav
-            class="topbar-actions"
-            aria-label="Settings"
+
+    <nav
+        class="topbar-actions"
+        aria-label="Settings"
+    >
+        <button
+            id="settingsButton"
+            class="icon-button"
+            type="button"
+            aria-label="Open settings"
+            title="Settings"
         >
+            ⚙
+        </button>
+    </nav>
 
-            <button
-                id="settingsButton"
-                class="icon-button"
-                type="button"
-                aria-label="Open settings"
-                title="Settings"
-            >
-                ⚙
-            </button>
-
-        </nav>
-
-    </header>
+</header>
 
 
     <!-- =====================================================
