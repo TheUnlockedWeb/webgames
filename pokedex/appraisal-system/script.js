@@ -1,4 +1,4 @@
-// --- 1. Pokemon GO Data & CPM Table (Levels 1 to 50) ---
+// --- 1. CPM Multipliers (Levels 1 to 50) ---
 const cpmTable = {
     1: 0.094, 1.5: 0.135137432, 2: 0.16639787, 2.5: 0.192650919, 3: 0.21573247, 3.5: 0.236572661, 4: 0.25572005, 4.5: 0.273530381, 5: 0.29024988, 5.5: 0.306057377,
     6: 0.3210876, 6.5: 0.335445036, 7: 0.34921268, 7.5: 0.362457751, 8: 0.3752356, 8.5: 0.387592416, 9: 0.39956728, 9.5: 0.411193551, 10: 0.4225, 10.5: 0.432926409,
@@ -15,7 +15,7 @@ const cpmTable = {
 let currentPokemonBaseStats = null;
 let allPokemonList = [];
 
-// --- 2. Fetch Pokémon Master List for Autocomplete ---
+// --- 2. Master Pokémon List for Autocomplete Search ---
 async function fetchAllPokemon() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1300');
@@ -27,10 +27,16 @@ async function fetchAllPokemon() {
 }
 fetchAllPokemon();
 
-// --- 3. Initialize UI handlers once DOM is completely loaded ---
+// --- 3. DOM Ready Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // UI Elements
+    // Inputs & Labels
     const pokemonInput = document.getElementById('pokemon-input');
+    const labelPokemon = document.getElementById('label-pokemon');
+    const cpInput = document.getElementById('cp-input');
+    const labelCp = document.getElementById('label-cp');
+    const hpInput = document.getElementById('hp-input');
+    const labelHp = document.getElementById('label-hp');
+
     const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
     const spriteImg = document.getElementById('pokemon-sprite');
     const loadingMsg = document.getElementById('loading-msg');
@@ -51,22 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const advStatsBox = document.getElementById('advanced-stats-box');
     const resultLevel = document.getElementById('result-level');
     const resultMaxCp = document.getElementById('result-max-cp');
-    const cpInput = document.getElementById('cp-input');
 
     let typingTimer;
 
     if (!pokemonInput || !autocompleteDropdown) return;
 
-    // --- 4. Handling Search Input & Autocomplete Dropdown ---
+    // --- 4. Live Typing Autocomplete (Google-Style Pop-Up) ---
     pokemonInput.addEventListener('input', () => {
         const val = pokemonInput.value.trim().toLowerCase();
         autocompleteDropdown.innerHTML = '';
         
         clearTimeout(typingTimer);
         
-        if (val.length >= 2) {
-            // Filter master list (top 10 matches)
-            const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 10);
+        if (val.length >= 1) {
+            // Filter top matches
+            const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 8);
             
             if (matches.length > 0) {
                 autocompleteDropdown.style.display = 'block';
@@ -89,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.addEventListener('click', () => {
                         pokemonInput.value = formattedName;
                         autocompleteDropdown.style.display = 'none';
+                        clearInputError(pokemonInput, labelPokemon);
                         fetchPokemonData(match.name);
                     });
                     
@@ -118,7 +124,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 5. Fetch Pokémon Stats & Apply Niantic Formula ---
+    // --- 5. Remove Red Outline as User Types ---
+    function setupErrorClearers(input, label) {
+        if (!input) return;
+        input.addEventListener('input', () => clearInputError(input, label));
+        input.addEventListener('change', () => clearInputError(input, label));
+    }
+
+    function clearInputError(input, label) {
+        if (input && input.value.trim() !== '') {
+            input.classList.remove('input-error');
+            if (label) label.classList.remove('label-error');
+        }
+    }
+
+    setupErrorClearers(pokemonInput, labelPokemon);
+    setupErrorClearers(cpInput, labelCp);
+    setupErrorClearers(hpInput, labelHp);
+
+    // --- 6. Fetch Pokémon Stats ---
     async function fetchPokemonData(pokemonName) {
         if (spriteImg) spriteImg.style.display = 'none';
         if (errorMsg) errorMsg.style.display = 'none';
@@ -145,21 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 stats[stat.stat.name] = stat.base_stat;
             });
 
-            // Official Niantic Main-Series to PoGo Stat Formula:
+            // Niantic Main-Series to PoGo Stat Formula:
             const speedMod = 1 + (stats.speed - 75) / 500;
             
-            // Attack (7/8 & 1/8 weighting)
+            // Attack
             const scaledAtk = Math.round(2 * ((Math.max(stats.attack, stats['special-attack']) * (7/8)) + (Math.min(stats.attack, stats['special-attack']) * (1/8))));
             let baseAtk = Math.round(scaledAtk * speedMod);
 
-            // Defense (5/8 & 3/8 weighting)
+            // Defense
             const scaledDef = Math.round(2 * ((Math.max(stats.defense, stats['special-defense']) * (5/8)) + (Math.min(stats.defense, stats['special-defense']) * (3/8))));
             let baseDef = Math.round(scaledDef * speedMod);
 
             // Stamina
             let baseSta = Math.floor(1.75 * stats.hp + 50);
 
-            // 9% stat nerf to Legendary / OP Pokemon over 4000 unnerfed CP
+            // 9% stat nerf to OP/Legendary over 4000 CP
             const unnerfedMaxCp = Math.floor(((baseAtk + 15) * Math.sqrt(baseDef + 15) * Math.sqrt(baseSta + 15) * Math.pow(0.7903, 2)) / 10);
             if (unnerfedMaxCp > 4000) {
                 baseAtk = Math.round(baseAtk * 0.91);
@@ -175,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 6. Handling Sliders ---
+    // --- 7. Slider Realtime Labels ---
     function updateSliderValue(slider, label) {
         if (!slider || !label) return;
         slider.addEventListener('input', function() {
@@ -186,69 +210,95 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSliderValue(defSlider, defVal);
     updateSliderValue(staSlider, staVal);
 
-    // --- 7. Real CP & Level Calculation ---
+    // --- 8. Validation & Calculate Engine ---
     if (calcBtn) {
         calcBtn.addEventListener('click', () => {
+            let isValid = true;
+            let firstInvalidElement = null;
+
+            // Validate Pokémon Name
+            if (!pokemonInput.value.trim() || !currentPokemonBaseStats) {
+                isValid = false;
+                pokemonInput.classList.add('input-error');
+                if (labelPokemon) labelPokemon.classList.add('label-error');
+                if (!firstInvalidElement) firstInvalidElement = pokemonInput;
+            }
+
+            // Validate CP
+            if (!cpInput.value.trim() || parseInt(cpInput.value) <= 0) {
+                isValid = false;
+                cpInput.classList.add('input-error');
+                if (labelCp) labelCp.classList.add('label-error');
+                if (!firstInvalidElement) firstInvalidElement = cpInput;
+            }
+
+            // Validate HP
+            if (!hpInput.value.trim() || parseInt(hpInput.value) <= 0) {
+                isValid = false;
+                hpInput.classList.add('input-error');
+                if (labelHp) labelHp.classList.add('label-error');
+                if (!firstInvalidElement) firstInvalidElement = hpInput;
+            }
+
+            // Scroll up to missing box if invalid
+            if (!isValid) {
+                if (firstInvalidElement) {
+                    firstInvalidElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalidElement.focus();
+                }
+                return;
+            }
+
+            // Calculate Perfection %
             const atkIV = parseInt(atkSlider.value);
             const defIV = parseInt(defSlider.value);
             const staIV = parseInt(staSlider.value);
             
-            // Perfection Rating
             const totalIV = atkIV + defIV + staIV;
             const percentage = ((totalIV / 45) * 100).toFixed(1);
             
             if (resultPercentage) resultPercentage.textContent = `${percentage}%`;
             if (resultBreakdown) resultBreakdown.textContent = `Atk: ${atkIV} | Def: ${defIV} | HP: ${staIV}`;
             
-            if (currentPokemonBaseStats) {
-                const inputCP = parseInt(cpInput.value);
-                
-                // Max CP at Level 50 (CPM = 0.8403)
-                const maxLevelCpm = cpmTable[50];
-                const maxCP = Math.max(10, Math.floor(
+            const inputCP = parseInt(cpInput.value);
+            
+            // Max CP at Level 50 (CPM = 0.8403)
+            const maxLevelCpm = cpmTable[50];
+            const maxCP = Math.max(10, Math.floor(
+                ((currentPokemonBaseStats.atk + atkIV) * 
+                Math.sqrt(currentPokemonBaseStats.def + defIV) * 
+                Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
+                Math.pow(maxLevelCpm, 2)) / 10
+            ));
+            
+            if (resultMaxCp) resultMaxCp.textContent = maxCP;
+
+            // Estimate Level from Input CP
+            let estimatedLevel = "Unknown";
+            let closestCPDiff = 9999;
+
+            for (const [lvl, cpm] of Object.entries(cpmTable)) {
+                const calculatedCP = Math.max(10, Math.floor(
                     ((currentPokemonBaseStats.atk + atkIV) * 
                     Math.sqrt(currentPokemonBaseStats.def + defIV) * 
                     Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
-                    Math.pow(maxLevelCpm, 2)) / 10
+                    Math.pow(cpm, 2)) / 10
                 ));
                 
-                if (resultMaxCp) resultMaxCp.textContent = maxCP;
-
-                // Estimate level from user's input CP
-                if (inputCP && !isNaN(inputCP)) {
-                    let estimatedLevel = "Unknown";
-                    let closestCPDiff = 9999;
-
-                    for (const [lvl, cpm] of Object.entries(cpmTable)) {
-                        const calculatedCP = Math.max(10, Math.floor(
-                            ((currentPokemonBaseStats.atk + atkIV) * 
-                            Math.sqrt(currentPokemonBaseStats.def + defIV) * 
-                            Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
-                            Math.pow(cpm, 2)) / 10
-                        ));
-                        
-                        if (calculatedCP === inputCP) {
-                            estimatedLevel = lvl;
-                            break;
-                        } else if (Math.abs(calculatedCP - inputCP) < closestCPDiff) {
-                            closestCPDiff = Math.abs(calculatedCP - inputCP);
-                            estimatedLevel = `~${lvl}`;
-                        }
-                    }
-                    if (resultLevel) resultLevel.textContent = estimatedLevel;
-                    if (resultStats) resultStats.textContent = `Level estimated from input CP ${inputCP}.`;
-                } else {
-                    if (resultLevel) resultLevel.textContent = "-";
-                    if (resultStats) resultStats.textContent = `Enter a CP value to estimate its current level!`;
+                if (calculatedCP === inputCP) {
+                    estimatedLevel = lvl;
+                    break;
+                } else if (Math.abs(calculatedCP - inputCP) < closestCPDiff) {
+                    closestCPDiff = Math.abs(calculatedCP - inputCP);
+                    estimatedLevel = `~${lvl}`;
                 }
-
-                if (advStatsBox) advStatsBox.style.display = 'block';
-            } else {
-                if (advStatsBox) advStatsBox.style.display = 'none';
-                if (resultStats) resultStats.textContent = "Enter a valid Pokémon name to see Advanced Stats like Max CP and Level.";
             }
 
-            // Color rating
+            if (resultLevel) resultLevel.textContent = estimatedLevel;
+            if (resultStats) resultStats.textContent = `Level estimated from input CP ${inputCP}.`;
+            if (advStatsBox) advStatsBox.style.display = 'block';
+
+            // Percentage Rating Colors
             if (resultPercentage) {
                 if (percentage == 100) resultPercentage.style.color = "#dc3545"; 
                 else if (percentage >= 82) resultPercentage.style.color = "#28a745"; 
