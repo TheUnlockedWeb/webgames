@@ -80,11 +80,20 @@
 
             <button class="btn-calculate" id="calculate-btn">Calculate</button>
 
-            <!-- Results -->
+<!-- Results -->
             <div class="results-container" id="results-box">
                 <h2>Perfection Rating</h2>
                 <div class="percentage" id="result-percentage">100%</div>
                 <div class="iv-breakdown" id="result-breakdown">15 / 15 / 15</div>
+                
+                <!-- NEW: Advanced Stats Section -->
+                <div class="advanced-stats" id="advanced-stats-box" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #b8daff;">
+                    <div style="display: flex; justify-content: space-around; font-size: 14px; font-weight: 600; color: #495057;">
+                        <div>Estimated Level: <br><span id="result-level" style="font-size: 18px; color: #3b4cca;">-</span></div>
+                        <div>Max CP (Lvl 50): <br><span id="result-max-cp" style="font-size: 18px; color: #3b4cca;">-</span></div>
+                    </div>
+                </div>
+
                 <div id="result-stats" class="result-stats-text"></div>
             </div>
         </div>
