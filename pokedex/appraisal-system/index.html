@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex - Appraisal System</title>
+    <title>Appraisal System</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,92 +29,181 @@
         </ul>
     </nav>
 
-    <!-- Appraisal System Main Wrapper -->
-    <main class="main-wrapper">
-        <div class="calculator-container" id="calculator-card">
-            <div class="header">
-                <h1>Appraisal System</h1>
-                <p class="subtitle">Calculate IVs, Perfection Rating, and Level projections</p>
+    <!-- App Layout Container with Sidebar -->
+    <div class="app-layout">
+        <!-- Sidebar Navigation Features -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Appraisal Tools</h3>
             </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active" data-tab="manual-calc">
+                    <span class="sidebar-icon">📊</span> Manual Calculator
+                </li>
+                <li class="sidebar-item" data-tab="camera-scanner">
+                    <span class="sidebar-icon">📸</span> Camera IV Scanner
+                </li>
+                <li class="sidebar-item" data-tab="live-overlay">
+                    <span class="sidebar-icon">⚡</span> Smart IV Overlay
+                </li>
+            </ul>
 
-            <div class="content">
-                <!-- Pokemon Name Search & Google-style Autocomplete Dropdown -->
-                <div class="form-group autocomplete-container" id="group-pokemon">
-                    <label for="pokemon-input" id="label-pokemon">Pokémon Name</label>
-                    <input type="text" id="pokemon-input" class="input-text" placeholder="Search Pokémon (e.g. Mewtwo, Pikachu, Charizard)" autocomplete="off">
-                    <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
+            <!-- Live Broadcast Status Panel -->
+            <div class="sidebar-widget">
+                <div class="widget-title">
+                    <span>Smart IV Live Stream</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="live-stream-toggle" checked>
+                        <span class="slider-round"></span>
+                    </label>
                 </div>
-
-                <!-- Big Sprite Display -->
-                <div class="sprite-container">
-                    <div id="loading-msg" class="loading">Fetching Pokémon data...</div>
-                    <div id="error-msg" class="error-msg">Pokémon not found. Select a name from the search dropdown!</div>
-                    <img id="pokemon-sprite" src="" alt="Pokémon Sprite">
-                </div>
-
-                <!-- CP & HP Inputs -->
-                <div class="row">
-                    <div class="form-group" id="group-cp">
-                        <label for="cp-input" id="label-cp">Combat Power (CP)</label>
-                        <input type="number" id="cp-input" class="input-text" placeholder="e.g. 2387" min="10">
-                    </div>
-                    <div class="form-group" id="group-hp">
-                        <label for="hp-input" id="label-hp">Health Points (HP)</label>
-                        <input type="number" id="hp-input" class="input-text" placeholder="e.g. 150" min="10">
-                    </div>
-                </div>
-
-                <!-- Appraisal Sliders -->
-                <div class="appraisal-section">
-                    <span class="appraisal-label">Appraisal IVs</span>
-                    
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Attack</span>
-                            <span id="atk-val">15</span>
-                        </div>
-                        <input type="range" id="atk-slider" min="0" max="15" value="15">
-                    </div>
-
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Defense</span>
-                            <span id="def-val">15</span>
-                        </div>
-                        <input type="range" id="def-slider" min="0" max="15" value="15">
-                    </div>
-
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <span>Stamina (HP)</span>
-                            <span id="sta-val">15</span>
-                        </div>
-                        <input type="range" id="sta-slider" min="0" max="15" value="15">
-                    </div>
-                </div>
-
-                <!-- Calculate Button -->
-                <button type="button" class="btn-calculate" id="calculate-btn">Calculate</button>
-
-                <!-- Results Section -->
-                <div class="results-container" id="results-box">
-                    <h2>Perfection Rating</h2>
-                    <div class="percentage" id="result-percentage">100.0%</div>
-                    <div class="iv-breakdown" id="result-breakdown">Atk: 15 | Def: 15 | HP: 15</div>
-                    
-                    <!-- Advanced Stats Section -->
-                    <div class="advanced-stats" id="advanced-stats-box">
-                        <div class="stat-row">
-                            <div>Estimated Level:<br><span class="stat-value" id="result-level">-</span></div>
-                            <div>Max CP (Lvl 50):<br><span class="stat-value" id="result-max-cp">-</span></div>
-                        </div>
-                    </div>
-
-                    <div id="result-stats" class="result-stats-text"></div>
+                <div id="live-stream-feed" class="live-stream-feed">
+                    <div class="feed-item placeholder">Waiting for wild encounters...</div>
                 </div>
             </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-wrapper">
+            <!-- TAB 1: Manual Calculator -->
+            <div class="tab-content active" id="tab-manual-calc">
+                <div class="calculator-container" id="calculator-card">
+                    <div class="header">
+                        <h1>Appraisal System</h1>
+                        <p class="subtitle">Calculate IVs, Perfection Rating, and Level projections</p>
+                    </div>
+
+                    <div class="content">
+                        <!-- Pokemon Name Search & Google-style Autocomplete Dropdown -->
+                        <div class="form-group autocomplete-container" id="group-pokemon">
+                            <label for="pokemon-input" id="label-pokemon">Pokémon Name</label>
+                            <input type="text" id="pokemon-input" class="input-text" placeholder="Search Pokémon (e.g. Mewtwo, Pikachu, Charizard)" autocomplete="off">
+                            <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
+                        </div>
+
+                        <!-- Big Sprite Display -->
+                        <div class="sprite-container">
+                            <div id="loading-msg" class="loading">Fetching Pokémon data...</div>
+                            <div id="error-msg" class="error-msg">Pokémon not found. Select a name from the search dropdown!</div>
+                            <img id="pokemon-sprite" src="" alt="Pokémon Sprite">
+                        </div>
+
+                        <!-- CP & HP Inputs -->
+                        <div class="row">
+                            <div class="form-group" id="group-cp">
+                                <label for="cp-input" id="label-cp">Combat Power (CP)</label>
+                                <input type="number" id="cp-input" class="input-text" placeholder="e.g. 2387" min="10">
+                            </div>
+                            <div class="form-group" id="group-hp">
+                                <label for="hp-input" id="label-hp">Health Points (HP)</label>
+                                <input type="number" id="hp-input" class="input-text" placeholder="e.g. 150" min="10">
+                            </div>
+                        </div>
+
+                        <!-- Appraisal Sliders -->
+                        <div class="appraisal-section">
+                            <span class="appraisal-label">Appraisal IVs</span>
+                            
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span>Attack</span>
+                                    <span id="atk-val">15</span>
+                                </div>
+                                <input type="range" id="atk-slider" min="0" max="15" value="15">
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span>Defense</span>
+                                    <span id="def-val">15</span>
+                                </div>
+                                <input type="range" id="def-slider" min="0" max="15" value="15">
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span>Stamina (HP)</span>
+                                    <span id="sta-val">15</span>
+                                </div>
+                                <input type="range" id="sta-slider" min="0" max="15" value="15">
+                            </div>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button type="button" class="btn-calculate" id="calculate-btn">Calculate</button>
+
+                        <!-- Results Section -->
+                        <div class="results-container" id="results-box">
+                            <h2>Perfection Rating</h2>
+                            <div class="percentage" id="result-percentage">100.0%</div>
+                            <div class="iv-breakdown" id="result-breakdown">Atk: 15 | Def: 15 | HP: 15</div>
+                            
+                            <!-- Advanced Stats Section -->
+                            <div class="advanced-stats" id="advanced-stats-box">
+                                <div class="stat-row">
+                                    <div>Estimated Level:<br><span class="stat-value" id="result-level">-</span></div>
+                                    <div>Max CP (Lvl 50):<br><span class="stat-value" id="result-max-cp">-</span></div>
+                                </div>
+                            </div>
+
+                            <div id="result-stats" class="result-stats-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Camera IV Scanner -->
+            <div class="tab-content" id="tab-camera-scanner">
+                <div class="calculator-container">
+                    <div class="header">
+                        <h1>Camera IV Scanner</h1>
+                        <p class="subtitle">Upload screenshot or scan game screen</p>
+                    </div>
+                    <div class="content text-center">
+                        <div class="scanner-viewport" id="scanner-viewport">
+                            <div class="scan-laser"></div>
+                            <div class="scanner-placeholder-text">📸 Click to upload screenshot or drag & drop</div>
+                            <input type="file" id="scanner-file-input" accept="image/*" style="display:none;">
+                        </div>
+                        <button type="button" class="btn-calculate" id="trigger-scan-btn" style="margin-top:15px;">Upload & Analyze Screenshot</button>
+                        <div id="scan-results-box" class="results-container">
+                            <h2>Detected Pokémon Stats</h2>
+                            <div class="percentage" id="scan-percentage">93.3%</div>
+                            <div class="iv-breakdown" id="scan-breakdown">Atk: 14 | Def: 14 | HP: 14</div>
+                            <button type="button" class="btn-calculate" id="import-to-calc-btn" style="margin-top:15px; background-color:#28a745; color:#fff;">Import to Calculator</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Smart IV Floating Overlay Simulator -->
+            <div class="tab-content" id="tab-live-overlay">
+                <div class="calculator-container">
+                    <div class="header">
+                        <h1>Smart IV Overlay Mode</h1>
+                        <p class="subtitle">Simulate floating game overlay notifications & wild hundo radar</p>
+                    </div>
+                    <div class="content text-center">
+                        <p style="font-size:14px; color:#555;">Smart IV floating bubble scans wild encounters and appraisals in real-time. Toggle it on to see live simulated notifications.</p>
+                        <button type="button" class="btn-calculate" id="toggle-bubble-btn" style="background-color:#3b4cca; color:#fff; margin-top:15px;">Show Floating Bubble Overlay</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Smart IV Floating Overlay Bubble (Draggable / Toggleable) -->
+    <div id="smart-iv-bubble" class="smart-iv-bubble" style="display:none;">
+        <div class="bubble-icon">💯</div>
+        <div class="bubble-info">
+            <span class="bubble-title">Smart IV Live</span>
+            <span class="bubble-status" id="bubble-status-text">Scanning Wild...</span>
         </div>
-    </main>
+        <button id="close-bubble" class="close-bubble">&times;</button>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
