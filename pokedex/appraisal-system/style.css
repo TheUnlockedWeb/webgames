@@ -4,31 +4,32 @@ body {
     background-color: #e9ecef;
     color: #333;
     margin: 0;
-    padding: 100px 20px 40px 20px; /* Added top padding to account for fixed navbar */
+    padding: 100px 20px 40px 20px; /* Top padding keeps content below fixed navbar */
     display: flex;
     justify-content: center;
 }
 
-/* --- Navbar Styling --- */
+/* --- Pokéweb Navbar --- */
 .navbar {
-    background-color: #212529; /* Sleek dark background */
+    background-color: #212529; /* Dark background */
+    height: 70px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 30px;
-    height: 65px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 0 40px;
+    box-sizing: border-box;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.nav-brand {
-    color: #fff;
-    font-size: 22px;
-    font-weight: 800;
+.nav-logo {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 900;
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
@@ -42,47 +43,53 @@ body {
 }
 
 .nav-links li {
-    height: 100%;
-}
-
-.nav-links a {
-    color: #adb5bd;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 0 20px;
     display: flex;
     align-items: center;
     height: 100%;
-    transition: color 0.2s, background-color 0.2s;
-    text-transform: uppercase;
+    margin-left: 30px;
     box-sizing: border-box;
-    border-bottom: 4px solid transparent; 
+}
+
+.nav-links a {
+    color: #a0a4a8; /* Light gray text */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: color 0.2s;
 }
 
 .nav-links a:hover {
-    color: #fff;
-    background-color: #343a40;
+    color: #ffffff;
 }
 
-/* The active red line underline */
-.nav-links a.active {
-    color: #fff;
-    border-bottom: 4px solid #dc3545; /* Pokemon Red */
+/* The active page formatting with the red line at the bottom */
+.nav-links li.active {
+    border-bottom: 4px solid #dc3545; /* Red border */
 }
 
-.coming-soon .badge {
-    background-color: #ffcb05; /* Pokemon Yellow */
+.nav-links li.active a {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* The Yellow "SOON" Pill */
+.badge {
+    background-color: #ffc107;
     color: #212529;
     font-size: 10px;
     font-weight: 800;
-    padding: 2px 6px;
+    padding: 3px 8px;
     border-radius: 12px;
     margin-left: 8px;
-    text-transform: uppercase;
 }
 
-/* --- Main Container --- */
+/* --- Main Calculator Container --- */
 .calculator-container {
     width: 100%;
     max-width: 500px;
@@ -149,6 +156,53 @@ body {
 
 .row .form-group {
     flex: 1;
+}
+
+/* --- Autocomplete Dropdown --- */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%; /* Puts it right below the input */
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+.autocomplete-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background-color: #f1f3f5;
+}
+
+.autocomplete-sprite {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+.autocomplete-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-transform: capitalize;
 }
 
 /* --- Sprite Display --- */
@@ -293,4 +347,27 @@ input[type=range]::-webkit-slider-runnable-track {
     margin-top: 10px;
     font-size: 14px;
     color: #666;
+}
+
+/* --- Advanced Stats --- */
+.advanced-stats {
+    display: none;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #b8daff;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.stat-value {
+    font-size: 18px;
+    color: #3b4cca;
+    display: block;
+    margin-top: 4px;
 }
