@@ -2136,17 +2136,111 @@ async function playCry2025(pokemon = state.selectedPokemon) {
 
 let volumePreviewTimer = null;
 
+const activeCryPlayers = new Set();
+
+function stopCry() {
+    activeCryPlayers.forEach(audio => {
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+        catch {
+            // Ignore already-destroyed audio objects.
+        }
+    });
+
+    activeCryPlayers.clear();
+
+    if (DOM.pokemonCryPlayer) {
+        DOM.pokemonCryPlayer.pause();
+        DOM.pokemonCryPlayer.currentTime = 0;
+    }
+}
+
+
+function playOverlappingCry(
+    pokemon
+) {
+    if (!pokemon) {
+        return null;
+    }
+
+    const cry =
+        pokemon.cries?.latest ||
+        pokemon.cries?.legacy;
+
+    if (!cry) {
+        return null;
+    }
+
+    const audio =
+        new Audio(cry);
+
+    audio.preload = "auto";
+
+    audio.volume =
+        clamp(
+            Number(
+                state.settings.cryVolume
+            ) / 100,
+            0,
+            1
+        );
+
+    const cleanup = () => {
+        activeCryPlayers.delete(audio);
+    };
+
+    audio.addEventListener(
+        "ended",
+        cleanup,
+        { once: true }
+    );
+
+    audio.addEventListener(
+        "error",
+        cleanup,
+        { once: true }
+    );
+
+    activeCryPlayers.add(audio);
+
+    audio.play()
+        .catch(() => {
+            cleanup();
+        });
+
+    return audio;
+}
+
+
+async function playCry2025(
+    pokemon = state.selectedPokemon
+) {
+    if (!pokemon) {
+        return;
+    }
+
+    const audio =
+        playOverlappingCry(pokemon);
+
+    if (!audio) {
+        showToast(
+            "No cry is available for this Pokémon.",
+            "warning"
+        );
+    }
+}
+
+
 async function playPikachuIconicCry() {
     if (!DOM.pokemonCryPlayer) {
         return;
     }
 
-    /*
-        Use PokéAPI's Pikachu cry instead of depending
-        on a local MP3 file existing.
-    */
     try {
-        const pikachu = await getPokemon("pikachu");
+        const pikachu =
+            await getPokemon("pikachu");
 
         const cry =
             pikachu.cries?.latest ||
@@ -2156,13 +2250,17 @@ async function playPikachuIconicCry() {
             return;
         }
 
-        stopCry();
+        DOM.pokemonCryPlayer.pause();
+        DOM.pokemonCryPlayer.currentTime = 0;
 
-        DOM.pokemonCryPlayer.src = cry;
+        DOM.pokemonCryPlayer.src =
+            cry;
 
         DOM.pokemonCryPlayer.volume =
             clamp(
-                Number(state.settings.cryVolume) / 100,
+                Number(
+                    state.settings.cryVolume
+                ) / 100,
                 0,
                 1
             );
@@ -2179,7 +2277,9 @@ async function playPikachuIconicCry() {
 
 
 function previewCryVolume() {
-    clearTimeout(volumePreviewTimer);
+    clearTimeout(
+        volumePreviewTimer
+    );
 
     volumePreviewTimer =
         window.setTimeout(
@@ -2189,7 +2289,6 @@ function previewCryVolume() {
             120
         );
 }
-
 /* ============================================================
    21. OPEN POKÉMON
    ============================================================ */
