@@ -633,6 +633,42 @@ a:focus-visible {
     color: var(--text);
 }
 
+.search-filter {
+    position: relative;
+    display: block;
+}
+
+.search-filter select {
+    width: 100%;
+    padding-left: 44px;
+}
+
+.search-filter-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    z-index: 1;
+
+    width: 18px;
+    height: 18px;
+
+    display: grid;
+    place-items: center;
+
+    transform: translateY(-50%);
+
+    color: var(--muted);
+
+    pointer-events: none;
+}
+
+.search-filter-icon svg {
+    width: 18px;
+    height: 18px;
+
+    fill: currentColor;
+}
+
 
 /* ============================================================
    08. POKÉDEX FILTERS
