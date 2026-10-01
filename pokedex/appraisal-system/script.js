@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Simulated Smart IV Live Wild Hundo Encounters
+    // Simulated Smart IV Live Wild Hundo Encounters (Smart IV Style)
     const wildEncounters = [
         { name: "Pikachu", cp: 482, hundo: false },
         { name: "Snorlax", cp: 2450, hundo: true },
@@ -389,11 +389,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (isHundo) {
-            showToast(`🚨 Smart IV Alert: Wild Hundo ${randomMon.name} detected!`, true);
+            showToast(`🚨 Smart IV Overlay: Wild Hundo ${randomMon.name} detected!`, true);
         }
     }
 
     setInterval(spawnLiveEncounter, 8000);
+
+    // --- 11. Settings Logic ---
+    const settingDarkMode = document.getElementById('setting-dark-mode');
+    if (settingDarkMode) {
+        settingDarkMode.addEventListener('change', () => {
+            document.body.classList.toggle('dark-theme', settingDarkMode.checked);
+        });
+    }
 
     // Toast Notification Helper
     function showToast(message, isHundo) {
