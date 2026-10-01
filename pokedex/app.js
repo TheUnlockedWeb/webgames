@@ -1795,16 +1795,12 @@ async function renderPokemonGrid() {
         state.filteredSpecies.length;
 
     /*
-        Nothing matched the current combination.
-
-        Example:
-        Legendary + Mythical
+        Nothing matched the current filters/search.
     */
     if (total === 0) {
         DOM.pokemonGrid.innerHTML = `
             <div class="empty-state">
                 <h2>No Pokemon Found</h2>
-
                 <p>
                     Try removing one of the selected filters
                     or changing your search.
@@ -1821,46 +1817,105 @@ async function renderPokemonGrid() {
             DOM.resultCount.textContent =
                 "0 Pokémon";
         }
-       
+
+        DOM.pokemonGrid.dataset.renderKey = "";
+        DOM.pokemonGrid.dataset.renderedCount = "0";
+
         return;
     }
 
+    const shiny =
+        state.selectedFilters.has("shiny");
+
+    /*
+        Every different filter/search/sort combination
+        gets its own render key.
+
+        If the key changes, the old cards must be removed.
+        If the key stays the same, we only append the
+        newly requested cards.
+    */
+    const renderKey = [
+        state.searchQuery,
+        state.searchSort,
+        ...[...state.selectedFilters].sort()
+    ].join("|");
+
+    const previousKey =
+        DOM.pokemonGrid.dataset.renderKey || "";
+
+    let renderedCount =
+        Number(
+            DOM.pokemonGrid.dataset.renderedCount || 0
+        );
+
+    /*
+        A new search/filter/sort combination means
+        we are starting a completely new grid.
+    */
+    if (previousKey !== renderKey) {
+        DOM.pokemonGrid.innerHTML = "";
+
+        renderedCount = 0;
+
+        DOM.pokemonGrid.dataset.renderKey =
+            renderKey;
+
+        DOM.pokemonGrid.dataset.renderedCount =
+            "0";
+
+        /*
+            Show a small number of skeletons while
+            the first batch is being requested.
+        */
+        renderSkeletonCards(
+            Math.min(
+                state.visibleCount,
+                CONFIG.REQUEST_BATCH_SIZE
+            )
+        );
+    }
 
     const visibleSpecies =
         state.filteredSpecies.slice(
             0,
-            state.visibleCount
+            Math.min(
+                state.visibleCount,
+                total
+            )
         );
 
-
     /*
-        Shiny is now controlled by the new
-        multi-filter Set.
-
-        We DO NOT use state.currentFilter anymore.
+        Nothing new needs to be rendered.
     */
-    const shiny =
-        state.selectedFilters.has(
-            "shiny"
-        );
-
-
-    renderSkeletonCards(
-        Math.min(
-            visibleSpecies.length,
-            18
-        )
-    );
-
-
-    const cards = [];
+    if (
+        renderedCount >=
+        visibleSpecies.length
+    ) {
+        updateGridStatus();
+        return;
+    }
 
     /*
-        Load cards in batches so we don't hammer
-        PokéAPI with hundreds of simultaneous requests.
+        If this is the first batch, the skeletons are
+        currently occupying the grid.
+
+        Remove them before inserting real cards.
+    */
+    if (renderedCount === 0) {
+        DOM.pokemonGrid.innerHTML = "";
+    }
+
+    /*
+        Only request Pokémon that have not already
+        been rendered.
+
+        This is the key difference from the old system:
+        scrolling from 24 → 48 does NOT rebuild the
+        original 24 cards.
     */
     for (
-        let index = 0;
+        let index = renderedCount;
         index < visibleSpecies.length;
         index += CONFIG.REQUEST_BATCH_SIZE
     ) {
@@ -1884,65 +1939,52 @@ async function renderPokemonGrid() {
                 )
             );
 
-        cards.push(
-            ...batchCards.filter(Boolean)
-        );
+        const html =
+            batchCards
+                .filter(Boolean)
+                .join("");
 
-        if (
-            index +
-                CONFIG.REQUEST_BATCH_SIZE <
-            visibleSpecies.length
-        ) {
-            await sleep(
-                CONFIG.REQUEST_DELAY
+        if (html) {
+            DOM.pokemonGrid.insertAdjacentHTML(
+                "beforeend",
+                html
             );
         }
-    }
 
+        renderedCount =
+            Math.min(
+                index + batch.length,
+                visibleSpecies.length
+            );
 
-    DOM.pokemonGrid.innerHTML =
-        cards.join("");
+        DOM.pokemonGrid.dataset.renderedCount =
+            String(renderedCount);
 
+        /*
+            Allow the browser to paint the newly
+            inserted cards before continuing.
+        */
+        await new Promise(resolve =>
+            requestAnimationFrame(resolve)
+        );
 
-    /*
-        Build a readable label from all active filters.
-    */
-    const selected =
-        [...state.selectedFilters];
+        /*
+            If the user changed filters/search while
+            this request was running, stop this old
+            render operation.
+        */
+        const currentKey = [
+            state.searchQuery,
+            state.searchSort,
+            ...[...state.selectedFilters].sort()
+        ].join("|");
 
-
-    let filterLabel =
-        "National Pokédex";
-
-
-    if (selected.length > 0) {
-        filterLabel =
-            selected
-                .map(prettyName)
-                .join(" + ");
-    }
-
-
-    if (DOM.status) {
-        if (state.searchQuery) {
-            DOM.status.textContent =
-                `${filterLabel} • Search: "${state.searchQuery}"`;
-        }
-        else {
-            DOM.status.textContent =
-                filterLabel;
+        if (currentKey !== renderKey) {
+            return;
         }
     }
 
-
-    if (DOM.resultCount) {
-        DOM.resultCount.textContent =
-            `${total} ${
-                total === 1
-                    ? "Pokémon"
-                    : "Pokémon"
-            }`;
-    }
+    updateGridStatus();
 }
 
 
