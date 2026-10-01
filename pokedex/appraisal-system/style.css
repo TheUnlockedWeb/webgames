@@ -1,34 +1,52 @@
-/* Base Styling & Reset */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e9ecef;
-    color: #333;
-    margin: 0;
-    padding: 100px 20px 40px 20px; /* Top padding keeps content below fixed navbar */
-    display: flex;
-    justify-content: center;
+/* --- Base Reset & Layout --- */
+* {
+    box-sizing: border-box;
 }
 
-/* --- Pokéweb Navbar --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #eaebef;
+    color: #212529;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* --- Pokéweb Fixed Navbar --- */
 .navbar {
-    background-color: #212529; /* Dark background */
+    background-color: #212529;
     height: 70px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 40px;
-    box-sizing: border-box;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 12px;
+}
+
+.pokeball-icon {
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.nav-logo:hover .pokeball-icon {
+    transform: rotate(180deg);
+}
+
+.logo-text {
     color: #ffffff;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 900;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -46,12 +64,11 @@ body {
     display: flex;
     align-items: center;
     height: 100%;
-    margin-left: 30px;
-    box-sizing: border-box;
+    margin-left: 25px;
 }
 
 .nav-links a {
-    color: #a0a4a8; /* Light gray text */
+    color: #a0a4a8;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -60,17 +77,15 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
-    position: relative;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
     color: #ffffff;
 }
 
-/* The active page formatting with the red line at the bottom */
 .nav-links li.active {
-    border-bottom: 4px solid #dc3545; /* Red border */
+    border-bottom: 4px solid #dc3545; /* Active red line */
 }
 
 .nav-links li.active a {
@@ -78,75 +93,100 @@ body {
     font-weight: 700;
 }
 
-/* The Yellow "SOON" Pill */
+.disabled-link {
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Yellow SOON Badge */
 .badge {
     background-color: #ffc107;
     color: #212529;
     font-size: 10px;
     font-weight: 800;
-    padding: 3px 8px;
+    padding: 3px 7px;
     border-radius: 12px;
-    margin-left: 8px;
+    margin-left: 7px;
 }
 
-/* --- Main Calculator Container --- */
+/* --- Layout Wrapper --- */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px 20px;
+}
+
+/* --- Calculator Card --- */
 .calculator-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     background: #ffffff;
+    border-radius: 8px;
     border: 1px solid #d1d5db;
-    border-top: 5px solid #3b4cca; /* Pokemon Blue */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    border-radius: 4px;
+    border-top: 5px solid #3b4cca;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    overflow: hidden;
 }
 
 .header {
     background-color: #f8f9fa;
-    padding: 15px 20px;
+    padding: 20px;
     border-bottom: 1px solid #e5e7eb;
     text-align: center;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: 22px;
+    font-weight: 800;
     color: #212529;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
+}
+
+.subtitle {
+    margin: 5px 0 0 0;
+    font-size: 13px;
+    color: #6c757d;
 }
 
 .content {
     padding: 25px 20px;
 }
 
-/* --- Form Inputs --- */
+/* --- Form Groups --- */
 .form-group {
     margin-bottom: 18px;
 }
 
+.autocomplete-container {
+    position: relative;
+}
+
 .form-group label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     color: #495057;
     margin-bottom: 6px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .input-text {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 16px;
+    padding: 11px 14px;
+    font-size: 15px;
     border: 1px solid #ced4da;
-    border-radius: 4px;
-    box-sizing: border-box;
-    transition: border-color 0.15s ease-in-out;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .input-text:focus {
     outline: none;
     border-color: #3b4cca;
-    box-shadow: 0 0 0 3px rgba(59, 76, 202, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 76, 202, 0.15);
 }
 
 .row {
@@ -161,26 +201,26 @@ body {
 /* --- Autocomplete Dropdown --- */
 .autocomplete-dropdown {
     position: absolute;
-    top: 100%; /* Puts it right below the input */
+    top: 100%;
     left: 0;
     right: 0;
     background: #ffffff;
     border: 1px solid #ced4da;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    max-height: 250px;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    max-height: 240px;
     overflow-y: auto;
     z-index: 1000;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .autocomplete-item {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
+    padding: 8px 14px;
     cursor: pointer;
-    border-bottom: 1px solid #e9ecef;
-    transition: background-color 0.2s;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.15s ease;
 }
 
 .autocomplete-item:last-child {
@@ -188,12 +228,12 @@ body {
 }
 
 .autocomplete-item:hover {
-    background-color: #f1f3f5;
+    background-color: #f8f9fa;
 }
 
 .autocomplete-sprite {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     object-fit: contain;
     margin-right: 12px;
 }
@@ -205,53 +245,56 @@ body {
     text-transform: capitalize;
 }
 
-/* --- Sprite Display --- */
+/* --- Sprite Container --- */
 .sprite-container {
     text-align: center;
     min-height: 120px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f8f9fa;
     border: 1px dashed #ced4da;
-    border-radius: 4px;
+    border-radius: 6px;
+    padding: 10px;
 }
 
 .sprite-container img {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
     display: none;
     object-fit: contain;
 }
 
 .loading, .error-msg {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
     color: #6c757d;
     display: none;
 }
 .error-msg { color: #dc3545; }
 
-/* --- Sliders --- */
+/* --- Appraisal Sliders --- */
 .appraisal-section {
     background: #f8f9fa;
-    padding: 15px;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
+    padding: 16px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
     margin-bottom: 20px;
 }
 
 .appraisal-label {
     display: block;
-    font-weight: bold;
-    font-size: 13px;
+    font-weight: 700;
+    font-size: 12px;
     margin-bottom: 15px;
     text-transform: uppercase;
     color: #495057;
+    letter-spacing: 0.5px;
 }
 
 .slider-group {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .slider-group:last-child {
@@ -261,9 +304,10 @@ body {
 .slider-header {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 5px;
+    color: #333;
+    margin-bottom: 6px;
 }
 
 input[type=range] {
@@ -281,7 +325,7 @@ input[type=range]::-webkit-slider-thumb {
     cursor: pointer;
     margin-top: -6px;
     border: 2px solid #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -292,60 +336,66 @@ input[type=range]::-webkit-slider-runnable-track {
     border-radius: 4px;
 }
 
-/* --- Button --- */
+/* --- Calculate Button --- */
 .btn-calculate {
     width: 100%;
-    background-color: #ffcb05; /* Pokemon Yellow */
+    background-color: #ffcb05;
     color: #212529;
-    border: 1px solid #e5b704;
+    border: 1px solid #e2b300;
     padding: 14px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 800;
+    border-radius: 6px;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn-calculate:hover {
     background-color: #f5c200;
 }
 
-/* --- Results Display --- */
+.btn-calculate:active {
+    transform: scale(0.99);
+}
+
+/* --- Results Container --- */
 .results-container {
     display: none;
-    margin-top: 20px;
+    margin-top: 22px;
     padding: 20px;
-    background: #e8f4f8;
+    background: #eef6fc;
     border: 1px solid #b8daff;
-    border-radius: 4px;
+    border-radius: 6px;
     text-align: center;
 }
 
 .results-container h2 {
-    margin: 0 0 5px 0;
+    margin: 0 0 6px 0;
     color: #004085;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .percentage {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 800;
     color: #3b4cca;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
 .iv-breakdown {
-    font-size: 15px;
+    font-size: 14px;
     color: #495057;
     font-weight: 600;
 }
 
 .result-stats-text {
-    margin-top: 10px;
-    font-size: 14px;
+    margin-top: 12px;
+    font-size: 13px;
     color: #666;
 }
 
@@ -360,14 +410,38 @@ input[type=range]::-webkit-slider-runnable-track {
 .stat-row {
     display: flex;
     justify-content: space-around;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #495057;
 }
 
 .stat-value {
     font-size: 18px;
+    font-weight: 700;
     color: #3b4cca;
     display: block;
     margin-top: 4px;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 15px;
+    }
+
+    .logo-text {
+        font-size: 18px;
+    }
+
+    .nav-links li {
+        margin-left: 12px;
+    }
+
+    .nav-links a {
+        font-size: 12px;
+    }
+
+    .main-wrapper {
+        padding: 85px 12px 30px 12px;
+    }
 }
