@@ -29,6 +29,21 @@ fetchAllPokemon();
 
 // --- 3. DOM Ready Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Sidebar Tabs Navigation
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            tabContents.forEach(t => t.classList.remove('active'));
+            
+            item.classList.add('active');
+            const targetTab = document.getElementById(`tab-${item.dataset.tab}`);
+            if (targetTab) targetTab.classList.add('active');
+        });
+    });
+
     // Inputs & Labels
     const pokemonInput = document.getElementById('pokemon-input');
     const labelPokemon = document.getElementById('label-pokemon');
@@ -60,69 +75,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let typingTimer;
 
-    if (!pokemonInput || !autocompleteDropdown) return;
-
-    // --- 4. Live Typing Autocomplete (Google-Style Pop-Up) ---
-    pokemonInput.addEventListener('input', () => {
-        const val = pokemonInput.value.trim().toLowerCase();
-        autocompleteDropdown.innerHTML = '';
-        
-        clearTimeout(typingTimer);
-        
-        if (val.length >= 1) {
-            // Filter top matches
-            const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 8);
+    if (pokemonInput && autocompleteDropdown) {
+        // --- 4. Live Typing Autocomplete (Google-Style Pop-Up) ---
+        pokemonInput.addEventListener('input', () => {
+            const val = pokemonInput.value.trim().toLowerCase();
+            autocompleteDropdown.innerHTML = '';
             
-            if (matches.length > 0) {
-                autocompleteDropdown.style.display = 'block';
+            clearTimeout(typingTimer);
+            
+            if (val.length >= 1) {
+                const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 8);
                 
-                matches.forEach(match => {
-                    const urlParts = match.url.split('/');
-                    const id = urlParts[urlParts.length - 2];
-                    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                if (matches.length > 0) {
+                    autocompleteDropdown.style.display = 'block';
                     
-                    const item = document.createElement('div');
-                    item.className = 'autocomplete-item';
-                    
-                    const formattedName = match.name.replace(/-/g, ' ');
-                    
-                    item.innerHTML = `
-                        <img src="${spriteUrl}" class="autocomplete-sprite" loading="lazy" alt="sprite">
-                        <span class="autocomplete-name">${formattedName}</span>
-                    `;
-                    
-                    item.addEventListener('click', () => {
-                        pokemonInput.value = formattedName;
-                        autocompleteDropdown.style.display = 'none';
-                        clearInputError(pokemonInput, labelPokemon);
-                        fetchPokemonData(match.name);
+                    matches.forEach(match => {
+                        const urlParts = match.url.split('/');
+                        const id = urlParts[urlParts.length - 2];
+                        const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        const formattedName = match.name.replace(/-/g, ' ');
+                        
+                        item.innerHTML = `
+                            <img src="${spriteUrl}" class="autocomplete-sprite" loading="lazy" alt="sprite">
+                            <span class="autocomplete-name">${formattedName}</span>
+                        `;
+                        
+                        item.addEventListener('click', () => {
+                            pokemonInput.value = formattedName;
+                            autocompleteDropdown.style.display = 'none';
+                            clearInputError(pokemonInput, labelPokemon);
+                            fetchPokemonData(match.name);
+                        });
+                        
+                        autocompleteDropdown.appendChild(item);
                     });
-                    
-                    autocompleteDropdown.appendChild(item);
-                });
+                } else {
+                    autocompleteDropdown.style.display = 'none';
+                }
             } else {
                 autocompleteDropdown.style.display = 'none';
+                if (spriteImg) spriteImg.style.display = 'none';
+                if (errorMsg) errorMsg.style.display = 'none';
+                currentPokemonBaseStats = null;
             }
-        } else {
-            autocompleteDropdown.style.display = 'none';
-            if (spriteImg) spriteImg.style.display = 'none';
-            if (errorMsg) errorMsg.style.display = 'none';
-            currentPokemonBaseStats = null;
-        }
 
-        if (val !== '') {
-            typingTimer = setTimeout(() => {
-                fetchPokemonData(val.replace(/\s+/g, '-'));
-            }, 600);
-        }
-    });
+            if (val !== '') {
+                typingTimer = setTimeout(() => {
+                    fetchPokemonData(val.replace(/\s+/g, '-'));
+                }, 600);
+            }
+        });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!pokemonInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
-            autocompleteDropdown.style.display = 'none';
-        }
-    });
+        document.addEventListener('click', (e) => {
+            if (!pokemonInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+                autocompleteDropdown.style.display = 'none';
+            }
+        });
+    }
 
     // --- 5. Remove Red Outline as User Types ---
     function setupErrorClearers(input, label) {
@@ -169,21 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 stats[stat.stat.name] = stat.base_stat;
             });
 
-            // Niantic Main-Series to PoGo Stat Formula:
             const speedMod = 1 + (stats.speed - 75) / 500;
-            
-            // Attack
             const scaledAtk = Math.round(2 * ((Math.max(stats.attack, stats['special-attack']) * (7/8)) + (Math.min(stats.attack, stats['special-attack']) * (1/8))));
             let baseAtk = Math.round(scaledAtk * speedMod);
 
-            // Defense
             const scaledDef = Math.round(2 * ((Math.max(stats.defense, stats['special-defense']) * (5/8)) + (Math.min(stats.defense, stats['special-defense']) * (3/8))));
             let baseDef = Math.round(scaledDef * speedMod);
 
-            // Stamina
             let baseSta = Math.floor(1.75 * stats.hp + 50);
 
-            // 9% stat nerf to OP/Legendary over 4000 CP
             const unnerfedMaxCp = Math.floor(((baseAtk + 15) * Math.sqrt(baseDef + 15) * Math.sqrt(baseSta + 15) * Math.pow(0.7903, 2)) / 10);
             if (unnerfedMaxCp > 4000) {
                 baseAtk = Math.round(baseAtk * 0.91);
@@ -216,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let isValid = true;
             let firstInvalidElement = null;
 
-            // Validate Pokémon Name
             if (!pokemonInput.value.trim() || !currentPokemonBaseStats) {
                 isValid = false;
                 pokemonInput.classList.add('input-error');
@@ -224,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!firstInvalidElement) firstInvalidElement = pokemonInput;
             }
 
-            // Validate CP
             if (!cpInput.value.trim() || parseInt(cpInput.value) <= 0) {
                 isValid = false;
                 cpInput.classList.add('input-error');
@@ -232,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!firstInvalidElement) firstInvalidElement = cpInput;
             }
 
-            // Validate HP
             if (!hpInput.value.trim() || parseInt(hpInput.value) <= 0) {
                 isValid = false;
                 hpInput.classList.add('input-error');
@@ -240,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!firstInvalidElement) firstInvalidElement = hpInput;
             }
 
-            // Scroll up to missing box if invalid
             if (!isValid) {
                 if (firstInvalidElement) {
                     firstInvalidElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -249,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Calculate Perfection %
             const atkIV = parseInt(atkSlider.value);
             const defIV = parseInt(defSlider.value);
             const staIV = parseInt(staSlider.value);
@@ -261,8 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (resultBreakdown) resultBreakdown.textContent = `Atk: ${atkIV} | Def: ${defIV} | HP: ${staIV}`;
             
             const inputCP = parseInt(cpInput.value);
-            
-            // Max CP at Level 50 (CPM = 0.8403)
             const maxLevelCpm = cpmTable[50];
             const maxCP = Math.max(10, Math.floor(
                 ((currentPokemonBaseStats.atk + atkIV) * 
@@ -273,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (resultMaxCp) resultMaxCp.textContent = maxCP;
 
-            // Estimate Level from Input CP
             let estimatedLevel = "Unknown";
             let closestCPDiff = 9999;
 
@@ -298,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (resultStats) resultStats.textContent = `Level estimated from input CP ${inputCP}.`;
             if (advStatsBox) advStatsBox.style.display = 'block';
 
-            // Percentage Rating Colors
             if (resultPercentage) {
                 if (percentage == 100) resultPercentage.style.color = "#dc3545"; 
                 else if (percentage >= 82) resultPercentage.style.color = "#28a745"; 
@@ -308,5 +305,114 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (resultsBox) resultsBox.style.display = 'block';
         });
+    }
+
+    // --- 9. Camera Scanner Simulation & Upload ---
+    const scannerViewport = document.getElementById('scanner-viewport');
+    const scannerFileInput = document.getElementById('scanner-file-input');
+    const triggerScanBtn = document.getElementById('trigger-scan-btn');
+    const scanLaser = document.querySelector('.scan-laser');
+    const scanResultsBox = document.getElementById('scan-results-box');
+    const importToCalcBtn = document.getElementById('import-to-calc-btn');
+
+    if (triggerScanBtn && scannerFileInput) {
+        triggerScanBtn.addEventListener('click', () => scannerFileInput.click());
+        scannerViewport.addEventListener('click', () => scannerFileInput.click());
+
+        scannerFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (scanLaser) scanLaser.style.display = 'block';
+                setTimeout(() => {
+                    if (scanLaser) scanLaser.style.display = 'none';
+                    if (scanResultsBox) scanResultsBox.style.display = 'block';
+                    showToast("Screenshot analyzed successfully!", false);
+                }, 1500);
+            }
+        });
+    }
+
+    if (importToCalcBtn) {
+        importToCalcBtn.addEventListener('click', () => {
+            document.querySelector('[data-tab="manual-calc"]').click();
+            if (pokemonInput) pokemonInput.value = "Dragonite";
+            if (cpInput) cpInput.value = "3142";
+            if (hpInput) hpInput.value = "165";
+            fetchPokemonData("dragonite");
+            showToast("Imported stats to Manual Calculator!", false);
+        });
+    }
+
+    // --- 10. Smart IV Floating Bubble & Live Encounters Feed ---
+    const toggleBubbleBtn = document.getElementById('toggle-bubble-btn');
+    const smartIvBubble = document.getElementById('smart-iv-bubble');
+    const closeBubble = document.getElementById('close-bubble');
+    const liveStreamToggle = document.getElementById('live-stream-toggle');
+    const liveStreamFeed = document.getElementById('live-stream-feed');
+
+    if (toggleBubbleBtn && smartIvBubble) {
+        toggleBubbleBtn.addEventListener('click', () => {
+            smartIvBubble.style.display = 'flex';
+            showToast("Smart IV Overlay Bubble activated!", false);
+        });
+        closeBubble.addEventListener('click', () => {
+            smartIvBubble.style.display = 'none';
+        });
+    }
+
+    // Simulated Smart IV Live Wild Hundo Encounters
+    const wildEncounters = [
+        { name: "Pikachu", cp: 482, hundo: false },
+        { name: "Snorlax", cp: 2450, hundo: true },
+        { name: "Bulbasaur", cp: 890, hundo: false },
+        { name: "Rayquaza", cp: 3120, hundo: true },
+        { name: "Magikarp", cp: 120, hundo: false }
+    ];
+
+    function spawnLiveEncounter() {
+        if (!liveStreamToggle || !liveStreamToggle.checked) return;
+
+        const randomMon = wildEncounters[Math.floor(Math.random() * wildEncounters.length)];
+        const isHundo = randomMon.hundo;
+        
+        if (liveStreamFeed.querySelector('.placeholder')) {
+            liveStreamFeed.innerHTML = '';
+        }
+
+        const feedItem = document.createElement('div');
+        feedItem.className = `feed-item ${isHundo ? 'hundo' : ''}`;
+        feedItem.innerHTML = `<strong>${randomMon.name}</strong> (CP ${randomMon.cp}) — ${isHundo ? '🔥 WILD HUNDO (100% IV)!' : 'Standard IV (~72%)'}`;
+        
+        liveStreamFeed.prepend(feedItem);
+        if (liveStreamFeed.children.length > 5) {
+            liveStreamFeed.removeChild(liveStreamFeed.lastChild);
+        }
+
+        if (isHundo) {
+            showToast(`🚨 Smart IV Alert: Wild Hundo ${randomMon.name} detected!`, true);
+        }
+    }
+
+    setInterval(spawnLiveEncounter, 8000);
+
+    // Toast Notification Helper
+    function showToast(message, isHundo) {
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${isHundo ? 'hundo' : ''}`;
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
     }
 });
