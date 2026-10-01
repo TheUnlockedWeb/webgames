@@ -51,7 +51,7 @@ body.dark-theme .input-text {
     padding: 0 40px;
     position: fixed;
     top: 0;
-    left: 50;
+    left: 0;
     right: 0;
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
