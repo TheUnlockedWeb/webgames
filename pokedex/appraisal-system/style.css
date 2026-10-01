@@ -435,6 +435,7 @@ input[type=range]::-webkit-slider-runnable-track {
     margin-top: 4px;
 }
 
+/* --- Mobile Responsive Layout --- */
 @media (max-width: 600px) {
     .navbar { padding: 0 15px; }
     .logo-text { font-size: 18px; }
