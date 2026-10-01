@@ -1117,6 +1117,40 @@ function isUltraBeast(species) {
     return ultraBeasts.has(species.name);
 }
 
+function getSpeciesBadges(species) {
+    if (!species) {
+        return "";
+    }
+
+    const badges = [];
+
+    if (species.is_legendary) {
+        badges.push(`
+            <span class="form-badge legendary">
+                Legendary
+            </span>
+        `);
+    }
+
+    if (species.is_mythical) {
+        badges.push(`
+            <span class="form-badge mythical">
+                Mythical
+            </span>
+        `);
+    }
+
+    if (isUltraBeast(species)) {
+        badges.push(`
+            <span class="form-badge ultra-beast">
+                Ultra Beast
+            </span>
+        `);
+    }
+
+    return badges.join("");
+}
+
 /* ============================================================
    COSTUME POKÉMON (Pokémon GO)
    ============================================================ */
