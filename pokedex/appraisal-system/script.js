@@ -1,4 +1,4 @@
-// --- 1. Pokemon GO Data & CPM Table (Levels 1 to 50) ---
+// --- 1. Pokemon GO CPM Table (Levels 1 to 50) ---
 const cpmTable = {
     1: 0.094, 1.5: 0.135137432, 2: 0.16639787, 2.5: 0.192650919, 3: 0.21573247, 3.5: 0.236572661, 4: 0.25572005, 4.5: 0.273530381, 5: 0.29024988, 5.5: 0.306057377,
     6: 0.3210876, 6.5: 0.335445036, 7: 0.34921268, 7.5: 0.362457751, 8: 0.3752356, 8.5: 0.387592416, 9: 0.39956728, 9.5: 0.411193551, 10: 0.4225, 10.5: 0.432926409,
@@ -13,9 +13,9 @@ const cpmTable = {
 };
 
 let currentPokemonBaseStats = null;
-let allPokemonList = []; // Master list for search autocomplete
+let allPokemonList = [];
 
-// --- 2. Initialize Autocomplete List from PokeAPI ---
+// --- 2. Fetch Pokémon Master List for Search Autocomplete ---
 async function fetchAllPokemon() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1300');
@@ -27,7 +27,7 @@ async function fetchAllPokemon() {
 }
 fetchAllPokemon();
 
-// --- 3. UI Elements ---
+// --- 3. Elements ---
 const pokemonInput = document.getElementById('pokemon-input');
 const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
 const spriteImg = document.getElementById('pokemon-sprite');
@@ -35,7 +35,7 @@ const loadingMsg = document.getElementById('loading-msg');
 const errorMsg = document.getElementById('error-msg');
 let typingTimer;
 
-// --- 4. Handling Search Input & Autocomplete Dropdown ---
+// --- 4. Search & Autocomplete Interactions ---
 pokemonInput.addEventListener('input', () => {
     const val = pokemonInput.value.trim().toLowerCase();
     autocompleteDropdown.innerHTML = '';
@@ -43,7 +43,6 @@ pokemonInput.addEventListener('input', () => {
     clearTimeout(typingTimer);
     
     if (val.length >= 2) {
-        // Filter master list (top 10 matches)
         const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 10);
         
         if (matches.length > 0) {
@@ -89,14 +88,14 @@ pokemonInput.addEventListener('input', () => {
     }
 });
 
-// Close dropdown if user clicks outside
+// Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
     if (!pokemonInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
         autocompleteDropdown.style.display = 'none';
     }
 });
 
-// --- 5. Accurate Niantic Stat Conversion ---
+// --- 5. Fetch Pokémon Stats & Apply Official Niantic Conversion ---
 async function fetchPokemonData(pokemonName) {
     spriteImg.style.display = 'none';
     errorMsg.style.display = 'none';
@@ -124,18 +123,18 @@ async function fetchPokemonData(pokemonName) {
         // Official Niantic Main-Series to PoGo Stat Formula:
         const speedMod = 1 + (stats.speed - 75) / 500;
         
-        // Attack (7/8 & 1/8 weighting)
+        // Attack (7/8 & 1/8 weighting with 2.0 scale)
         const scaledAtk = Math.round(2 * ((Math.max(stats.attack, stats['special-attack']) * (7/8)) + (Math.min(stats.attack, stats['special-attack']) * (1/8))));
         let baseAtk = Math.round(scaledAtk * speedMod);
 
-        // Defense (5/8 & 3/8 weighting)
+        // Defense (5/8 & 3/8 weighting with 2.0 scale)
         const scaledDef = Math.round(2 * ((Math.max(stats.defense, stats['special-defense']) * (5/8)) + (Math.min(stats.defense, stats['special-defense']) * (3/8))));
         let baseDef = Math.round(scaledDef * speedMod);
 
         // Stamina
         let baseSta = Math.floor(1.75 * stats.hp + 50);
 
-        // Flat 9% stat nerf to OP/Legendary Pokemon over 4000 unnerfed CP
+        // 9% stat nerf to Legendary / OP Pokémon whose un-nerfed level 40 CP exceeds 4000
         const unnerfedMaxCp = Math.floor(((baseAtk + 15) * Math.sqrt(baseDef + 15) * Math.sqrt(baseSta + 15) * Math.pow(0.7903, 2)) / 10);
         if (unnerfedMaxCp > 4000) {
             baseAtk = Math.round(baseAtk * 0.91);
@@ -151,7 +150,7 @@ async function fetchPokemonData(pokemonName) {
     }
 }
 
-// --- 6. Handling Sliders ---
+// --- 6. Sliders ---
 const atkSlider = document.getElementById('atk-slider');
 const defSlider = document.getElementById('def-slider');
 const staSlider = document.getElementById('sta-slider');
@@ -168,7 +167,7 @@ updateSliderValue(atkSlider, atkVal);
 updateSliderValue(defSlider, defVal);
 updateSliderValue(staSlider, staVal);
 
-// --- 7. Real CP & Level Calculation ---
+// --- 7. Real Calculation Engine ---
 const calcBtn = document.getElementById('calculate-btn');
 const resultsBox = document.getElementById('results-box');
 const resultPercentage = document.getElementById('result-percentage');
@@ -184,7 +183,7 @@ calcBtn.addEventListener('click', () => {
     const defIV = parseInt(defSlider.value);
     const staIV = parseInt(staSlider.value);
     
-    // Perfection %
+    // Perfection Rating
     const totalIV = atkIV + defIV + staIV;
     const percentage = ((totalIV / 45) * 100).toFixed(1);
     
@@ -205,7 +204,7 @@ calcBtn.addEventListener('click', () => {
         
         resultMaxCp.textContent = maxCP;
 
-        // Estimate level from user's input CP
+        // Estimate current Pokémon Level from input CP
         if (inputCP && !isNaN(inputCP)) {
             let estimatedLevel = "Unknown";
             let closestCPDiff = 9999;
@@ -239,7 +238,7 @@ calcBtn.addEventListener('click', () => {
         resultStats.textContent = "Enter a valid Pokémon name to see Advanced Stats like Max CP and Level.";
     }
 
-    // Color rating
+    // Dynamic rating colors
     if (percentage == 100) resultPercentage.style.color = "#dc3545"; 
     else if (percentage >= 82) resultPercentage.style.color = "#28a745"; 
     else if (percentage >= 51) resultPercentage.style.color = "#fd7e14"; 
