@@ -46,19 +46,22 @@
                 <li class="sidebar-item" data-tab="live-overlay">
                     <span class="sidebar-icon">⚡</span> Smart IV Overlay
                 </li>
+                <li class="sidebar-item" data-tab="settings-panel">
+                    <span class="sidebar-icon">⚙️</span> Settings
+                </li>
             </ul>
 
-            <!-- Live Broadcast Status Panel -->
+            <!-- Smart IV Live Broadcast Panel -->
             <div class="sidebar-widget">
                 <div class="widget-title">
-                    <span>Smart IV Live Stream</span>
+                    <span>Smart IV Live Feed</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="live-stream-toggle" checked>
                         <span class="slider-round"></span>
                     </label>
                 </div>
                 <div id="live-stream-feed" class="live-stream-feed">
-                    <div class="feed-item placeholder">Waiting for wild encounters...</div>
+                    <div class="feed-item placeholder">Monitoring wild screen encounters...</div>
                 </div>
             </div>
         </aside>
@@ -176,7 +179,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: Smart IV Floating Overlay Simulator -->
+            <!-- TAB 3: Smart IV Floating Overlay Mode -->
             <div class="tab-content" id="tab-live-overlay">
                 <div class="calculator-container">
                     <div class="header">
@@ -186,6 +189,50 @@
                     <div class="content text-center">
                         <p style="font-size:14px; color:#555;">Smart IV floating bubble scans wild encounters and appraisals in real-time. Toggle it on to see live simulated notifications.</p>
                         <button type="button" class="btn-calculate" id="toggle-bubble-btn" style="background-color:#3b4cca; color:#fff; margin-top:15px;">Show Floating Bubble Overlay</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Settings Panel -->
+            <div class="tab-content" id="tab-settings-panel">
+                <div class="calculator-container">
+                    <div class="header">
+                        <h1>System Settings</h1>
+                        <p class="subtitle">Configure app preferences and broadcasting rules</p>
+                    </div>
+                    <div class="content" style="text-align: left;">
+                        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <label style="margin:0;">Sound Effects & Alerts</label>
+                                <span style="font-size:11px; color:#6c757d;">Play audio cue on Wild Hundo detection</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="setting-sound" checked>
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                        <hr style="border:0; border-top:1px solid #e9ecef; margin:15px 0;">
+                        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <label style="margin:0;">Background Live Scan</label>
+                                <span style="font-size:11px; color:#6c757d;">Keep scanning background wild spawns</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="setting-bg-scan" checked>
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+                        <hr style="border:0; border-top:1px solid #e9ecef; margin:15px 0;">
+                        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <label style="margin:0;">Dark Theme Mode</label>
+                                <span style="font-size:11px; color:#6c757d;">Toggle high contrast dark layout</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="setting-dark-mode">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
