@@ -1902,9 +1902,7 @@ async function renderPokemonGrid() {
 
         Remove them before inserting real cards.
     */
-    if (renderedCount === 0) {
-        DOM.pokemonGrid.innerHTML = "";
-    }
+
 
     /*
         Only request Pokémon that have not already
