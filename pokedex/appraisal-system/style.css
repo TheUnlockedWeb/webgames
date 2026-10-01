@@ -12,6 +12,35 @@ body {
     min-height: 100vh;
 }
 
+body.dark-theme {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-theme .calculator-container,
+body.dark-theme .sidebar,
+body.dark-theme .navbar {
+    background-color: #1e1e1e;
+    color: #fff;
+    border-color: #333;
+}
+
+body.dark-theme .header,
+body.dark-theme .appraisal-section,
+body.dark-theme .sprite-container,
+body.dark-theme .sidebar-widget,
+body.dark-theme .feed-item {
+    background-color: #252525;
+    color: #ddd;
+    border-color: #333;
+}
+
+body.dark-theme .input-text {
+    background-color: #2c2c2c;
+    color: #fff;
+    border-color: #444;
+}
+
 /* --- Fixed Top Navbar --- */
 .navbar {
     background-color: #212529;
@@ -251,6 +280,7 @@ input:checked + .slider-round:before {
 .feed-item.hundo {
     border-left-color: #28a745;
     background: #e8f5e9;
+    color: #155724;
 }
 
 .feed-item.placeholder {
