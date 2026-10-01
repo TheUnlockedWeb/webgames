@@ -1490,7 +1490,7 @@ body.dark .form-badge.shiny {
 
     padding-bottom: 12px;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom: 3px solid red;
 }
 
 .detail-tab {
