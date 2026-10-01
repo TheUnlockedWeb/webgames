@@ -8,96 +8,113 @@
 </head>
 <body>
 
+    <!-- Pokéweb Navigation Bar -->
     <nav class="navbar">
-        <div class="nav-logo">POKÉWEB</div>
+        <a href="../pokedex/index.html" class="nav-logo">
+            <!-- Inline SVG Pokéball Logo -->
+            <svg class="pokeball-icon" viewBox="0 0 100 100" width="30" height="30">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#ffffff" stroke-width="6" />
+                <path d="M 5,50 A 45,45 0 0,1 95,50 Z" fill="#dc3545" />
+                <path d="M 5,50 A 45,45 0 0,0 95,50 Z" fill="#ffffff" />
+                <line x1="5" y1="50" x2="95" y2="50" stroke="#212529" stroke-width="8" />
+                <circle cx="50" cy="50" r="14" fill="#212529" />
+                <circle cx="50" cy="50" r="7" fill="#ffffff" />
+            </svg>
+            <span class="logo-text">POKÉWEB</span>
+        </a>
         <ul class="nav-links">
-            <!-- The "../" tells the browser to go up one folder, preventing the double-url stacking -->
             <li><a href="../pokedex/index.html">POKÉDEX</a></li>
             <li class="active"><a href="#">APPRAISAL SYSTEM</a></li>
-            <li><a href="#" style="pointer-events: none; cursor: default;">MINIGAMES <span class="badge">SOON</span></a></li>
+            <li><a href="#" class="disabled-link">MINIGAMES <span class="badge">SOON</span></a></li>
         </ul>
     </nav>
 
-    <div class="calculator-container">
-        <div class="header">
-            <h1>Appraisal System</h1>
+    <!-- Main Appraisal Calculator Container -->
+    <main class="main-wrapper">
+        <div class="calculator-container">
+            <div class="header">
+                <h1>Appraisal System</h1>
+                <p class="subtitle">Calculate IVs, Perfection Rating, and Level projections</p>
+            </div>
+
+            <div class="content">
+                <!-- Pokemon Name Search & Autocomplete Dropdown -->
+                <div class="form-group autocomplete-container">
+                    <label for="pokemon-input">Pokémon Name</label>
+                    <input type="text" id="pokemon-input" class="input-text" placeholder="e.g. Mewtwo, Pikachu, Charizard" autocomplete="off">
+                    <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
+                </div>
+
+                <!-- Big Sprite Display -->
+                <div class="sprite-container">
+                    <div id="loading-msg" class="loading">Fetching Pokémon data...</div>
+                    <div id="error-msg" class="error-msg">Pokémon not found. Try another name!</div>
+                    <img id="pokemon-sprite" src="" alt="Pokémon Sprite">
+                </div>
+
+                <!-- CP & HP Inputs -->
+                <div class="row">
+                    <div class="form-group">
+                        <label for="cp-input">Combat Power (CP)</label>
+                        <input type="number" id="cp-input" class="input-text" placeholder="e.g. 2387" min="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="hp-input">Health Points (HP)</label>
+                        <input type="number" id="hp-input" class="input-text" placeholder="e.g. 150" min="10">
+                    </div>
+                </div>
+
+                <!-- Appraisal Sliders -->
+                <div class="appraisal-section">
+                    <span class="appraisal-label">Appraisal IVs</span>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Attack</span>
+                            <span id="atk-val">15</span>
+                        </div>
+                        <input type="range" id="atk-slider" min="0" max="15" value="15">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Defense</span>
+                            <span id="def-val">15</span>
+                        </div>
+                        <input type="range" id="def-slider" min="0" max="15" value="15">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Stamina (HP)</span>
+                            <span id="sta-val">15</span>
+                        </div>
+                        <input type="range" id="sta-slider" min="0" max="15" value="15">
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <button type="button" class="btn-calculate" id="calculate-btn">Calculate</button>
+
+                <!-- Results Section -->
+                <div class="results-container" id="results-box">
+                    <h2>Perfection Rating</h2>
+                    <div class="percentage" id="result-percentage">100.0%</div>
+                    <div class="iv-breakdown" id="result-breakdown">Atk: 15 | Def: 15 | HP: 15</div>
+                    
+                    <!-- Advanced Stats Section -->
+                    <div class="advanced-stats" id="advanced-stats-box">
+                        <div class="stat-row">
+                            <div>Estimated Level:<br><span class="stat-value" id="result-level">-</span></div>
+                            <div>Max CP (Lvl 50):<br><span class="stat-value" id="result-max-cp">-</span></div>
+                        </div>
+                    </div>
+
+                    <div id="result-stats" class="result-stats-text"></div>
+                </div>
+            </div>
         </div>
-        
-        <div class="content">
-            <!-- Pokemon Name -->
-            <div class="form-group">
-                <label for="pokemon-input">Pokémon Name</label>
-                <input type="text" id="pokemon-input" class="input-text" placeholder="e.g. Mewtwo, Pikachu, Charizard" autocomplete="off">
-            </div>
-
-            <!-- PokeAPI Sprite Box -->
-            <div class="sprite-container" id="sprite-box">
-                <span class="loading" id="loading-msg">Fetching sprite...</span>
-                <span class="error-msg" id="error-msg">Pokémon not found!</span>
-                <img id="pokemon-sprite" src="" alt="Pokémon Sprite">
-            </div>
-
-            <!-- CP & HP -->
-            <div class="row">
-                <div class="form-group">
-                    <label for="cp-input">CP</label>
-                    <input type="number" id="cp-input" class="input-text" placeholder="Enter CP" min="10">
-                </div>
-                <div class="form-group">
-                    <label for="hp-input">HP</label>
-                    <input type="number" id="hp-input" class="input-text" placeholder="Enter HP" min="10">
-                </div>
-            </div>
-
-            <!-- Appraisal Sliders -->
-            <div class="appraisal-section">
-                <label class="appraisal-label">Appraisal IVs</label>
-                
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span>Attack</span>
-                        <span id="atk-val">15</span>
-                    </div>
-                    <input type="range" id="atk-slider" min="0" max="15" value="15">
-                </div>
-                
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span>Defense</span>
-                        <span id="def-val">15</span>
-                    </div>
-                    <input type="range" id="def-slider" min="0" max="15" value="15">
-                </div>
-                
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span>Stamina (HP)</span>
-                        <span id="sta-val">15</span>
-                    </div>
-                    <input type="range" id="sta-slider" min="0" max="15" value="15">
-                </div>
-            </div>
-
-            <button class="btn-calculate" id="calculate-btn">Calculate</button>
-
-<!-- Results -->
-            <div class="results-container" id="results-box">
-                <h2>Perfection Rating</h2>
-                <div class="percentage" id="result-percentage">100%</div>
-                <div class="iv-breakdown" id="result-breakdown">15 / 15 / 15</div>
-                
-                <!-- NEW: Advanced Stats Section -->
-                <div class="advanced-stats" id="advanced-stats-box" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #b8daff;">
-                    <div style="display: flex; justify-content: space-around; font-size: 14px; font-weight: 600; color: #495057;">
-                        <div>Estimated Level: <br><span id="result-level" style="font-size: 18px; color: #3b4cca;">-</span></div>
-                        <div>Max CP (Lvl 50): <br><span id="result-max-cp" style="font-size: 18px; color: #3b4cca;">-</span></div>
-                    </div>
-                </div>
-
-                <div id="result-stats" class="result-stats-text"></div>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
