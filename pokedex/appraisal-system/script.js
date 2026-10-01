@@ -1,4 +1,4 @@
-// --- 1. Pokemon GO CPM Table (Levels 1 to 50) ---
+// --- 1. Pokemon GO Data & CPM Table (Levels 1 to 50) ---
 const cpmTable = {
     1: 0.094, 1.5: 0.135137432, 2: 0.16639787, 2.5: 0.192650919, 3: 0.21573247, 3.5: 0.236572661, 4: 0.25572005, 4.5: 0.273530381, 5: 0.29024988, 5.5: 0.306057377,
     6: 0.3210876, 6.5: 0.335445036, 7: 0.34921268, 7.5: 0.362457751, 8: 0.3752356, 8.5: 0.387592416, 9: 0.39956728, 9.5: 0.411193551, 10: 0.4225, 10.5: 0.432926409,
@@ -15,7 +15,7 @@ const cpmTable = {
 let currentPokemonBaseStats = null;
 let allPokemonList = [];
 
-// --- 2. Fetch Pokémon Master List for Search Autocomplete ---
+// --- 2. Fetch Pokémon Master List for Autocomplete ---
 async function fetchAllPokemon() {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1300');
@@ -27,222 +27,236 @@ async function fetchAllPokemon() {
 }
 fetchAllPokemon();
 
-// --- 3. Elements ---
-const pokemonInput = document.getElementById('pokemon-input');
-const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
-const spriteImg = document.getElementById('pokemon-sprite');
-const loadingMsg = document.getElementById('loading-msg');
-const errorMsg = document.getElementById('error-msg');
-let typingTimer;
+// --- 3. Initialize UI handlers once DOM is completely loaded ---
+document.addEventListener('DOMContentLoaded', () => {
+    // UI Elements
+    const pokemonInput = document.getElementById('pokemon-input');
+    const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
+    const spriteImg = document.getElementById('pokemon-sprite');
+    const loadingMsg = document.getElementById('loading-msg');
+    const errorMsg = document.getElementById('error-msg');
 
-// --- 4. Search & Autocomplete Interactions ---
-pokemonInput.addEventListener('input', () => {
-    const val = pokemonInput.value.trim().toLowerCase();
-    autocompleteDropdown.innerHTML = '';
-    
-    clearTimeout(typingTimer);
-    
-    if (val.length >= 2) {
-        const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 10);
+    const atkSlider = document.getElementById('atk-slider');
+    const defSlider = document.getElementById('def-slider');
+    const staSlider = document.getElementById('sta-slider');
+    const atkVal = document.getElementById('atk-val');
+    const defVal = document.getElementById('def-val');
+    const staVal = document.getElementById('sta-val');
+
+    const calcBtn = document.getElementById('calculate-btn');
+    const resultsBox = document.getElementById('results-box');
+    const resultPercentage = document.getElementById('result-percentage');
+    const resultBreakdown = document.getElementById('result-breakdown');
+    const resultStats = document.getElementById('result-stats');
+    const advStatsBox = document.getElementById('advanced-stats-box');
+    const resultLevel = document.getElementById('result-level');
+    const resultMaxCp = document.getElementById('result-max-cp');
+    const cpInput = document.getElementById('cp-input');
+
+    let typingTimer;
+
+    if (!pokemonInput || !autocompleteDropdown) return;
+
+    // --- 4. Handling Search Input & Autocomplete Dropdown ---
+    pokemonInput.addEventListener('input', () => {
+        const val = pokemonInput.value.trim().toLowerCase();
+        autocompleteDropdown.innerHTML = '';
         
-        if (matches.length > 0) {
-            autocompleteDropdown.style.display = 'block';
+        clearTimeout(typingTimer);
+        
+        if (val.length >= 2) {
+            // Filter master list (top 10 matches)
+            const matches = allPokemonList.filter(p => p.name.includes(val)).slice(0, 10);
             
-            matches.forEach(match => {
-                const urlParts = match.url.split('/');
-                const id = urlParts[urlParts.length - 2];
-                const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+            if (matches.length > 0) {
+                autocompleteDropdown.style.display = 'block';
                 
-                const item = document.createElement('div');
-                item.className = 'autocomplete-item';
-                
-                const formattedName = match.name.replace(/-/g, ' ');
-                
-                item.innerHTML = `
-                    <img src="${spriteUrl}" class="autocomplete-sprite" loading="lazy" alt="sprite">
-                    <span class="autocomplete-name">${formattedName}</span>
-                `;
-                
-                item.addEventListener('click', () => {
-                    pokemonInput.value = formattedName;
-                    autocompleteDropdown.style.display = 'none';
-                    fetchPokemonData(match.name);
+                matches.forEach(match => {
+                    const urlParts = match.url.split('/');
+                    const id = urlParts[urlParts.length - 2];
+                    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    
+                    const formattedName = match.name.replace(/-/g, ' ');
+                    
+                    item.innerHTML = `
+                        <img src="${spriteUrl}" class="autocomplete-sprite" loading="lazy" alt="sprite">
+                        <span class="autocomplete-name">${formattedName}</span>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        pokemonInput.value = formattedName;
+                        autocompleteDropdown.style.display = 'none';
+                        fetchPokemonData(match.name);
+                    });
+                    
+                    autocompleteDropdown.appendChild(item);
                 });
-                
-                autocompleteDropdown.appendChild(item);
-            });
+            } else {
+                autocompleteDropdown.style.display = 'none';
+            }
         } else {
             autocompleteDropdown.style.display = 'none';
-        }
-    } else {
-        autocompleteDropdown.style.display = 'none';
-        spriteImg.style.display = 'none';
-        errorMsg.style.display = 'none';
-        currentPokemonBaseStats = null;
-    }
-
-    if (val !== '') {
-        typingTimer = setTimeout(() => {
-            fetchPokemonData(val.replace(/\s+/g, '-'));
-        }, 600);
-    }
-});
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    if (!pokemonInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
-        autocompleteDropdown.style.display = 'none';
-    }
-});
-
-// --- 5. Fetch Pokémon Stats & Apply Official Niantic Conversion ---
-async function fetchPokemonData(pokemonName) {
-    spriteImg.style.display = 'none';
-    errorMsg.style.display = 'none';
-    loadingMsg.style.display = 'block';
-    currentPokemonBaseStats = null;
-
-    try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-        if (!response.ok) throw new Error('Not found');
-        
-        const data = await response.json();
-        const spriteUrl = data.sprites.other['official-artwork'].front_default || data.sprites.front_default;
-        
-        spriteImg.src = spriteUrl;
-        spriteImg.onload = () => {
-            loadingMsg.style.display = 'none';
-            spriteImg.style.display = 'block';
-        };
-
-        const stats = {};
-        data.stats.forEach(stat => {
-            stats[stat.stat.name] = stat.base_stat;
-        });
-
-        // Official Niantic Main-Series to PoGo Stat Formula:
-        const speedMod = 1 + (stats.speed - 75) / 500;
-        
-        // Attack (7/8 & 1/8 weighting with 2.0 scale)
-        const scaledAtk = Math.round(2 * ((Math.max(stats.attack, stats['special-attack']) * (7/8)) + (Math.min(stats.attack, stats['special-attack']) * (1/8))));
-        let baseAtk = Math.round(scaledAtk * speedMod);
-
-        // Defense (5/8 & 3/8 weighting with 2.0 scale)
-        const scaledDef = Math.round(2 * ((Math.max(stats.defense, stats['special-defense']) * (5/8)) + (Math.min(stats.defense, stats['special-defense']) * (3/8))));
-        let baseDef = Math.round(scaledDef * speedMod);
-
-        // Stamina
-        let baseSta = Math.floor(1.75 * stats.hp + 50);
-
-        // 9% stat nerf to Legendary / OP Pokémon whose un-nerfed level 40 CP exceeds 4000
-        const unnerfedMaxCp = Math.floor(((baseAtk + 15) * Math.sqrt(baseDef + 15) * Math.sqrt(baseSta + 15) * Math.pow(0.7903, 2)) / 10);
-        if (unnerfedMaxCp > 4000) {
-            baseAtk = Math.round(baseAtk * 0.91);
-            baseDef = Math.round(baseDef * 0.91);
-            baseSta = Math.round(baseSta * 0.91);
+            if (spriteImg) spriteImg.style.display = 'none';
+            if (errorMsg) errorMsg.style.display = 'none';
+            currentPokemonBaseStats = null;
         }
 
-        currentPokemonBaseStats = { atk: baseAtk, def: baseDef, sta: baseSta };
-
-    } catch (error) {
-        loadingMsg.style.display = 'none';
-        errorMsg.style.display = 'block';
-    }
-}
-
-// --- 6. Sliders ---
-const atkSlider = document.getElementById('atk-slider');
-const defSlider = document.getElementById('def-slider');
-const staSlider = document.getElementById('sta-slider');
-const atkVal = document.getElementById('atk-val');
-const defVal = document.getElementById('def-val');
-const staVal = document.getElementById('sta-val');
-
-function updateSliderValue(slider, label) {
-    slider.addEventListener('input', function() {
-        label.textContent = this.value;
+        if (val !== '') {
+            typingTimer = setTimeout(() => {
+                fetchPokemonData(val.replace(/\s+/g, '-'));
+            }, 600);
+        }
     });
-}
-updateSliderValue(atkSlider, atkVal);
-updateSliderValue(defSlider, defVal);
-updateSliderValue(staSlider, staVal);
 
-// --- 7. Real Calculation Engine ---
-const calcBtn = document.getElementById('calculate-btn');
-const resultsBox = document.getElementById('results-box');
-const resultPercentage = document.getElementById('result-percentage');
-const resultBreakdown = document.getElementById('result-breakdown');
-const resultStats = document.getElementById('result-stats');
-const advStatsBox = document.getElementById('advanced-stats-box');
-const resultLevel = document.getElementById('result-level');
-const resultMaxCp = document.getElementById('result-max-cp');
-const cpInput = document.getElementById('cp-input');
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!pokemonInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+            autocompleteDropdown.style.display = 'none';
+        }
+    });
 
-calcBtn.addEventListener('click', () => {
-    const atkIV = parseInt(atkSlider.value);
-    const defIV = parseInt(defSlider.value);
-    const staIV = parseInt(staSlider.value);
-    
-    // Perfection Rating
-    const totalIV = atkIV + defIV + staIV;
-    const percentage = ((totalIV / 45) * 100).toFixed(1);
-    
-    resultPercentage.textContent = `${percentage}%`;
-    resultBreakdown.textContent = `Atk: ${atkIV} | Def: ${defIV} | HP: ${staIV}`;
-    
-    if (currentPokemonBaseStats) {
-        const inputCP = parseInt(cpInput.value);
-        
-        // Calculate Max CP at Level 50 (CPM = 0.8403)
-        const maxLevelCpm = cpmTable[50];
-        const maxCP = Math.max(10, Math.floor(
-            ((currentPokemonBaseStats.atk + atkIV) * 
-            Math.sqrt(currentPokemonBaseStats.def + defIV) * 
-            Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
-            Math.pow(maxLevelCpm, 2)) / 10
-        ));
-        
-        resultMaxCp.textContent = maxCP;
+    // --- 5. Fetch Pokémon Stats & Apply Niantic Formula ---
+    async function fetchPokemonData(pokemonName) {
+        if (spriteImg) spriteImg.style.display = 'none';
+        if (errorMsg) errorMsg.style.display = 'none';
+        if (loadingMsg) loadingMsg.style.display = 'block';
+        currentPokemonBaseStats = null;
 
-        // Estimate current Pokémon Level from input CP
-        if (inputCP && !isNaN(inputCP)) {
-            let estimatedLevel = "Unknown";
-            let closestCPDiff = 9999;
+        try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            if (!response.ok) throw new Error('Not found');
+            
+            const data = await response.json();
+            const spriteUrl = data.sprites.other['official-artwork'].front_default || data.sprites.front_default;
+            
+            if (spriteImg) {
+                spriteImg.src = spriteUrl;
+                spriteImg.onload = () => {
+                    if (loadingMsg) loadingMsg.style.display = 'none';
+                    spriteImg.style.display = 'block';
+                };
+            }
 
-            for (const [lvl, cpm] of Object.entries(cpmTable)) {
-                const calculatedCP = Math.max(10, Math.floor(
+            const stats = {};
+            data.stats.forEach(stat => {
+                stats[stat.stat.name] = stat.base_stat;
+            });
+
+            // Official Niantic Main-Series to PoGo Stat Formula:
+            const speedMod = 1 + (stats.speed - 75) / 500;
+            
+            // Attack (7/8 & 1/8 weighting)
+            const scaledAtk = Math.round(2 * ((Math.max(stats.attack, stats['special-attack']) * (7/8)) + (Math.min(stats.attack, stats['special-attack']) * (1/8))));
+            let baseAtk = Math.round(scaledAtk * speedMod);
+
+            // Defense (5/8 & 3/8 weighting)
+            const scaledDef = Math.round(2 * ((Math.max(stats.defense, stats['special-defense']) * (5/8)) + (Math.min(stats.defense, stats['special-defense']) * (3/8))));
+            let baseDef = Math.round(scaledDef * speedMod);
+
+            // Stamina
+            let baseSta = Math.floor(1.75 * stats.hp + 50);
+
+            // 9% stat nerf to Legendary / OP Pokemon over 4000 unnerfed CP
+            const unnerfedMaxCp = Math.floor(((baseAtk + 15) * Math.sqrt(baseDef + 15) * Math.sqrt(baseSta + 15) * Math.pow(0.7903, 2)) / 10);
+            if (unnerfedMaxCp > 4000) {
+                baseAtk = Math.round(baseAtk * 0.91);
+                baseDef = Math.round(baseDef * 0.91);
+                baseSta = Math.round(baseSta * 0.91);
+            }
+
+            currentPokemonBaseStats = { atk: baseAtk, def: baseDef, sta: baseSta };
+
+        } catch (error) {
+            if (loadingMsg) loadingMsg.style.display = 'none';
+            if (errorMsg) errorMsg.style.display = 'block';
+        }
+    }
+
+    // --- 6. Handling Sliders ---
+    function updateSliderValue(slider, label) {
+        if (!slider || !label) return;
+        slider.addEventListener('input', function() {
+            label.textContent = this.value;
+        });
+    }
+    updateSliderValue(atkSlider, atkVal);
+    updateSliderValue(defSlider, defVal);
+    updateSliderValue(staSlider, staVal);
+
+    // --- 7. Real CP & Level Calculation ---
+    if (calcBtn) {
+        calcBtn.addEventListener('click', () => {
+            const atkIV = parseInt(atkSlider.value);
+            const defIV = parseInt(defSlider.value);
+            const staIV = parseInt(staSlider.value);
+            
+            // Perfection Rating
+            const totalIV = atkIV + defIV + staIV;
+            const percentage = ((totalIV / 45) * 100).toFixed(1);
+            
+            if (resultPercentage) resultPercentage.textContent = `${percentage}%`;
+            if (resultBreakdown) resultBreakdown.textContent = `Atk: ${atkIV} | Def: ${defIV} | HP: ${staIV}`;
+            
+            if (currentPokemonBaseStats) {
+                const inputCP = parseInt(cpInput.value);
+                
+                // Max CP at Level 50 (CPM = 0.8403)
+                const maxLevelCpm = cpmTable[50];
+                const maxCP = Math.max(10, Math.floor(
                     ((currentPokemonBaseStats.atk + atkIV) * 
                     Math.sqrt(currentPokemonBaseStats.def + defIV) * 
                     Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
-                    Math.pow(cpm, 2)) / 10
+                    Math.pow(maxLevelCpm, 2)) / 10
                 ));
                 
-                if (calculatedCP === inputCP) {
-                    estimatedLevel = lvl;
-                    break;
-                } else if (Math.abs(calculatedCP - inputCP) < closestCPDiff) {
-                    closestCPDiff = Math.abs(calculatedCP - inputCP);
-                    estimatedLevel = `~${lvl}`;
+                if (resultMaxCp) resultMaxCp.textContent = maxCP;
+
+                // Estimate level from user's input CP
+                if (inputCP && !isNaN(inputCP)) {
+                    let estimatedLevel = "Unknown";
+                    let closestCPDiff = 9999;
+
+                    for (const [lvl, cpm] of Object.entries(cpmTable)) {
+                        const calculatedCP = Math.max(10, Math.floor(
+                            ((currentPokemonBaseStats.atk + atkIV) * 
+                            Math.sqrt(currentPokemonBaseStats.def + defIV) * 
+                            Math.sqrt(currentPokemonBaseStats.sta + staIV) * 
+                            Math.pow(cpm, 2)) / 10
+                        ));
+                        
+                        if (calculatedCP === inputCP) {
+                            estimatedLevel = lvl;
+                            break;
+                        } else if (Math.abs(calculatedCP - inputCP) < closestCPDiff) {
+                            closestCPDiff = Math.abs(calculatedCP - inputCP);
+                            estimatedLevel = `~${lvl}`;
+                        }
+                    }
+                    if (resultLevel) resultLevel.textContent = estimatedLevel;
+                    if (resultStats) resultStats.textContent = `Level estimated from input CP ${inputCP}.`;
+                } else {
+                    if (resultLevel) resultLevel.textContent = "-";
+                    if (resultStats) resultStats.textContent = `Enter a CP value to estimate its current level!`;
                 }
+
+                if (advStatsBox) advStatsBox.style.display = 'block';
+            } else {
+                if (advStatsBox) advStatsBox.style.display = 'none';
+                if (resultStats) resultStats.textContent = "Enter a valid Pokémon name to see Advanced Stats like Max CP and Level.";
             }
-            resultLevel.textContent = estimatedLevel;
-            resultStats.textContent = `Level estimated from input CP ${inputCP}.`;
-        } else {
-            resultLevel.textContent = "-";
-            resultStats.textContent = `Enter a CP value to estimate its current level!`;
-        }
 
-        advStatsBox.style.display = 'block';
-    } else {
-        advStatsBox.style.display = 'none';
-        resultStats.textContent = "Enter a valid Pokémon name to see Advanced Stats like Max CP and Level.";
+            // Color rating
+            if (resultPercentage) {
+                if (percentage == 100) resultPercentage.style.color = "#dc3545"; 
+                else if (percentage >= 82) resultPercentage.style.color = "#28a745"; 
+                else if (percentage >= 51) resultPercentage.style.color = "#fd7e14"; 
+                else resultPercentage.style.color = "#6c757d"; 
+            }
+
+            if (resultsBox) resultsBox.style.display = 'block';
+        });
     }
-
-    // Dynamic rating colors
-    if (percentage == 100) resultPercentage.style.color = "#dc3545"; 
-    else if (percentage >= 82) resultPercentage.style.color = "#28a745"; 
-    else if (percentage >= 51) resultPercentage.style.color = "#fd7e14"; 
-    else resultPercentage.style.color = "#6c757d"; 
-
-    resultsBox.style.display = 'block';
 });
