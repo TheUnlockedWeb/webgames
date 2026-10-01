@@ -1986,6 +1986,48 @@ async function renderPokemonGrid() {
 
     updateGridStatus();
 }
+function updateGridStatus() {
+    const total =
+        state.filteredSpecies.length;
+
+    const selected =
+        [...state.selectedFilters];
+
+    let filterLabel =
+        "National Pokédex";
+
+    if (selected.length > 0) {
+        filterLabel =
+            selected
+                .map(filter => {
+                    if (
+                        filter ===
+                        "ultra-beast"
+                    ) {
+                        return "Ultra Beasts";
+                    }
+
+                    return prettyName(filter);
+                })
+                .join(" + ");
+    }
+
+    if (DOM.status) {
+        if (state.searchQuery) {
+            DOM.status.textContent =
+                `${filterLabel} • Search: "${state.searchQuery}"`;
+        }
+        else {
+            DOM.status.textContent =
+                filterLabel;
+        }
+    }
+
+    if (DOM.resultCount) {
+        DOM.resultCount.textContent =
+            `${total} Pokémon`;
+    }
+}
 
 
 /* ============================================================
