@@ -2168,7 +2168,7 @@ button.form-card:hover {
         20px
         0;
 
-    border-bottom: 3px solid red;
+    border-bottom: 1px solid var(--border);
 }
 
 .setting-row:last-child {
@@ -2660,7 +2660,7 @@ span:not(.sr-only) {
         10px
         12px;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom: 3px solid red;
 
     text-align: left;
 }
