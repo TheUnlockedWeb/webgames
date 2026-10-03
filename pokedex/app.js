@@ -1822,6 +1822,30 @@ async function applyFilter() {
             );
     }
 }
+   if (searchCategory?.startsWith("region-")) {
+    const region =
+        searchCategory.replace(
+            "region-",
+            ""
+        );
+
+    const range =
+        REGION_DEX_RANGES[region];
+
+    if (range) {
+        const [
+            minimum,
+            maximum
+        ] = range;
+
+        list =
+            list.filter(
+                pokemon =>
+                    pokemon.id >= minimum &&
+                    pokemon.id <= maximum
+            );
+    }
+}
 
     /*
         Shiny is a display modifier rather than a
@@ -1831,6 +1855,19 @@ async function applyFilter() {
         [...filters].filter(
             filter => filter !== "shiny"
         );
+   const effectiveSearchCategory =
+    searchCategory &&
+    !searchCategory.startsWith("region-")
+        ? searchCategory
+        : null;
+
+const effectiveCategoryFilters =
+    [
+        ...categoryFilters,
+        ...(effectiveSearchCategory
+            ? [effectiveSearchCategory]
+            : [])
+    ];
 
     if (
         categoryFilters.includes("legendary") ||
