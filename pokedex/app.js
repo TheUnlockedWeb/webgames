@@ -1790,6 +1790,13 @@ async function applyFilter() {
         state.speciesList.filter(
             matchesSearch
         );
+   
+   const searchCategory =
+    getSearchCategory(
+        normalizeSearch(
+            state.searchQuery
+        )
+    );
 
     /*
         Shiny is a display modifier rather than a
