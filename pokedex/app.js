@@ -2736,12 +2736,11 @@ async function renderPokemonSearchSuggestions(
                             <span
                                 class="search-suggestion-name"
                             >
-                                ${escapeHtml(
-                                    getLocalizedName(
-                                        null,
-                                        reference.name
-                                    )
-                                )}
+                              ${escapeHtml(
+                                  prettyName(
+                                      reference.name
+                                  )
+                              )}
                             </span>
 
                             <span
