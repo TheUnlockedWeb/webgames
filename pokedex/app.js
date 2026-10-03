@@ -2447,6 +2447,323 @@ function updateGridStatus() {
 
 let searchTimer = null;
 
+let suggestionTimer = null;
+
+let activeSuggestionIndex = -1;
+
+let suggestionRequestToken = 0;
+
+
+function getSearchSuggestionMatches(
+    query
+) {
+    const normalizedQuery =
+        normalizeSearch(query);
+
+    if (!normalizedQuery) {
+        return [];
+    }
+
+    return state.speciesList
+        .filter(reference => {
+            const name =
+                normalizeSearch(
+                    reference.name
+                );
+
+            const pretty =
+                normalizeSearch(
+                    prettyName(
+                        reference.name
+                    )
+                );
+
+            return (
+                name.startsWith(
+                    normalizedQuery
+                ) ||
+                pretty.startsWith(
+                    normalizedQuery
+                ) ||
+                String(reference.id).startsWith(
+                    normalizedQuery
+                )
+            );
+        })
+        .sort((a, b) => {
+            const aName =
+                normalizeSearch(a.name);
+
+            const bName =
+                normalizeSearch(b.name);
+
+            const aExact =
+                aName === normalizedQuery;
+
+            const bExact =
+                bName === normalizedQuery;
+
+            if (aExact && !bExact) {
+                return -1;
+            }
+
+            if (!aExact && bExact) {
+                return 1;
+            }
+
+            return a.id - b.id;
+        })
+        .slice(0, 8);
+}
+
+
+function hideSearchSuggestions() {
+    if (!DOM.searchSuggestions) {
+        return;
+    }
+
+    DOM.searchSuggestions.hidden =
+        true;
+
+    DOM.searchSuggestions.innerHTML =
+        "";
+
+    activeSuggestionIndex =
+        -1;
+}
+
+
+function showSearchSuggestions() {
+    if (!DOM.searchSuggestions) {
+        return;
+    }
+
+    DOM.searchSuggestions.hidden =
+        false;
+}
+
+
+function renderCategorySuggestion(
+    category,
+    label
+) {
+    return `
+        <button
+            class="search-suggestion"
+            type="button"
+            role="option"
+            data-search-category="${escapeHtml(category)}"
+        >
+            <span
+                class="search-suggestion-sprite"
+                aria-hidden="true"
+            >
+                <span
+                    style="
+                        font-size: 1.35rem;
+                    "
+                >
+                    🔎
+                </span>
+            </span>
+
+            <span
+                class="search-suggestion-info"
+            >
+                <span
+                    class="search-suggestion-name"
+                >
+                    ${escapeHtml(label)}
+                </span>
+
+                <span
+                    class="search-suggestion-meta"
+                >
+                    Search category
+                </span>
+            </span>
+        </button>
+    `;
+}
+
+
+async function renderPokemonSearchSuggestions(
+    query
+) {
+    if (!DOM.searchSuggestions) {
+        return;
+    }
+
+    const token =
+        ++suggestionRequestToken;
+
+    const matches =
+        getSearchSuggestionMatches(
+            query
+        );
+
+    const category =
+        getSearchCategory(
+            normalizeSearch(query)
+        );
+
+    if (
+        !matches.length &&
+        !category
+    ) {
+        hideSearchSuggestions();
+        return;
+    }
+
+    const categoryLabels = {
+        "region-kanto": "Kanto",
+        "region-johto": "Johto",
+        "region-hoenn": "Hoenn",
+        "region-sinnoh": "Sinnoh",
+        "region-unova": "Unova",
+        "region-kalos": "Kalos",
+        "region-alola": "Alola",
+        "region-galar": "Galar",
+        "region-paldea": "Paldea",
+
+        legendary: "Legendary Pokémon",
+        mythical: "Mythical Pokémon",
+        "ultra-beast": "Ultra Beasts",
+
+        mega: "Mega Pokémon",
+        gmax: "Gigantamax Pokémon",
+        costumes: "Costume Pokémon",
+        shiny: "Shiny Pokémon"
+    };
+
+    const pokemonData =
+        await Promise.all(
+            matches.map(
+                async reference => {
+                    try {
+                        return {
+                            reference,
+                            pokemon:
+                                await getPokemon(
+                                    reference.name
+                                )
+                        };
+                    }
+                    catch {
+                        return {
+                            reference,
+                            pokemon: null
+                        };
+                    }
+                }
+            )
+        );
+
+    if (
+        token !==
+        suggestionRequestToken
+    ) {
+        return;
+    }
+
+    let html = "";
+
+    if (category) {
+        const label =
+            categoryLabels[category];
+
+        if (label) {
+            html +=
+                renderCategorySuggestion(
+                    category,
+                    label
+                );
+        }
+    }
+
+    if (pokemonData.length) {
+        html += `
+            <div
+                class="search-suggestion-category"
+            >
+                Pokémon
+            </div>
+        `;
+
+        pokemonData.forEach(
+            ({
+                reference,
+                pokemon
+            }) => {
+                const sprite =
+                    pokemon
+                        ? getSprite(
+                            pokemon,
+                            state.selectedFilters
+                                .has("shiny")
+                        )
+                        : "";
+
+                html += `
+                    <button
+                        class="search-suggestion"
+                        type="button"
+                        role="option"
+                        data-search-pokemon="${escapeHtml(
+                            reference.name
+                        )}"
+                    >
+                        <span
+                            class="search-suggestion-sprite"
+                        >
+                            ${
+                                sprite
+                                    ? `
+                                        <img
+                                            src="${escapeHtml(
+                                                sprite
+                                            )}"
+                                            alt=""
+                                        >
+                                    `
+                                    : ""
+                            }
+                        </span>
+
+                        <span
+                            class="search-suggestion-info"
+                        >
+                            <span
+                                class="search-suggestion-name"
+                            >
+                                ${escapeHtml(
+                                    getLocalizedName(
+                                        null,
+                                        reference.name
+                                    )
+                                )}
+                            </span>
+
+                            <span
+                                class="search-suggestion-meta"
+                            >
+                                #${padDexNumber(
+                                    reference.id
+                                )}
+                            </span>
+                        </span>
+                    </button>
+                `;
+            }
+        );
+    }
+
+    DOM.searchSuggestions.innerHTML =
+        html;
+
+    showSearchSuggestions();
+}
+
 
 function handleSearchInput() {
     state.searchQuery =
@@ -2461,6 +2778,26 @@ function handleSearchInput() {
         CONFIG.PAGE_SIZE;
 
     clearTimeout(searchTimer);
+
+    clearTimeout(suggestionTimer);
+
+    const query =
+        DOM.searchInput.value.trim();
+
+    if (!query) {
+        hideSearchSuggestions();
+    }
+    else {
+        suggestionTimer =
+            window.setTimeout(
+                () => {
+                    renderPokemonSearchSuggestions(
+                        query
+                    );
+                },
+                80
+            );
+    }
 
     searchTimer =
         window.setTimeout(
@@ -2482,12 +2819,217 @@ function clearSearch() {
     state.visibleCount =
         CONFIG.PAGE_SIZE;
 
+    hideSearchSuggestions();
+
     applyFilter();
 
     DOM.searchInput.focus();
 }
 
 
+function setActiveSuggestion(
+    index
+) {
+    if (!DOM.searchSuggestions) {
+        return;
+    }
+
+    const suggestions =
+        [
+            ...DOM.searchSuggestions
+                .querySelectorAll(
+                    ".search-suggestion"
+                )
+        ];
+
+    if (!suggestions.length) {
+        return;
+    }
+
+    activeSuggestionIndex =
+        Math.max(
+            0,
+            Math.min(
+                index,
+                suggestions.length - 1
+            )
+        );
+
+    suggestions.forEach(
+        (suggestion, suggestionIndex) => {
+            const active =
+                suggestionIndex ===
+                activeSuggestionIndex;
+
+            suggestion.classList.toggle(
+                "active",
+                active
+            );
+
+            suggestion.setAttribute(
+                "aria-selected",
+                active
+                    ? "true"
+                    : "false"
+            );
+        }
+    );
+}
+
+
+function selectSearchSuggestion(
+    suggestion
+) {
+    const pokemon =
+        suggestion.dataset
+            .searchPokemon;
+
+    const category =
+        suggestion.dataset
+            .searchCategory;
+
+    if (pokemon) {
+        hideSearchSuggestions();
+
+        DOM.searchInput.value =
+            prettyName(pokemon);
+
+        state.searchQuery =
+            pokemon;
+
+        DOM.clearSearch.classList.add(
+            "visible"
+        );
+
+        openPokemon(pokemon);
+
+        return;
+    }
+
+    if (category) {
+        hideSearchSuggestions();
+
+        DOM.searchInput.value =
+            category
+                .replace(
+                    "region-",
+                    ""
+                );
+
+        state.searchQuery =
+            DOM.searchInput.value;
+
+        DOM.clearSearch.classList.add(
+            "visible"
+        );
+
+        state.visibleCount =
+            CONFIG.PAGE_SIZE;
+
+        applyFilter();
+    }
+}
+
+
+DOM.searchSuggestions?.addEventListener(
+    "click",
+    event => {
+        const suggestion =
+            event.target.closest(
+                ".search-suggestion"
+            );
+
+        if (!suggestion) {
+            return;
+        }
+
+        selectSearchSuggestion(
+            suggestion
+        );
+    }
+);
+
+
+DOM.searchInput?.addEventListener(
+    "keydown",
+    event => {
+        if (
+            !DOM.searchSuggestions ||
+            DOM.searchSuggestions.hidden
+        ) {
+            return;
+        }
+
+        const suggestions =
+            [
+                ...DOM.searchSuggestions
+                    .querySelectorAll(
+                        ".search-suggestion"
+                    )
+            ];
+
+        if (!suggestions.length) {
+            return;
+        }
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+
+            setActiveSuggestion(
+                activeSuggestionIndex + 1
+            );
+        }
+
+        else if (
+            event.key === "ArrowUp"
+        ) {
+            event.preventDefault();
+
+            setActiveSuggestion(
+                activeSuggestionIndex - 1
+            );
+        }
+
+        else if (
+            event.key === "Enter"
+        ) {
+            if (
+                activeSuggestionIndex >=
+                0
+            ) {
+                event.preventDefault();
+
+                selectSearchSuggestion(
+                    suggestions[
+                        activeSuggestionIndex
+                    ]
+                );
+            }
+        }
+
+        else if (
+            event.key === "Escape"
+        ) {
+            event.preventDefault();
+
+            hideSearchSuggestions();
+        }
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    event => {
+        if (
+            !event.target.closest(
+                ".search-area"
+            )
+        ) {
+            hideSearchSuggestions();
+        }
+    }
+);
 /* ============================================================
    20. CRIES
    ============================================================ */
