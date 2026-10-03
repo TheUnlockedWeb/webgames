@@ -2247,6 +2247,16 @@ async function renderPokemonGrid() {
 
     state.gridLoading.startedAt =
         performance.now();
+   
+      const pendingCards =
+       visibleSpecies.length -
+       renderedCount;
+   
+   if (pendingCards > 0) {
+       startGridLoadingWarning(
+           renderToken
+       );
+   }
 
     /*
         Tell the user we're loading the first page.
