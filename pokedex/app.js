@@ -48,9 +48,13 @@ const CONFIG = {
 
     PAGE_SIZE: 18,
 
-    REQUEST_BATCH_SIZE: 24,
+    REQUEST_BATCH_SIZE: 6,
 
     REQUEST_DELAY: 10,
+
+    CARD_LOADING_WARNING_MS: 7000,
+
+    CARD_LOADING_CONCURRENCY: 6,
 
     SETTINGS_KEY: "complete-pokedex-settings-v1",
 
