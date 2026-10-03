@@ -2167,71 +2167,7 @@ async function renderPokemonGrid() {
         has completed, we give a conservative fallback
         rather than pretending we know the network speed.
     */
-    state.gridLoading.warningTimer =
-        window.setTimeout(
-            () => {
-                if (
-                    renderToken !==
-                    state.gridLoading.token
-                ) {
-                    return;
-                }
 
-                if (
-                    state.gridLoading.completed >=
-                    state.gridLoading.total
-                ) {
-                    return;
-                }
-
-                const elapsedSeconds =
-                    Math.max(
-                        (
-                            performance.now() -
-                            state.gridLoading.startedAt
-                        ) / 1000,
-                        0.1
-                    );
-
-                let estimatedSeconds;
-
-                if (
-                    state.gridLoading.completed > 0
-                ) {
-                    const cardsPerSecond =
-                        state.gridLoading.completed /
-                        elapsedSeconds;
-
-                    estimatedSeconds =
-                        Math.ceil(
-                            (
-                                state.gridLoading.total -
-                                state.gridLoading.completed
-                            ) /
-                            cardsPerSecond
-                        );
-                }
-                else {
-                    estimatedSeconds = 15;
-                }
-
-                const estimate =
-                    Math.max(
-                        1,
-                        estimatedSeconds
-                    );
-
-                if (DOM.status) {
-                    DOM.status.textContent =
-                        `Still loading Pokémon... ` +
-                        `${state.gridLoading.completed} / ` +
-                        `${state.gridLoading.total}` +
-                        ` • Approximate time: ` +
-                        `about ${estimate} seconds`;
-                }
-            },
-            CONFIG.CARD_LOADING_WARNING_MS
-        );
 
     /*
         Load cards progressively.
