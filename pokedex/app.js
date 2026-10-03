@@ -2278,28 +2278,24 @@ async function renderPokemonGrid() {
                         `[data-grid-slot="${index}"]`
                     );
 
-                if (slot) {
-                    if (html) {
-                        slot.outerHTML =
-                            html;
-                    }
-                    else {
-                        slot.outerHTML = `
-                            <div
-                                class="error-state"
-                                data-grid-slot="${index}"
-                            >
-                                <div
-                                    class="error-state-inner"
-                                >
-                                    <strong>
-                                        Couldn't load this Pokémon
-                                    </strong>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
+                  if (slot) {
+                      slot.outerHTML =
+                          html ||
+                          `
+                              <div
+                                  class="error-state"
+                                  data-grid-slot="${index}"
+                              >
+                                  <div
+                                      class="error-state-inner"
+                                  >
+                                      <strong>
+                                          Couldn't load this Pokémon
+                                      </strong>
+                                  </div>
+                              </div>
+                          `;
+                  }
             }
             catch (error) {
                 console.warn(
