@@ -1870,8 +1870,8 @@ const effectiveCategoryFilters =
     ];
 
     if (
-        categoryFilters.includes("legendary") ||
-        categoryFilters.includes("mythical")
+        effectiveCategoryFilters.includes("legendary") ||
+        effectiveCategoryFilters.includes("mythical")
     ) {
         await buildLegendaryIndex();
     }
