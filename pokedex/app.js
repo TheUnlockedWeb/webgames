@@ -100,6 +100,14 @@ const state = {
 
     loading: false,
 
+    gridLoading: {
+    token: 0,
+    total: 0,
+    completed: 0,
+    startedAt: 0,
+    warningTimer: null
+    },
+
     initialized: false,
 
     settingsDirty: false,
