@@ -1410,18 +1410,35 @@ async function buildPokemonCard(
 
 function matchesSearch(reference) {
     const query =
-        normalizeSearch(state.searchQuery);
+        normalizeSearch(
+            state.searchQuery
+        );
 
     if (!query) {
         return true;
     }
 
+    /*
+        Category / region searches are handled separately
+        by applyFilter().
+    */
+    const searchCategory =
+        getSearchCategory(query);
+
+    if (searchCategory) {
+        return true;
+    }
+
     const name =
-        normalizeSearch(reference.name);
+        normalizeSearch(
+            reference.name
+        );
 
     const pretty =
         normalizeSearch(
-            prettyName(reference.name)
+            prettyName(
+                reference.name
+            )
         );
 
     return (
