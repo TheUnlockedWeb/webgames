@@ -1969,13 +1969,8 @@ const effectiveCategoryFilters =
 function startGridLoadingWarning(
     renderToken
 ) {
-    if (
-        state.gridLoading.warningTimer
-    ) {
-        clearTimeout(
-            state.gridLoading.warningTimer
-        );
-    }
+   
+stopGridLoadingWarning();
 
     state.gridLoading.warningTimer =
         window.setTimeout(
