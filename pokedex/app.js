@@ -1841,10 +1841,20 @@ async function renderPokemonGrid() {
     const total =
         state.filteredSpecies.length;
 
-    /*
-        Nothing matched the current filters/search.
-    */
     if (total === 0) {
+        state.gridLoading.token += 1;
+
+        if (
+            state.gridLoading.warningTimer
+        ) {
+            clearTimeout(
+                state.gridLoading.warningTimer
+            );
+
+            state.gridLoading.warningTimer =
+                null;
+        }
+
         DOM.pokemonGrid.innerHTML = `
             <div class="empty-state">
                 <h2>No Pokemon Found</h2>
@@ -1865,8 +1875,11 @@ async function renderPokemonGrid() {
                 "0 Pokémon";
         }
 
-        DOM.pokemonGrid.dataset.renderKey = "";
-        DOM.pokemonGrid.dataset.renderedCount = "0";
+        DOM.pokemonGrid.dataset.renderKey =
+            "";
+
+        DOM.pokemonGrid.dataset.renderedCount =
+            "0";
 
         return;
     }
@@ -1874,14 +1887,6 @@ async function renderPokemonGrid() {
     const shiny =
         state.selectedFilters.has("shiny");
 
-    /*
-        Every different filter/search/sort combination
-        gets its own render key.
-
-        If the key changes, the old cards must be removed.
-        If the key stays the same, we only append the
-        newly requested cards.
-    */
     const renderKey = [
         state.searchQuery,
         state.searchSort,
@@ -1896,33 +1901,6 @@ async function renderPokemonGrid() {
             DOM.pokemonGrid.dataset.renderedCount || 0
         );
 
-    /*
-        A new search/filter/sort combination means
-        we are starting a completely new grid.
-    */
-    if (previousKey !== renderKey) {
-        DOM.pokemonGrid.innerHTML = "";
-
-        renderedCount = 0;
-
-        DOM.pokemonGrid.dataset.renderKey =
-            renderKey;
-
-        DOM.pokemonGrid.dataset.renderedCount =
-            "0";
-
-        /*
-            Show a small number of skeletons while
-            the first batch is being requested.
-        */
-        renderSkeletonCards(
-            Math.min(
-                state.visibleCount,
-                CONFIG.REQUEST_BATCH_SIZE
-            )
-        );
-    }
-
     const visibleSpecies =
         state.filteredSpecies.slice(
             0,
@@ -1933,8 +1911,88 @@ async function renderPokemonGrid() {
         );
 
     /*
-        Nothing new needs to be rendered.
+        A completely new search/filter/sort state.
     */
+    if (previousKey !== renderKey) {
+        state.gridLoading.token += 1;
+
+        if (
+            state.gridLoading.warningTimer
+        ) {
+            clearTimeout(
+                state.gridLoading.warningTimer
+            );
+
+            state.gridLoading.warningTimer =
+                null;
+        }
+
+        renderedCount = 0;
+
+        DOM.pokemonGrid.innerHTML = "";
+
+        DOM.pokemonGrid.dataset.renderKey =
+            renderKey;
+
+        DOM.pokemonGrid.dataset.renderedCount =
+            "0";
+
+        /*
+            Create one skeleton slot for every Pokémon
+            we're about to load.
+        */
+        DOM.pokemonGrid.innerHTML =
+            visibleSpecies
+                .map(
+                    (_, index) =>
+                        `
+                            <div
+                                class="skeleton"
+                                data-grid-slot="${index}"
+                            ></div>
+                        `
+                )
+                .join("");
+    }
+    else {
+        /*
+            Infinite scroll added more Pokémon.
+
+            Add skeleton slots only for the new cards.
+        */
+        const existingSlots =
+            DOM.pokemonGrid.querySelectorAll(
+                "[data-grid-slot]"
+            ).length;
+
+        if (
+            visibleSpecies.length >
+            existingSlots
+        ) {
+            const newSlots =
+                visibleSpecies
+                    .slice(existingSlots)
+                    .map(
+                        (_, offset) =>
+                            `
+                                <div
+                                    class="skeleton"
+                                    data-grid-slot="${
+                                        existingSlots +
+                                        offset
+                                    }"
+                                ></div>
+                            `
+                    )
+                    .join("");
+
+            DOM.pokemonGrid.insertAdjacentHTML(
+                "beforeend",
+                newSlots
+            );
+        }
+    }
+
     if (
         renderedCount >=
         visibleSpecies.length
@@ -1943,93 +2001,263 @@ async function renderPokemonGrid() {
         return;
     }
 
+    const renderToken =
+        ++state.gridLoading.token;
+
+    state.gridLoading.total =
+        visibleSpecies.length;
+
+    state.gridLoading.completed =
+        renderedCount;
+
+    state.gridLoading.startedAt =
+        performance.now();
+
     /*
-        If this is the first batch, the skeletons are
-        currently occupying the grid.
-
-        Remove them before inserting real cards.
+        Tell the user we're loading the first page.
     */
-
+    if (DOM.status) {
+        DOM.status.textContent =
+            `Loading Pokémon... 0 / ${visibleSpecies.length}`;
+    }
 
     /*
-        Only request Pokémon that have not already
-        been rendered.
+        After seven seconds, show an estimated time.
 
-        This is the key difference from the old system:
-        scrolling from 24 → 48 does NOT rebuild the
-        original 24 cards.
+        We use the actual completion rate when at least
+        one Pokémon has finished. If absolutely nothing
+        has completed, we give a conservative fallback
+        rather than pretending we know the network speed.
     */
-    for (
-        let index = renderedCount;
-        index < visibleSpecies.length;
-        index += CONFIG.REQUEST_BATCH_SIZE
-    ) {
-        const batch =
-            visibleSpecies.slice(
-                index,
-                index +
-                    CONFIG.REQUEST_BATCH_SIZE
-            );
+    state.gridLoading.warningTimer =
+        window.setTimeout(
+            () => {
+                if (
+                    renderToken !==
+                    state.gridLoading.token
+                ) {
+                    return;
+                }
 
-        const batchCards =
-            await Promise.all(
-                batch.map(
-                    speciesReference =>
-                        buildPokemonCard(
-                            speciesReference,
-                            {
-                                shiny
-                            }
-                        )
-                )
-            );
+                if (
+                    state.gridLoading.completed >=
+                    state.gridLoading.total
+                ) {
+                    return;
+                }
 
-        const html =
-            batchCards
-                .filter(Boolean)
-                .join("");
+                const elapsedSeconds =
+                    Math.max(
+                        (
+                            performance.now() -
+                            state.gridLoading.startedAt
+                        ) / 1000,
+                        0.1
+                    );
 
-        if (html) {
-            DOM.pokemonGrid.insertAdjacentHTML(
-                "beforeend",
-                html
-            );
-        }
+                let estimatedSeconds;
 
-        renderedCount =
-            Math.min(
-                index + batch.length,
-                visibleSpecies.length
-            );
+                if (
+                    state.gridLoading.completed > 0
+                ) {
+                    const cardsPerSecond =
+                        state.gridLoading.completed /
+                        elapsedSeconds;
 
-        DOM.pokemonGrid.dataset.renderedCount =
-            String(renderedCount);
+                    estimatedSeconds =
+                        Math.ceil(
+                            (
+                                state.gridLoading.total -
+                                state.gridLoading.completed
+                            ) /
+                            cardsPerSecond
+                        );
+                }
+                else {
+                    estimatedSeconds = 15;
+                }
 
-        /*
-            Allow the browser to paint the newly
-            inserted cards before continuing.
-        */
-        await new Promise(resolve =>
-            requestAnimationFrame(resolve)
+                const estimate =
+                    Math.max(
+                        1,
+                        estimatedSeconds
+                    );
+
+                if (DOM.status) {
+                    DOM.status.textContent =
+                        `Still loading Pokémon... ` +
+                        `${state.gridLoading.completed} / ` +
+                        `${state.gridLoading.total}` +
+                        ` • Approximate time: ` +
+                        `about ${estimate} seconds`;
+                }
+            },
+            CONFIG.CARD_LOADING_WARNING_MS
         );
 
-        /*
-            If the user changed filters/search while
-            this request was running, stop this old
-            render operation.
-        */
-        const currentKey = [
-            state.searchQuery,
-            state.searchSort,
-            ...[...state.selectedFilters].sort()
-        ].join("|");
+    /*
+        Load cards progressively.
 
-        if (currentKey !== renderKey) {
-            return;
+        We intentionally keep the number of simultaneous
+        card requests controlled.
+    */
+    let nextIndex =
+        renderedCount;
+
+    async function worker() {
+        while (
+            nextIndex <
+            visibleSpecies.length
+        ) {
+            const index =
+                nextIndex++;
+
+            const speciesReference =
+                visibleSpecies[index];
+
+            try {
+                const html =
+                    await buildPokemonCard(
+                        speciesReference,
+                        {
+                            shiny
+                        }
+                    );
+
+                /*
+                    Ignore results from an old search/filter
+                    operation.
+                */
+                if (
+                    renderToken !==
+                    state.gridLoading.token
+                ) {
+                    return;
+                }
+
+                const slot =
+                    DOM.pokemonGrid.querySelector(
+                        `[data-grid-slot="${index}"]`
+                    );
+
+                if (slot) {
+                    if (html) {
+                        slot.outerHTML =
+                            html;
+                    }
+                    else {
+                        slot.outerHTML = `
+                            <div
+                                class="error-state"
+                                data-grid-slot="${index}"
+                            >
+                                <div
+                                    class="error-state-inner"
+                                >
+                                    <strong>
+                                        Couldn't load this Pokémon
+                                    </strong>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            catch (error) {
+                console.warn(
+                    "Progressive card loading failed:",
+                    speciesReference,
+                    error
+                );
+
+                const slot =
+                    DOM.pokemonGrid.querySelector(
+                        `[data-grid-slot="${index}"]`
+                    );
+
+                if (slot) {
+                    slot.outerHTML = `
+                        <div
+                            class="error-state"
+                            data-grid-slot="${index}"
+                        >
+                            <div
+                                class="error-state-inner"
+                            >
+                                <strong>
+                                    Couldn't load this Pokémon
+                                </strong>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            finally {
+                if (
+                    renderToken !==
+                    state.gridLoading.token
+                ) {
+                    return;
+                }
+
+                state.gridLoading.completed +=
+                    1;
+
+                DOM.pokemonGrid.dataset.renderedCount =
+                    String(
+                        Math.max(
+                            Number(
+                                DOM.pokemonGrid
+                                    .dataset
+                                    .renderedCount ||
+                                0
+                            ),
+                            index + 1
+                        )
+                    );
+
+                if (DOM.status) {
+                    DOM.status.textContent =
+                        `Loading Pokémon... ` +
+                        `${state.gridLoading.completed} / ` +
+                        `${state.gridLoading.total}`;
+                }
+
+                if (
+                    state.gridLoading.completed >=
+                    state.gridLoading.total
+                ) {
+                    if (
+                        state.gridLoading.warningTimer
+                    ) {
+                        clearTimeout(
+                            state.gridLoading.warningTimer
+                        );
+
+                        state.gridLoading.warningTimer =
+                            null;
+                    }
+
+                    updateGridStatus();
+                }
+            }
         }
     }
 
-    updateGridStatus();
+    const workers =
+        Array.from(
+            {
+                length:
+                    Math.min(
+                        CONFIG.CARD_LOADING_CONCURRENCY,
+                        visibleSpecies.length -
+                            renderedCount
+                    )
+            },
+            () => worker()
+        );
+
+    await Promise.all(workers);
 }
 function updateGridStatus() {
     const total =
