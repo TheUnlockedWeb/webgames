@@ -139,6 +139,7 @@ const DOM = {
 
     searchInput: document.querySelector("#searchInput"),
     clearSearch: document.querySelector("#clearSearch"),
+    searchSuggestions: document.querySelector("#searchSuggestions"),
     searchSortSetting: document.querySelector("#searchSortSetting"),
 
     pokemonGrid: document.querySelector("#pokemonGrid"),
