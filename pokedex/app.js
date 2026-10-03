@@ -1966,6 +1966,103 @@ const effectiveCategoryFilters =
     await renderPokemonGrid();
 }
 
+function startGridLoadingWarning(
+    renderToken
+) {
+    if (
+        state.gridLoading.warningTimer
+    ) {
+        clearTimeout(
+            state.gridLoading.warningTimer
+        );
+    }
+
+    state.gridLoading.warningTimer =
+        window.setTimeout(
+            () => {
+                if (
+                    renderToken !==
+                    state.gridLoading.token
+                ) {
+                    return;
+                }
+
+                const completed =
+                    state.gridLoading.completed;
+
+                const total =
+                    state.gridLoading.total;
+
+                /*
+                    Everything has already loaded.
+                    There is no reason to show a warning.
+                */
+                if (
+                    completed >= total
+                ) {
+                    return;
+                }
+
+                const elapsedSeconds =
+                    Math.max(
+                        (
+                            performance.now() -
+                            state.gridLoading.startedAt
+                        ) / 1000,
+                        0.1
+                    );
+
+                let estimatedSeconds;
+
+                if (completed > 0) {
+                    const cardsPerSecond =
+                        completed /
+                        elapsedSeconds;
+
+                    estimatedSeconds =
+                        Math.ceil(
+                            (
+                                total -
+                                completed
+                            ) /
+                            cardsPerSecond
+                        );
+                }
+                else {
+                    /*
+                        Nothing has finished yet,
+                        so we genuinely don't have
+                        enough information for a
+                        calculated estimate.
+                    */
+                    estimatedSeconds = 15;
+                }
+
+                if (DOM.status) {
+                    DOM.status.textContent =
+                        `Still loading Pokémon... ` +
+                        `${completed} / ${total}` +
+                        ` • Approximate time: ` +
+                        `about ${estimatedSeconds} seconds`;
+                }
+            },
+            CONFIG.CARD_LOADING_WARNING_MS
+        );
+}
+
+
+function stopGridLoadingWarning() {
+    if (
+        state.gridLoading.warningTimer
+    ) {
+        clearTimeout(
+            state.gridLoading.warningTimer
+        );
+
+        state.gridLoading.warningTimer =
+            null;
+    }
+}
 
 /* ============================================================
    18. RENDER MAIN GRID
