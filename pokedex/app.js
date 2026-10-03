@@ -1407,6 +1407,58 @@ async function buildPokemonCard(
 /* ============================================================
    15. FILTERING
    ============================================================ */
+const SEARCH_CATEGORIES = {
+    kanto: "region-kanto",
+    johto: "region-johto",
+    hoenn: "region-hoenn",
+    sinnoh: "region-sinnoh",
+    unova: "region-unova",
+    kalos: "region-kalos",
+    alola: "region-alola",
+    galar: "region-galar",
+    paldea: "region-paldea",
+
+    legendary: "legendary",
+    legendaries: "legendary",
+
+    mythical: "mythical",
+    mythicals: "mythical",
+
+    "ultra-beast": "ultra-beast",
+    "ultra-beasts": "ultra-beast",
+    "ultra beast": "ultra-beast",
+    "ultra beasts": "ultra-beast",
+
+    mega: "mega",
+    megas: "mega",
+
+    gmax: "gmax",
+    gigantamax: "gmax",
+
+    costume: "costumes",
+    costumes: "costumes",
+
+    shiny: "shiny"
+};
+
+
+function getSearchCategory(query) {
+    const normalized =
+        String(query)
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-");
+
+    return (
+        SEARCH_CATEGORIES[normalized] ||
+        SEARCH_CATEGORIES[
+            String(query)
+                .toLowerCase()
+                .trim()
+        ] ||
+        null
+    );
+}
 
 function matchesSearch(reference) {
     const query =
