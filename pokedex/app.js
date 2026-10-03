@@ -1898,7 +1898,7 @@ const effectiveCategoryFilters =
         Legendary + Mythical
         = nothing, so "No Pokemon Found" is displayed.
     */
-    for (const filter of categoryFilters) {
+    for (const filter of effectiveCategoryFilters) {
         switch (filter) {
             case "legendary":
                 list = list.filter(item =>
