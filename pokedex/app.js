@@ -1877,13 +1877,13 @@ const effectiveCategoryFilters =
     }
 
     if (
-        categoryFilters.includes("mega") ||
-        categoryFilters.includes("gmax")
+        effectiveCategoryFilters.includes("mega") ||
+        effectiveCategoryFilters.includes("gmax")
     ) {
         await buildSpecialFormIndexes();
     }
     if (
-       categoryFilters.includes("costumes")
+       effectiveCategoryFilters.includes("costumes")
     ) {
         await buildCostumeIndex();
     }
