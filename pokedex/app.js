@@ -1798,6 +1798,31 @@ async function applyFilter() {
         )
     );
 
+   if (searchCategory?.startsWith("region-")) {
+    const region =
+        searchCategory.replace(
+            "region-",
+            ""
+        );
+
+    const range =
+        REGION_DEX_RANGES[region];
+
+    if (range) {
+        const [
+            minimum,
+            maximum
+        ] = range;
+
+        list =
+            list.filter(
+                pokemon =>
+                    pokemon.id >= minimum &&
+                    pokemon.id <= maximum
+            );
+    }
+}
+
     /*
         Shiny is a display modifier rather than a
         species category, so it does not remove Pokémon.
