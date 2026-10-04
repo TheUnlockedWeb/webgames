@@ -2231,17 +2231,19 @@ async function renderPokemonGrid() {
         return;
     }
 
-    const renderToken =
-        ++state.gridLoading.token;
-
-    state.gridLoading.total =
-        visibleSpecies.length;
-
-    state.gridLoading.completed =
-        renderedCount;
-
-    state.gridLoading.startedAt =
-        performance.now();
+   const renderToken =
+       ++state.gridLoading.token;
+   
+   state.gridLoading.total =
+       visibleSpecies.length;
+   
+   state.gridLoading.completed =
+       renderedCount;
+   
+   state.gridLoading.startedAt =
+       performance.now();
+   
+   state.gridLoading.warningTimer = null;
    
       const pendingCards =
        visibleSpecies.length -
