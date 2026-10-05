@@ -3331,7 +3331,7 @@ async function openPokemon(
         state.currentDetailPanel =
             "info";
 
-        await buildCostumeIndex();
+        // Costume data will be loaded only when it is actually needed.
 
         renderPokemonDetail(
             pokemon,
