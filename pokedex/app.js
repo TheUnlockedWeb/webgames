@@ -3293,18 +3293,6 @@ async function openPokemon(
 
     showView("detail");
 
-    DOM.detailContent.innerHTML = `
-        <div class="detail-shell">
-            <div class="inline-loading">
-                <div>
-                    <div class="inline-spinner"></div>
-
-                    Loading Pokémon...
-                </div>
-            </div>
-        </div>
-    `;
-
     try {
         const pokemon =
             await getPokemon(
