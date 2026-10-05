@@ -2232,7 +2232,7 @@ async function renderPokemonGrid() {
     }
 
    const renderToken =
-       ++state.gridLoading.token;
+       state.gridLoading.token;
    
    state.gridLoading.total =
        visibleSpecies.length;
