@@ -770,6 +770,19 @@ function showLoading(message = "Loading Pokémon...") {
     document.body.classList.add("no-scroll");
 }
 
+function checkPokemonCardsLoaded() {
+    if (!DOM.pokemonGrid) {
+        return;
+    }
+
+    const loadingCards =
+        DOM.pokemonGrid.querySelectorAll(".skeleton").length;
+
+    if (loadingCards === 0) {
+        hideLoading();
+    }
+}
+
 
 function hideLoading() {
     if (!DOM.loadingOverlay) {
