@@ -783,6 +783,10 @@ function checkPokemonCardsLoaded() {
     }
 }
 
+setInterval(
+    checkPokemonCardsLoaded,
+    250
+);
 
 function hideLoading() {
     if (!DOM.loadingOverlay) {
