@@ -544,6 +544,8 @@ a:focus-visible {
    ============================================================ */
 
 .search-area {
+    position: relative;
+
     width: min(100%, 440px);
 
     flex-shrink: 0;
