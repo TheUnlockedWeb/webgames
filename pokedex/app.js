@@ -2396,23 +2396,23 @@ async function renderPokemonGrid() {
                         `${state.gridLoading.total}`;
                 }
 
-                if (
-                    state.gridLoading.completed >=
-                    state.gridLoading.total
-                ) {
-                    if (
-                        state.gridLoading.warningTimer
-                    ) {
-                        clearTimeout(
-                            state.gridLoading.warningTimer
-                        );
-
-                        state.gridLoading.warningTimer =
-                            null;
-                    }
-
-                    updateGridStatus();
-                }
+               if (
+                   state.gridLoading.completed >=
+                   state.gridLoading.total
+               ) {
+                   // Remove any loading skeletons left behind.
+                   DOM.pokemonGrid
+                       .querySelectorAll(".skeleton")
+                       .forEach(skeleton => {
+                           skeleton.remove();
+                       });
+               
+                   // Stop the loading warning.
+                   stopGridLoadingWarning();
+               
+                   // Update the final grid status.
+                   updateGridStatus();
+               }
             }
         }
     }
