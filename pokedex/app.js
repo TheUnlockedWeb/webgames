@@ -68,7 +68,9 @@ const CONFIG = {
         animations: false,
         autoCry: true,
         cryVolume: 80,
-        language: "en"
+        language: "en",
+        pokemonNavigation: "results",
+        returnPosition: "remember",
     }
 };
 
