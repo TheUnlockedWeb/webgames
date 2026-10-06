@@ -5311,6 +5311,17 @@ document.addEventListener(
                 case "play-cry-2025":
                     await playLegacyCry();
                     break;
+                case "previous-pokemon":
+                    await navigatePokemon(
+                     "previous"
+                   );
+                    break;
+               
+               case "next-pokemon":
+                   await navigatePokemon(
+                       "next"
+                   );
+                   break;
             }
         }
     }
