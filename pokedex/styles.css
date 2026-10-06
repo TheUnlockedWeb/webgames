@@ -3548,3 +3548,72 @@ span:not(.sr-only) {
         white-space: nowrap;
     }
 }
+
+.pokemon-navigation {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+.detail-nav-button {
+    min-width: 150px;
+
+    padding: 11px 16px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 12px;
+
+    background:
+        var(--surface);
+
+    color:
+        var(--text);
+
+    font: inherit;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition-fast),
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+
+.detail-nav-button:hover:not(:disabled) {
+    background:
+        var(--surface-2);
+
+    transform:
+        translateY(-1px);
+}
+
+
+.detail-nav-button:disabled {
+    opacity: 0.35;
+
+    cursor: not-allowed;
+}
+
+
+@media (max-width: 600px) {
+
+    .pokemon-navigation {
+        flex-direction: column;
+    }
+
+    .detail-nav-button {
+        width: 100%;
+    }
+
+}
