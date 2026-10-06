@@ -5149,7 +5149,7 @@ document.addEventListener(
                     break;
             
                 case "play-cry-2025":
-                    await playCry2025();
+                    await playLegacyCry();
                     break;
             }
         }
