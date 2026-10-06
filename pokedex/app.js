@@ -100,6 +100,8 @@ const state = {
 
     currentDetailPanel: "info",
 
+    detailReturnScrollY: 0,
+
     loading: false,
 
     gridLoading: {
