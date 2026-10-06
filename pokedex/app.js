@@ -3519,6 +3519,46 @@ function renderPokemonDetail(
     DOM.detailContent.innerHTML = `
         <article class="detail-shell">
 
+                 <nav
+             class="pokemon-navigation"
+             aria-label="Pokémon navigation"
+         >
+             ${
+                 state.settings.pokemonNavigation !==
+                 "off"
+                     ? `
+                         <button
+                             class="detail-nav-button"
+                             type="button"
+                             data-action="previous-pokemon"
+                             ${
+                                 !getPokemonNavigationTargets()
+                                     .previous
+                                     ? "disabled"
+                                     : ""
+                             }
+                         >
+                             ← Previous
+                         </button>
+         
+                         <button
+                             class="detail-nav-button"
+                             type="button"
+                             data-action="next-pokemon"
+                             ${
+                                 !getPokemonNavigationTargets()
+                                     .next
+                                     ? "disabled"
+                                     : ""
+                             }
+                         >
+                             Next →
+                         </button>
+                     `
+                     : ""
+             }
+         </nav>
+
             <div class="detail-hero">
 
                 <div class="detail-art">
