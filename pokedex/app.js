@@ -3395,6 +3395,99 @@ async function openPokemon(
 /* ============================================================
    22. DETAIL HEADER
    ============================================================ */
+function getPokemonNavigationList() {
+    if (
+        state.settings.pokemonNavigation ===
+        "all"
+    ) {
+        return [...state.speciesList]
+            .sort(
+                (a, b) =>
+                    Number(a.id) -
+                    Number(b.id)
+            );
+    }
+
+    return [...state.filteredSpecies];
+}
+
+
+function getPokemonNavigationTargets() {
+    if (
+        state.settings.pokemonNavigation ===
+        "off"
+    ) {
+        return {
+            previous: null,
+            next: null
+        };
+    }
+
+    const list =
+        getPokemonNavigationList();
+
+    if (!list.length) {
+        return {
+            previous: null,
+            next: null
+        };
+    }
+
+    const currentId =
+        Number(
+            state.selectedSpecies?.id
+        );
+
+    const currentIndex =
+        list.findIndex(
+            item =>
+                Number(item.id) ===
+                currentId
+        );
+
+    if (currentIndex === -1) {
+        return {
+            previous: null,
+            next: null
+        };
+    }
+
+    return {
+        previous:
+            list[
+                currentIndex - 1
+            ] || null,
+
+        next:
+            list[
+                currentIndex + 1
+            ] || null
+    };
+}
+
+
+async function navigatePokemon(
+    direction
+) {
+    const {
+        previous,
+        next
+    } =
+        getPokemonNavigationTargets();
+
+    const target =
+        direction === "previous"
+            ? previous
+            : next;
+
+    if (!target) {
+        return;
+    }
+
+    await openPokemon(
+        target.name
+    );
+}
 
 function renderPokemonDetail(
     pokemon,
