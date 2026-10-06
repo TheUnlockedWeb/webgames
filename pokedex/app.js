@@ -571,6 +571,16 @@ function applySettings() {
        DOM.languageSetting.value =
            state.settings.language;
    }
+
+      if (DOM.pokemonNavigationSetting) {
+       DOM.pokemonNavigationSetting.value =
+           state.settings.pokemonNavigation;
+   }
+   
+   if (DOM.returnPositionSetting) {
+       DOM.returnPositionSetting.value =
+           state.settings.returnPosition;
+   }
 }
 
 function readSettingsFromControls() {
