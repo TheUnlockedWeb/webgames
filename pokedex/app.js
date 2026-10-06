@@ -3325,6 +3325,9 @@ async function openPokemon(
           shiny = false
       } = options;
 
+    state.detailReturnScrollY =
+    window.scrollY;
+
     showView("detail");
 
     try {
