@@ -1,0 +1,122 @@
+#poke-search {
+    position: relative;
+    min-width: 10rem;
+}
+
+.search-box {
+    width: 100%;
+    line-height: 1.6em;
+    padding-left: 2em;
+    padding-right: 0;
+    font-size: 100%;
+    text-align: left;
+    border: 1px solid var(--col-outline);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+#poke-search-box {
+    width: 10rem;
+}
+
+#poke-suggestions {
+    width: 20rem;
+}
+.suggestions {
+    margin-top: 0;
+    text-align: left;
+    z-index: 5;
+    position: absolute;
+    
+    background-color: var(--col-drawer-bg);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--col-outline);
+    border-radius: var(--border-radius);
+    box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+}
+.move-suggestions {
+    top: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.move-search-result {
+    padding: 0.1em 0.5em;
+}
+
+#poke-suggestions .poke-number {
+    margin-right: 5px;
+    text-align: left;
+}
+
+
+
+.autoComplete_wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+.autoComplete_wrapper > table, .autoComplete_wrapper > ul {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+    z-index: 1000;
+    outline: none;
+    border: 1px solid var(--col-outline);
+}
+
+.autoComplete_wrapper > table > tr, .autoComplete_wrapper > ul > li {
+    list-style: none;
+    text-align: left;
+    transition: all 0.1s ease-in-out;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s ease;
+}
+
+.autoComplete_wrapper > table > tr > td {
+    padding: 0;
+}
+
+.autoComplete_wrapper > table > tr > td:first-child {
+    padding-left: 6px;
+}
+.autoComplete_wrapper > table > tr > td:last-child {
+    padding-right: 6px;
+}
+.autoComplete_wrapper > table > tr > td.poke-search-name {
+    padding-left: 6px;
+    width: 100%;
+    text-align: left;
+}
+
+.autoComplete_wrapper > table > tr::selection, .autoComplete_wrapper > ul::selection {
+    color: rgba(#ffffff, 0);
+    background-color: rgba(#ffffff, 0);
+}
+
+.autoComplete_wrapper > table > tr:hover, .autoComplete_wrapper > ul li:hover {
+    cursor: pointer;
+    background-color: rgba(123, 123, 123, 0.1);
+}
+
+.autoComplete_wrapper mark {
+    background-color: transparent;
+    color: #5d84b1;
+    font-weight: bold;
+}
+
+.autoComplete_wrapper mark::selection {
+    color: rgba(#ffffff, 0);
+    background-color: rgba(#ffffff, 0);
+}
+
+.autoComplete_wrapper > table > tr[aria-selected="true"], .autoComplete_wrapper > ul > li[aria-selected="true"] {
+    background-color: rgba(123, 123, 123, 0.4);
+}

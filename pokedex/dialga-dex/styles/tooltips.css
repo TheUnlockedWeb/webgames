@@ -1,0 +1,137 @@
+.tooltip {
+  --col-tooltip: #fff;
+  --col-tooltip-bg: #bbb;
+
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  min-width: 150px;
+  max-width: 350px;
+  width: max-content;
+  background-color: var(--col-tooltip-bg);
+  color: var(--col-tooltip);
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 2;
+
+  font-weight: normal;
+  font-size: 1em;
+  text-wrap: wrap;
+  text-align: left;
+  
+  opacity: 0;
+  visibility: hidden;
+
+  /* default to bottom */
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-bottom .tooltiptext {
+  inset: 125% auto auto auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-top .tooltiptext {
+  inset: auto auto 125% auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-left .tooltiptext {
+  inset: auto 110% auto auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-right .tooltiptext {
+  inset: auto auto auto 110%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+  
+  /* default to bottom */
+  inset: auto auto 100% auto;
+  left: 50%;
+  margin: 0 0 0 -5px;
+  border-color: transparent transparent var(--col-tooltip-bg) transparent;
+}
+
+.tooltip-bottom .tooltiptext::after {
+  inset: auto auto 100% auto;
+  left: 50%;
+  margin: 0 0 0 -5px;
+  border-color: transparent transparent var(--col-tooltip-bg) transparent;
+}
+
+.tooltip-top .tooltiptext::after {
+  inset: 100% auto auto auto;
+  left: 50%;
+  margin: 0 0 0 -5px;
+  border-color: var(--col-tooltip-bg) transparent transparent transparent;
+}
+
+.tooltip-left .tooltiptext::after {
+  inset: auto auto auto 100%;
+  top: 50%;
+  margin: -5px 0 0 0;
+  border-color: transparent transparent transparent var(--col-tooltip-bg);
+}
+
+.tooltip-right .tooltiptext::after {
+  inset: auto 100% auto auto;
+  top: 50%;
+  margin: -5px 0 0 0;
+  border-color: transparent var(--col-tooltip-bg) transparent transparent ;
+}
+
+.tooltip:hover .tooltiptext {
+  animation: 1s snapFadeIn;
+  animation-fill-mode: forwards;
+}
+
+@keyframes snapFadeIn {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+    z-index: -40;
+  }
+  75% {
+    visibility: visible;
+    opacity: 0;
+    z-index: 2;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+    z-index: 2;
+  }
+}
+
+.tooltip-title {
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  padding-bottom: 0.5em;
+}
+
+.tooltip ul {
+  padding-inline-start: 1.5em;
+  text-indent: -0.5ch;
+  margin-block: 0em;
+}
+
+.tooltip p {
+  margin-block: 0em;
+}
