@@ -153,6 +153,8 @@ const DOM = {
     clearSearch: document.querySelector("#clearSearch"),
     searchSuggestions: document.querySelector("#searchSuggestions"),
     searchSortSetting: document.querySelector("#searchSortSetting"),
+    pokemonNavigationSetting: document.querySelector("#pokemonNavigationSetting"),
+    returnPositionSetting: document.querySelector("#returnPositionSetting"),
 
     pokemonGrid: document.querySelector("#pokemonGrid"),
 
