@@ -3083,70 +3083,13 @@ document.addEventListener(
    ============================================================ */
 
 function stopCry() {
-    if (!DOM.pokemonCryPlayer) {
-        return;
-    }
-
-    DOM.pokemonCryPlayer.pause();
-
-    DOM.pokemonCryPlayer.currentTime = 0;
-}
-
-
-async function playCry2025(pokemon = state.selectedPokemon) {
-    if (!pokemon) {
-        return;
-    }
-
-    const cry =
-        pokemon.cries?.latest ||
-        pokemon.cries?.legacy;
-
-    if (!cry) {
-        showToast(
-            "No cry is available for this Pokémon.",
-            "warning"
-        );
-
-        return;
-    }
-
-    stopCry();
-
-    DOM.pokemonCryPlayer.src = cry;
-
-    DOM.pokemonCryPlayer.volume =
-        clamp(
-            Number(
-                state.settings.cryVolume
-            ) / 100,
-            0,
-            1
-        );
-
-    try {
-        await DOM.pokemonCryPlayer.play();
-    }
-    catch {
-        /*
-           Browsers may block autoplay.
-           The Play Cry button still works.
-        */
-    }
-}
-
-let volumePreviewTimer = null;
-
-const activeCryPlayers = new Set();
-
-function stopCry() {
     activeCryPlayers.forEach(audio => {
         try {
             audio.pause();
             audio.currentTime = 0;
         }
         catch {
-            // Ignore already-destroyed audio objects.
+            // Ignore already-finished audio.
         }
     });
 
@@ -3159,16 +3102,39 @@ function stopCry() {
 }
 
 
+const activeCryPlayers = new Set();
+let volumePreviewTimer = null;
+
+
+function getLatestCry(pokemon) {
+    return (
+        pokemon?.cries?.latest ||
+        pokemon?.cries?.legacy ||
+        null
+    );
+}
+
+
+function getLegacyCry(pokemon) {
+    return (
+        pokemon?.cries?.legacy ||
+        pokemon?.cries?.latest ||
+        null
+    );
+}
+
+
 function playOverlappingCry(
-    pokemon
+    pokemon,
+    useLegacy = false
 ) {
     if (!pokemon) {
         return null;
     }
 
-    const cry =
-        pokemon.cries?.latest ||
-        pokemon.cries?.legacy;
+    const cry = useLegacy
+        ? getLegacyCry(pokemon)
+        : getLatestCry(pokemon);
 
     if (!cry) {
         return null;
@@ -3215,7 +3181,11 @@ function playOverlappingCry(
 }
 
 
-async function playCry2025(
+/*
+    Automatic Pokémon interaction:
+    use the current/latest cry.
+*/
+async function playCurrentCry(
     pokemon = state.selectedPokemon
 ) {
     if (!pokemon) {
@@ -3223,11 +3193,40 @@ async function playCry2025(
     }
 
     const audio =
-        playOverlappingCry(pokemon);
+        playOverlappingCry(
+            pokemon,
+            false
+        );
 
     if (!audio) {
         showToast(
             "No cry is available for this Pokémon.",
+            "warning"
+        );
+    }
+}
+
+
+/*
+    The normal "Play Cry" button:
+    use the old/legacy cry where available.
+*/
+async function playLegacyCry(
+    pokemon = state.selectedPokemon
+) {
+    if (!pokemon) {
+        return;
+    }
+
+    const audio =
+        playOverlappingCry(
+            pokemon,
+            true
+        );
+
+    if (!audio) {
+        showToast(
+            "No old cry is available for this Pokémon.",
             "warning"
         );
     }
@@ -3244,8 +3243,7 @@ async function playPikachuIconicCry() {
             await getPokemon("pikachu");
 
         const cry =
-            pikachu.cries?.latest ||
-            pikachu.cries?.legacy;
+            getLatestCry(pikachu);
 
         if (!cry) {
             return;
@@ -3253,9 +3251,7 @@ async function playPikachuIconicCry() {
 
         DOM.pokemonCryPlayer.pause();
         DOM.pokemonCryPlayer.currentTime = 0;
-
-        DOM.pokemonCryPlayer.src =
-            cry;
+        DOM.pokemonCryPlayer.src = cry;
 
         DOM.pokemonCryPlayer.volume =
             clamp(
