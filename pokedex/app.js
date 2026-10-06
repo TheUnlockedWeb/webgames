@@ -419,6 +419,20 @@ function applyInterfaceLanguage() {
         });
 }
 
+function getEnglishGenus(species) {
+    if (!species?.genera?.length) {
+        return "";
+    }
+
+    const englishGenus =
+        species.genera.find(
+            item =>
+                item.language?.name === "en"
+        );
+
+    return englishGenus?.genus || "";
+}
+
 function getEnglishFlavorText(species) {
     if (!species?.flavor_text_entries?.length) {
         return "";
