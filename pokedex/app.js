@@ -5385,6 +5385,17 @@ DOM.settingsButton?.addEventListener(
     }
 );
 
+DOM.pokemonNavigationSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
+
+DOM.returnPositionSetting?.addEventListener(
+    "change",
+    markSettingsDirty
+);
+
 window.addEventListener(
     "beforeunload",
     event => {
