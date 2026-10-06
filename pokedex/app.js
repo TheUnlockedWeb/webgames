@@ -5354,6 +5354,26 @@ DOM.backButton?.addEventListener(
         stopCry();
 
         showView("dex");
+
+        window.requestAnimationFrame(
+            () => {
+                if (
+                    state.settings.returnPosition ===
+                    "remember"
+                ) {
+                    window.scrollTo(
+                        0,
+                        state.detailReturnScrollY
+                    );
+                }
+                else {
+                    window.scrollTo(
+                        0,
+                        0
+                    );
+                }
+            }
+        );
     }
 );
 
