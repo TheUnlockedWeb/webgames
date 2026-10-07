@@ -195,7 +195,7 @@ document.getElementById("back-button").onclick = () => {
     if (document.referrer) {
         window.location.href = document.referrer;
     } else {
-        window.location.href = "/index.html";
+        window.location.href = "../index.html";
     }
 };
 </script>
@@ -213,7 +213,7 @@ if (document.referrer && document.referrer.includes(window.location.origin)) {
     backBtn.innerHTML = "🏠 Home";
 
     backBtn.onclick = () => {
-        window.location.href = "/index.html";
+        window.location.href = "../index.html";
     };
 }
 </script>
