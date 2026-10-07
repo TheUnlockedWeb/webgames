@@ -597,7 +597,7 @@ document.querySelectorAll('a[href*="discord"]').forEach(link => {
 
 window.addEventListener("load", () => {
     document.getElementById("help-button").onclick = () => {
-        window.location.href = "/templates/help.html";
+        window.location.href = "templates/help.html";
     };
 });
 ``
