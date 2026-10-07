@@ -2295,20 +2295,6 @@ async function renderPokemonGrid() {
     /*
         Tell the user we're loading the first page.
     */
-    if (DOM.status) {
-        DOM.status.textContent =
-            `Loading Pokémon... 0 / ${visibleSpecies.length}`;
-    }
-
-    /*
-        After seven seconds, show an estimated time.
-
-        We use the actual completion rate when at least
-        one Pokémon has finished. If absolutely nothing
-        has completed, we give a conservative fallback
-        rather than pretending we know the network speed.
-    */
-
 
     /*
         Load cards progressively.
