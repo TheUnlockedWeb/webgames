@@ -1890,3 +1890,267 @@ a {
     transform: translateY(0);
     box-shadow: 0 0 5px var(--col-widget);
 }
+/* ============================================================
+   SHARED WEBGAMES NAVIGATION
+   Matches the main Pokédex navbar
+   ============================================================ */
+
+.site-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 10000;
+
+    height: 68px;
+
+    display: flex;
+    align-items: stretch;
+
+    padding: 0 20px;
+
+    background: rgba(23, 23, 23, 0.94);
+
+    border-bottom: 1px solid var(--col-outline);
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.site-navbar-main {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: stretch;
+
+    gap: 26px;
+}
+
+.site-navbar-brand {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 8px;
+
+    color: var(--col-text);
+
+    font-size: 1.18rem;
+    font-weight: 900;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    white-space: nowrap;
+}
+
+.site-navbar-brand:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.site-navbar-pokeball {
+    position: relative;
+
+    width: 29px;
+    height: 29px;
+
+    border: 2px solid var(--col-text);
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ef4b4b 0 47%,
+            var(--col-text) 47% 53%,
+            #ffffff 53% 100%
+        );
+
+    overflow: hidden;
+}
+
+.site-navbar-pokeball::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    transform: translate(-50%, -50%);
+
+    border: 2px solid var(--col-text);
+
+    border-radius: 50%;
+
+    background: var(--col-bg);
+}
+
+.site-navbar-tabs {
+    display: flex;
+    align-items: stretch;
+
+    gap: 4px;
+}
+
+.site-navbar-tab {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 14px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--col-text-midkey);
+
+    font: inherit;
+    font-weight: 750;
+
+    text-decoration: none;
+
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
+}
+
+.site-navbar-tab:hover {
+    color: var(--col-text);
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.site-navbar-tab.active {
+    color: var(--col-text);
+}
+
+.site-navbar-tab.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+
+    height: 3px;
+
+    border-radius: 3px 3px 0 0;
+
+    background: #4296f4;
+}
+
+.site-navbar-upcoming {
+    position: relative;
+
+    display: flex;
+    align-items: stretch;
+}
+
+.site-navbar-upcoming .site-navbar-tab {
+    opacity: 0.55;
+}
+
+.site-navbar-coming-soon {
+    position: absolute;
+
+    left: 50%;
+    top: calc(100% + 8px);
+
+    z-index: 10001;
+
+    padding: 6px 9px;
+
+    border: 1px solid var(--col-outline);
+    border-radius: 8px;
+
+    background: var(--col-widget-back);
+    color: var(--col-text);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translate(-50%, -4px);
+
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease,
+        visibility 0.15s ease;
+
+    pointer-events: none;
+}
+
+.site-navbar-upcoming:hover .site-navbar-coming-soon {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translate(-50%, 0);
+}
+
+/*
+ * The original DialgaDex header sits underneath
+ * the shared site navbar.
+ */
+body {
+    padding-top: 68px;
+}
+
+header {
+    top: 68px;
+}
+
+/*
+ * The existing DialgaDex #site already has 5rem
+ * of top spacing for its original header.
+ * Keep that spacing but account for the new navbar.
+ */
+#site {
+    padding-top: 5rem;
+}
+
+@media screen and (max-width: 720px) {
+
+    .site-navbar {
+        padding: 0 10px;
+    }
+
+    .site-navbar-main {
+        gap: 10px;
+    }
+
+    .site-navbar-tab {
+        padding: 0 8px;
+        font-size: 0.82rem;
+    }
+
+    .site-navbar-brand {
+        font-size: 1rem;
+    }
+
+    .site-navbar-pokeball {
+        width: 25px;
+        height: 25px;
+    }
+}
