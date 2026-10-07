@@ -2382,12 +2382,6 @@ async function renderPokemonGrid() {
                        .forEach(skeleton => {
                            skeleton.remove();
                        });
-               
-                   // Stop the loading warning.
-                   stopGridLoadingWarning();
-               
-                   // Update the final grid status.
-                   updateGridStatus();
                }
             }
         }
