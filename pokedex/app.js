@@ -2065,20 +2065,6 @@ const effectiveCategoryFilters =
         );
 }
 
-
-function stopGridLoadingWarning() {
-    if (
-        state.gridLoading.warningTimer
-    ) {
-        clearTimeout(
-            state.gridLoading.warningTimer
-        );
-
-        state.gridLoading.warningTimer =
-            null;
-    }
-}
-
 /* ============================================================
    18. RENDER MAIN GRID
    ============================================================ */
