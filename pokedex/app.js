@@ -610,16 +610,16 @@ function readSettingsFromControls() {
         cryVolume:
             Number(
                 DOM.cryVolumeSetting?.value ??
-                state.settings.cryVolume,
-               
+                state.settings.cryVolume
+            ),
+
         pokemonNavigation:
-                DOM.pokemonNavigationSetting?.value ??
-                state.settings.pokemonNavigation,
-   
+            DOM.pokemonNavigationSetting?.value ??
+            state.settings.pokemonNavigation,
+
         returnPosition:
-                DOM.returnPositionSetting?.value ??
-                state.settings.returnPosition
-            )
+            DOM.returnPositionSetting?.value ??
+            state.settings.returnPosition
     };
 }
 
