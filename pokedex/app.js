@@ -2002,23 +2002,6 @@ const effectiveCategoryFilters =
 
     await renderPokemonGrid();
 }
-
-function startGridLoadingWarning(
-    renderToken
-) {
-   
-stopGridLoadingWarning();
-
-    state.gridLoading.warningTimer =
-        window.setTimeout(
-            () => {
-                if (
-                    renderToken !==
-                    state.gridLoading.token
-                ) {
-                    return;
-                }
-
                 const completed =
                     state.gridLoading.completed;
 
