@@ -2413,13 +2413,6 @@ async function renderPokemonGrid() {
                         )
                     );
 
-                if (DOM.status) {
-                    DOM.status.textContent =
-                        `Loading Pokémon... ` +
-                        `${state.gridLoading.completed} / ` +
-                        `${state.gridLoading.total}`;
-                }
-
                if (
                    state.gridLoading.completed >=
                    state.gridLoading.total
