@@ -5181,7 +5181,7 @@ async function handleFilterClick(button) {
    33. LOAD MORE
    =========================================================== */
 
-/* Old code has been deleted, due to new loading systems
+/* Old code has been deleted, due to new loading systems. */
 
 /* ============================================================
    34. GLOBAL EVENT DELEGATION
