@@ -5720,6 +5720,22 @@ DOM.saveSettingsButton?.addEventListener(
             );
         }
 
+          const systemThemeMediaQuery =
+     window.matchMedia?.(
+       "(prefers-color-scheme: dark)"
+     );
+   
+   systemThemeMediaQuery?.addEventListener(
+     "change",
+     () => {
+       if (
+         state.settings.theme === "system"
+       ) {
+         applySettings();
+       }
+     }
+   );
+
         showToast(
             t("settingsSaved")
         );
