@@ -522,10 +522,21 @@ function saveSettings() {
 }
 
 
-function applySettings() {
+    const systemPrefersDark =
+        window.matchMedia?.(
+            "(prefers-color-scheme: dark)"
+        ).matches ?? false;
+
+    const useDarkTheme =
+        state.settings.theme === "dark" ||
+        (
+            state.settings.theme === "system" &&
+            systemPrefersDark
+        );
+
     document.body.classList.toggle(
         "dark",
-        state.settings.theme === "dark"
+        useDarkTheme
     );
 
     document.body.classList.toggle(
