@@ -2400,8 +2400,22 @@ async function renderPokemonGrid() {
             () => worker()
         );
 
+    /*
+        Cards load independently in the background.
+        The results bar should describe the current
+        Pokédex state, not the card-loading progress.
+    */
+    updateGridStatus();
+
     await Promise.all(workers);
+
+    /*
+        Make sure the final state is also reflected
+        after every card has finished loading.
+    */
+    updateGridStatus();
 }
+
 function updateGridStatus() {
     const total =
         state.filteredSpecies.length;
