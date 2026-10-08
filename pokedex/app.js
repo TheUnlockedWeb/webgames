@@ -854,8 +854,10 @@ function showToast(message, type = "") {
    ============================================================ */
 
 async function loadSpeciesCatalogue() {
-    DOM.status.textContent =
-        "Discovering Pokémon species...";
+    if (DOM.status) {
+        DOM.status.textContent =
+            "National Pokédex";
+    }
 
     const initial =
         await api("pokemon-species?limit=1");
