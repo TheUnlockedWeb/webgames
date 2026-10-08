@@ -63,7 +63,7 @@ const CONFIG = {
     MAX_MEMORY_CACHE_ITEMS: 1000,
 
     DEFAULT_SETTINGS: {
-        theme: "dark",
+        theme: "system",
         spriteStyle: "normal",
         animations: false,
         autoCry: true,
