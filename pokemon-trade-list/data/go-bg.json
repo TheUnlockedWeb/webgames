@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "description": "Skeleton mapping for Pokemon GO background assets and Team backgrounds.",
+    "generated_at": "2026-10-15T00:00:00Z",
+    "notes": "This is a starter file. Replace placeholder URLs with actual image links from authoritative sources (Pokemon GO Hub, PokeAPI where available, Pokemon GO asset repositories) and set 'released' flags appropriately. Keys: backgrounds, teams, pokemon."
+  },
+
+  "backgrounds": {
+    "instinct": {
+      "id": "instinct",
+      "name": "Team Instinct",
+      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "released": true,
+      "images": {
+        "background": "REPLACE_WITH_TEAM_INSTINCT_BACKGROUND_URL",
+        "thumbnail": "REPLACE_WITH_TEAM_INSTINCT_THUMBNAIL_URL"
+      }
+    },
+    "valor": {
+      "id": "valor",
+      "name": "Team Valor",
+      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "released": true,
+      "images": {
+        "background": "REPLACE_WITH_TEAM_VALOR_BACKGROUND_URL",
+        "thumbnail": "REPLACE_WITH_TEAM_VALOR_THUMBNAIL_URL"
+      }
+    },
+    "mystic": {
+      "id": "mystic",
+      "name": "Team Mystic",
+      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "released": true,
+      "images": {
+        "background": "REPLACE_WITH_TEAM_MYSTIC_BACKGROUND_URL",
+        "thumbnail": "REPLACE_WITH_TEAM_MYSTIC_THUMBNAIL_URL"
+      }
+    }
+  },
+
+  "pokemon": {
+    "#example": {
+      "pokedex": "001",
+      "name": "Bulbasaur",
+      "forms": {
+        "default": {
+          "sprite": "REPLACE_WITH_POKEMON_GO_SPRITE_URL",
+          "go_background": null,
+          "go_background_image": null,
+          "released": false
+        },
+        "gmax": {
+          "sprite": "REPLACE_WITH_GIGANTAMAX_SPRITE_URL",
+          "go_background": null,
+          "go_background_image": null,
+          "released": false
+        }
+      }
+    }
+  },
+
+  "usage": {
+    "description": "How to use this file in the app",
+    "points": [
+      "1. The app should load this JSON (e.g., fetch('/pokemon-trade-list/data/go-bg.json')) and use `backgrounds` for available team/background choices.",
+      "2. Each pokemon entry maps by a key (pokedex number or unique id). Under `forms.default.go_background` supply either null or the id of a background in `backgrounds`.",
+      "3. If `go_background_image` is provided it should be used directly behind the pokemon tile. If null and `go_background` references a background id, use the background's `images.background`.",
+      "4. `released` flags indicate whether to show that background option in the UI (only show when released === true).",
+      "5. Replace all placeholder URLs with the exact asset URLs. Prefer original Pokemon GO asset hosts or community mirrors that allow hotlinking."
+    ]
+  }
+}
