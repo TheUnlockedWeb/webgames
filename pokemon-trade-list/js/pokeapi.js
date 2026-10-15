@@ -45,7 +45,7 @@
   /*
    * Team backgrounds only appear for Pokémon that have them released.
    * This is intentionally a starter map: bigger, more complete data can be
-   * plugged in later, and runtime probing is easy to add on top of this.
+   * plugged in later, and runtime probing is used to find GO-specific images.
    */
   TL.BG_RELEASES = new Map([
     [1, ['instinct', 'mystic', 'valor']],
@@ -225,6 +225,89 @@
     [1007, 1008], [1014, 1017], [1024, 1025],
   ].forEach(([a, b]) => { for (let i = a; i <= b; i++) LEGENDARY.add(i); });
 
+  /* ---------- probe & asset discovery (PokeMiners mirror) ---------- */
+  TL._assetCacheKey = 'tl.assetmap.v1';
+  TL.assetMap = JSON.parse(localStorage.getItem(TL._assetCacheKey) || '{}');
+
+  function pad3(n) { return String(n).padStart(3, '0'); }
+
+  async function probeUrl(url) {
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      return res && res.ok;
+    } catch (e) {
+      try {
+        const r2 = await fetch(url, { method: 'GET' });
+        return r2 && r2.ok;
+      } catch (e2) { return false; }
+    }
+  }
+
+  async function probeForSpecies(id) {
+    const o = { icon: null, backgrounds: {} };
+    const id3 = pad3(id);
+    // pokemon icon (PokeMiners pattern)
+    const iconUrl = `${TL.ASSET_PATHS.pogoPokemon}/icon_${id3}_00.png`;
+    if (await probeUrl(iconUrl)) {
+      o.icon = iconUrl;
+    }
+    // candidate background patterns to try for GO-style backgrounds
+    const bgCandidates = [
+      `${TL.ASSET_PATHS.pogoPokemon}/background_${id3}.png`,
+      `${TL.ASSET_PATHS.pogoPokemon}/bg_${id3}.png`,
+      `${TL.ASSET_PATHS.pogoPokemon}/icon_${id3}_bg.png`,
+      // older mirrors / different layouts (some sites use city/location cards per pokemon id)
+      `${TL.ASSET_PATHS.pogoPokemon}/location_${id3}.jpg`,
+    ];
+    for (const url of bgCandidates) {
+      if (await probeUrl(url)) {
+        // store as generic bg image (we'll use this whenever a background is requested)
+        o.backgrounds.default = url;
+        break;
+      }
+    }
+    return o;
+  }
+
+  TL.probeAssets = async function (opts = { full: true }) {
+    const full = opts.full !== false;
+    // already probed
+    if (TL.assetMap && Object.keys(TL.assetMap).length > 0 && !opts.force) return TL.assetMap;
+
+    const existing = TL.assetMap || {};
+    const ids = full ? Array.from({ length: MAX_SPECIES }, (_, i) => i + 1) : Array.from({ length: 500 }, (_, i) => i + 1);
+    const concurrency = 20;
+    let idx = 0;
+    const results = {};
+
+    async function worker() {
+      while (idx < ids.length) {
+        const i = ids[idx++];
+        try {
+          if (existing[i]) { results[i] = existing[i]; continue; }
+          const res = await probeForSpecies(i);
+          if (res.icon || Object.keys(res.backgrounds).length) results[i] = res;
+          if (i % 50 === 0) {
+            // persist progressive results
+            Object.assign(TL.assetMap, results);
+            try { localStorage.setItem(TL._assetCacheKey, JSON.stringify(TL.assetMap)); } catch (e) { /* ignore */ }
+          }
+        } catch (e) { /* ignore single failures */ }
+      }
+    }
+
+    const workers = Array.from({ length: concurrency }, () => worker());
+    await Promise.all(workers);
+    Object.assign(TL.assetMap, results);
+    try { localStorage.setItem(TL._assetCacheKey, JSON.stringify(TL.assetMap)); } catch (e) { /* ignore */ }
+    return TL.assetMap;
+  };
+
+  TL.getAssetFor = function (id) {
+    const rec = TL.assetMap && TL.assetMap[id];
+    return rec || null;
+  };
+
   /* ---------- fetch ---------- */
   const idFromUrl = (u) => +u.replace(/\/+$/, '').split('/').pop();
 
@@ -333,8 +416,15 @@
     if (p.hat) name = 'Party Hat ' + name;
     if (p.shiny) name = 'Shiny ' + name;
     if (p.bg && BG[p.bg]) name += ` (${BG[p.bg].name})`;
+
+    const asset = TL.getAssetFor(p.id);
+    // prefer GO icon for picker tiles if available
+    const src = asset && asset.icon ? asset.icon : TL.spriteUrl(p.id, p.shiny);
+    const fallback = TL.fallbackUrl(p.id, p.shiny);
+    const bgImage = asset && asset.backgrounds && asset.backgrounds.default ? asset.backgrounds.default : null;
+
     return Object.assign(p, {
-      k, name, src: TL.spriteUrl(p.id, p.shiny), fallback: TL.fallbackUrl(p.id, p.shiny),
+      k, name, src, fallback, bgImage,
     });
   };
 
@@ -348,7 +438,7 @@
         console.warn('PokeAPI list unavailable, using offline numbering', err);
         return build(offlineList(), true);
       })
-      .then((dex) => { TL.dex = dex; return dex; });
+      .then(async (dex) => { TL.dex = dex; await TL.probeAssets({ full: true }); return dex; });
     return TL.dexPromise;
   };
 
