@@ -21,6 +21,13 @@
   const MAX_SPECIES = 1025;
   const CACHE_KEY = 'tl.dex.v2';
 
+  TL.ASSET_PATHS = {
+    dynamax: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/dynamax-band.png',
+    type: 'https://play.pokemonshowdown.com/sprites/types',
+    itemBase: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items',
+    pogoPokemon: 'https://github.com/PokeMiners/pogo_assets/raw/master/Images/Pokemon',
+  };
+
   /* ---------- backgrounds (pure CSS art, see styles.css) ---------- */
   TL.BACKGROUNDS = [
     { key: 'sky',      name: 'Sky Flight',    kind: 'location' },
@@ -35,6 +42,122 @@
   TL.BACKGROUNDS.forEach((b) => (BG[b.key] = b));
   TL.bgInfo = (k) => BG[k];
 
+  /*
+   * Team backgrounds only appear for Pokémon that have them released.
+   * This is intentionally a starter map: bigger, more complete data can be
+   * plugged in later, and runtime probing is easy to add on top of this.
+   */
+  TL.BG_RELEASES = new Map([
+    [1, ['instinct', 'mystic', 'valor']],
+    [4, ['instinct', 'mystic', 'valor']],
+    [7, ['instinct', 'mystic', 'valor']],
+    [25, ['instinct', 'mystic', 'valor']],
+    [26, ['instinct', 'mystic', 'valor']],
+    [27, ['instinct', 'mystic', 'valor']],
+    [39, ['instinct', 'mystic', 'valor']],
+    [52, ['instinct', 'mystic', 'valor']],
+    [53, ['instinct', 'mystic', 'valor']],
+    [58, ['instinct', 'mystic', 'valor']],
+    [59, ['instinct', 'mystic', 'valor']],
+    [65, ['instinct', 'mystic', 'valor']],
+    [66, ['instinct', 'mystic', 'valor']],
+    [75, ['instinct', 'mystic', 'valor']],
+    [76, ['instinct', 'mystic', 'valor']],
+    [82, ['instinct', 'mystic', 'valor']],
+    [83, ['instinct', 'mystic', 'valor']],
+    [95, ['instinct', 'mystic', 'valor']],
+    [96, ['instinct', 'mystic', 'valor']],
+    [104, ['instinct', 'mystic', 'valor']],
+    [105, ['instinct', 'mystic', 'valor']],
+    [113, ['instinct', 'mystic', 'valor']],
+    [114, ['instinct', 'mystic', 'valor']],
+    [115, ['instinct', 'mystic', 'valor']],
+    [116, ['instinct', 'mystic', 'valor']],
+    [117, ['instinct', 'mystic', 'valor']],
+    [118, ['instinct', 'mystic', 'valor']],
+    [120, ['instinct', 'mystic', 'valor']],
+    [121, ['instinct', 'mystic', 'valor']],
+    [122, ['instinct', 'mystic', 'valor']],
+    [123, ['instinct', 'mystic', 'valor']],
+    [124, ['instinct', 'mystic', 'valor']],
+    [125, ['instinct', 'mystic', 'valor']],
+    [127, ['instinct', 'mystic', 'valor']],
+    [133, ['instinct', 'mystic', 'valor']],
+    [134, ['instinct', 'mystic', 'valor']],
+    [135, ['instinct', 'mystic', 'valor']],
+    [144, ['instinct', 'mystic', 'valor']],
+    [145, ['instinct', 'mystic', 'valor']],
+    [146, ['instinct', 'mystic', 'valor']],
+    [150, ['instinct', 'mystic', 'valor']],
+    [151, ['instinct', 'mystic', 'valor']],
+    [196, ['instinct', 'mystic', 'valor']],
+    [197, ['instinct', 'mystic', 'valor']],
+    [245, ['instinct', 'mystic', 'valor']],
+    [246, ['instinct', 'mystic', 'valor']],
+    [247, ['instinct', 'mystic', 'valor']],
+    [250, ['instinct', 'mystic', 'valor']],
+    [251, ['instinct', 'mystic', 'valor']],
+    [306, ['instinct', 'mystic', 'valor']],
+    [307, ['instinct', 'mystic', 'valor']],
+    [308, ['instinct', 'mystic', 'valor']],
+    [309, ['instinct', 'mystic', 'valor']],
+    [310, ['instinct', 'mystic', 'valor']],
+    [318, ['instinct', 'mystic', 'valor']],
+    [319, ['instinct', 'mystic', 'valor']],
+    [320, ['instinct', 'mystic', 'valor']],
+    [334, ['instinct', 'mystic', 'valor']],
+    [336, ['instinct', 'mystic', 'valor']],
+    [337, ['instinct', 'mystic', 'valor']],
+    [373, ['instinct', 'mystic', 'valor']],
+    [374, ['instinct', 'mystic', 'valor']],
+    [375, ['instinct', 'mystic', 'valor']],
+    [376, ['instinct', 'mystic', 'valor']],
+    [377, ['instinct', 'mystic', 'valor']],
+    [378, ['instinct', 'mystic', 'valor']],
+    [379, ['instinct', 'mystic', 'valor']],
+    [380, ['instinct', 'mystic', 'valor']],
+    [381, ['instinct', 'mystic', 'valor']],
+    [382, ['instinct', 'mystic', 'valor']],
+    [383, ['instinct', 'mystic', 'valor']],
+    [384, ['instinct', 'mystic', 'valor']],
+    [385, ['instinct', 'mystic', 'valor']],
+    [386, ['instinct', 'mystic', 'valor']],
+    [480, ['instinct', 'mystic', 'valor']],
+    [481, ['instinct', 'mystic', 'valor']],
+    [482, ['instinct', 'mystic', 'valor']],
+    [483, ['instinct', 'mystic', 'valor']],
+    [484, ['instinct', 'mystic', 'valor']],
+    [485, ['instinct', 'mystic', 'valor']],
+    [486, ['instinct', 'mystic', 'valor']],
+    [487, ['instinct', 'mystic', 'valor']],
+    [488, ['instinct', 'mystic', 'valor']],
+    [489, ['instinct', 'mystic', 'valor']],
+    [490, ['instinct', 'mystic', 'valor']],
+    [491, ['instinct', 'mystic', 'valor']],
+    [492, ['instinct', 'mystic', 'valor']],
+    [493, ['instinct', 'mystic', 'valor']],
+    [494, ['instinct', 'mystic', 'valor']],
+    [638, ['instinct', 'mystic', 'valor']],
+    [639, ['instinct', 'mystic', 'valor']],
+    [640, ['instinct', 'mystic', 'valor']],
+    [641, ['instinct', 'mystic', 'valor']],
+    [642, ['instinct', 'mystic', 'valor']],
+    [643, ['instinct', 'mystic', 'valor']],
+    [644, ['instinct', 'mystic', 'valor']],
+    [645, ['instinct', 'mystic', 'valor']],
+    [646, ['instinct', 'mystic', 'valor']],
+    [647, ['instinct', 'mystic', 'valor']],
+    [648, ['instinct', 'mystic', 'valor']],
+    [649, ['instinct', 'mystic', 'valor']],
+  ]);
+
+  TL.backgroundsForSpecies = (id) => {
+    const list = new Set(['sky', 'park', 'night', 'tower']);
+    const team = TL.BG_RELEASES.get(Number(id)) || [];
+    team.forEach((key) => list.add(key));
+    return [...list];
+  };
+
   /* ---------- keys ---------- */
   TL.makeKey = (id, shiny, bg, type, hat) =>
     [id, shiny ? 1 : 0, bg || '', type || '', hat ? 1 : 0].join('|');
@@ -48,6 +171,12 @@
   TL.spriteUrl = (id, shiny) =>
     `${SPRITE_BASE}/other/official-artwork/${shiny ? 'shiny/' : ''}${id}.png`;
   TL.fallbackUrl = (id, shiny) => `${SPRITE_BASE}/${shiny ? 'shiny/' : ''}${id}.png`;
+
+  TL.typeIconUrl = function (type) {
+    const key = String(type || '').trim().toLowerCase();
+    if (!key) return '';
+    return `${TL.ASSET_PATHS.type}/${key}.png`;
+  };
 
   /* ---------- names ---------- */
   TL.names = {}; // id -> display name (species + forms)
@@ -172,10 +301,13 @@
 
     const entries = [];
     species.forEach(([id]) => {
-      // normal, then each background; then the same for shiny
+      const availableBackgrounds = TL.backgroundsForSpecies(id);
       [false, true].forEach((shiny) => {
         entries.push(makeEntry(id, id, shiny, '', '', false));
-        TL.BACKGROUNDS.forEach((b) => entries.push(makeEntry(id, id, shiny, b.key, '', false)));
+        TL.BACKGROUNDS.forEach((b) => {
+          if (!availableBackgrounds.includes(b.key)) return;
+          entries.push(makeEntry(id, id, shiny, b.key, '', false));
+        });
       });
       // Dynamax (normal + shiny) and party-hat costume (normal + shiny)
       entries.push(makeEntry(id, id, false, '', 'dmax', false));
