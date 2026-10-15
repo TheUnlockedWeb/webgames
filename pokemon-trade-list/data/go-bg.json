@@ -1,38 +1,41 @@
 {
   "metadata": {
-    "description": "Skeleton mapping for Pokemon GO background assets and Team backgrounds.",
+    "description": "Skeleton mapping for Pokemon GO background assets and Team backgrounds. Points to Dittobase as canonical background source.",
     "generated_at": "2026-10-15T00:00:00Z",
-    "notes": "This is a starter file. Replace placeholder URLs with actual image links from authoritative sources (Pokemon GO Hub, PokeAPI where available, Pokemon GO asset repositories) and set 'released' flags appropriately. Keys: backgrounds, teams, pokemon."
+    "dittobase_url": "https://www.dittobase.com/pokemon-go/backgrounds",
+    "notes": "This is a starter file. Replace placeholder per-image URLs or supply the 'dittobase_key' for each background to resolve the exact image URL on dittobase. Keys: backgrounds, teams, pokemon."
   },
+
+  "dittobase_all_backgrounds": "https://www.dittobase.com/pokemon-go/backgrounds",
 
   "backgrounds": {
     "instinct": {
       "id": "instinct",
       "name": "Team Instinct",
-      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "source": "https://www.dittobase.com/pokemon-go/backgrounds",
       "released": true,
       "images": {
-        "background": "REPLACE_WITH_TEAM_INSTINCT_BACKGROUND_URL",
+        "background": "REPLACE_WITH_TEAM_INSTINCT_BACKGROUND_URL_OR_USE_dittobase_key",
         "thumbnail": "REPLACE_WITH_TEAM_INSTINCT_THUMBNAIL_URL"
       }
     },
     "valor": {
       "id": "valor",
       "name": "Team Valor",
-      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "source": "https://www.dittobase.com/pokemon-go/backgrounds",
       "released": true,
       "images": {
-        "background": "REPLACE_WITH_TEAM_VALOR_BACKGROUND_URL",
+        "background": "REPLACE_WITH_TEAM_VALOR_BACKGROUND_URL_OR_USE_dittobase_key",
         "thumbnail": "REPLACE_WITH_TEAM_VALOR_THUMBNAIL_URL"
       }
     },
     "mystic": {
       "id": "mystic",
       "name": "Team Mystic",
-      "source": "https://pogotrades.com or pokemon-go-hub (replace with exact source URL)",
+      "source": "https://www.dittobase.com/pokemon-go/backgrounds",
       "released": true,
       "images": {
-        "background": "REPLACE_WITH_TEAM_MYSTIC_BACKGROUND_URL",
+        "background": "REPLACE_WITH_TEAM_MYSTIC_BACKGROUND_URL_OR_USE_dittobase_key",
         "thumbnail": "REPLACE_WITH_TEAM_MYSTIC_THUMBNAIL_URL"
       }
     }
@@ -47,12 +50,14 @@
           "sprite": "REPLACE_WITH_POKEMON_GO_SPRITE_URL",
           "go_background": null,
           "go_background_image": null,
+          "dittobase_bg_key": null,
           "released": false
         },
         "gmax": {
           "sprite": "REPLACE_WITH_GIGANTAMAX_SPRITE_URL",
           "go_background": null,
           "go_background_image": null,
+          "dittobase_bg_key": null,
           "released": false
         }
       }
@@ -64,9 +69,10 @@
     "points": [
       "1. The app should load this JSON (e.g., fetch('/pokemon-trade-list/data/go-bg.json')) and use `backgrounds` for available team/background choices.",
       "2. Each pokemon entry maps by a key (pokedex number or unique id). Under `forms.default.go_background` supply either null or the id of a background in `backgrounds`.",
-      "3. If `go_background_image` is provided it should be used directly behind the pokemon tile. If null and `go_background` references a background id, use the background's `images.background`.",
-      "4. `released` flags indicate whether to show that background option in the UI (only show when released === true).",
-      "5. Replace all placeholder URLs with the exact asset URLs. Prefer original Pokemon GO asset hosts or community mirrors that allow hotlinking."
+      "3. If `go_background_image` is provided it should be used directly behind the pokemon tile. If null and `go_background` references a background id, use the background's `images.background` (or resolve `dittobase_bg_key` against the Dittobase collection).",
+      "4. Use the top-level `dittobase_url` to look up backgrounds. Where available, fill `dittobase_bg_key` with the Dittobase identifier for automated resolution.",
+      "5. The `released` flags indicate whether to show that background option in the UI (only show when released === true).",
+      "6. Replace all placeholder URLs with the exact asset URLs. Prefer Dittobase as canonical source for GO backgrounds; for other assets (sprites, dynamax logo, fonts) use PokeAPI or licensed repositories."
     ]
   }
 }
