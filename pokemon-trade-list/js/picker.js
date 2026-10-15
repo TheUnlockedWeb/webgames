@@ -23,11 +23,15 @@
     [base, d.bg ? 'bg-' + d.bg : '', d.type === 'gmax' ? 'is-gmax' : '', d.type === 'dmax' ? 'is-dmax' : '']
       .filter(Boolean).join(' ');
 
-  TL.tileInner = (d, lazy) =>
-    `<img src="${d.src}" data-fb="${d.fallback}" alt="${esc(d.name)}" draggable="false" decoding="async"${lazy ? ' loading="lazy"' : ''}>` +
-    (d.shiny ? '<i class="bd bd-shiny"></i>' : '') +
-    (d.type === 'dmax' || d.type === 'gmax' ? '<i class="bd bd-dmax"></i>' : '') +
-    (d.hat ? '<i class="bd bd-hat"></i>' : '');
+  // Render inner contents of a tile: sprite, badges (shiny, dynamax), hat
+  TL.tileInner = (d, lazy) => {
+    const img = `<img src="${d.src}" data-fb="${d.fallback}" alt="${esc(d.name)}" draggable="false" decoding="async"${lazy ? ' loading="lazy"' : ''}>`;
+    const shiny = d.shiny ? '<i class="bd bd-shiny" aria-hidden="true"></i>' : '';
+    // show the dynamax badge ONLY for dmax (not gmax). Allow inline background-image override.
+    const dmax = d.type === 'dmax' ? `<i class="bd bd-dmax" aria-hidden="true" style="${d.type === 'dmax' ? `background-image:url('${TL.ASSET_PATHS.dynamax}');` : ''}"></i>` : '';
+    const hat = d.hat ? '<i class="bd bd-hat" aria-hidden="true"></i>' : '';
+    return img + shiny + dmax + hat;
+  };
 
   /** <img> error handling: try the small sprite once, then give up gracefully. */
   TL.attachImgFallback = (root) => {
@@ -80,15 +84,54 @@
     const input = ov.querySelector('.pk-search');
     TL.attachImgFallback(grid);
 
+    // add a small re-probe / clear cache control into the modal for debugging
+    (function addProbeControls() {
+      const controls = ov.querySelector('.pk-controls');
+      if (!controls) return;
+      const bar = document.createElement('div');
+      bar.className = 'pk-probe';
+      bar.style.marginTop = '8px';
+      bar.innerHTML = `<button class="tb" type="button">Re-probe GO assets</button> <button class="tb tb-danger" type="button">Clear asset cache</button> <span class="pk-probe-status" style="margin-left:8px;color:var(--dim)"></span>`;
+      controls.appendChild(bar);
+      const btnRe = bar.querySelector('button');
+      const btnClear = bar.querySelectorAll('button')[1];
+      const status = bar.querySelector('.pk-probe-status');
+
+      btnRe.addEventListener('click', async () => {
+        status.textContent = 'Probing assets… (this may take a minute)';
+        try {
+          const m = await TL.probeAssets({ full: true, force: true });
+          status.textContent = `Probed ${Object.keys(m || {}).length} species`; // update
+          // re-render visible tiles so backgrounds/icons appear
+          refresh();
+        } catch (e) {
+          status.textContent = 'Probe failed';
+          console.error(e);
+        }
+      });
+      btnClear.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(TL._assetCacheKey || 'tl.assetmap.v1');
+          TL.assetMap = {};
+          status.textContent = 'Cache cleared';
+          refresh();
+        } catch (e) { status.textContent = 'Clear failed'; }
+      });
+    })();
+
     const updateCount = () => {
       const n = ov.querySelector('.chip-n');
-      n.textContent = selected.size ? ' ' + selected.size : '';
+      // show as "(N)" like SELECTED (1)
+      n.textContent = selected.size ? ' (' + selected.size + ')' : '';
     };
 
     function tileHTML(e) {
       const d = TL.describe(e.k);
       const on = selected.has(e.k);
-      return `<button class="${TL.tileClass(d, 'ptile')}${on ? ' is-sel' : ''}" data-k="${e.k}" title="${esc(d.name)}" aria-pressed="${on}" role="listitem">${TL.tileInner(d, true)}<i class="chk"></i></button>`;
+      // if a GO background image exists for this species, use it as inline style
+      const bgStyle = d.bgImage ? `style="background-image:url('${d.bgImage}'); background-size:cover; background-position:center;"` : '';
+      // ensure that gmax does not get a dynamax badge; dmax gets the configured asset
+      return `<button class="${TL.tileClass(d, 'ptile')}${on ? ' is-sel' : ''}" data-k="${e.k}" title="${esc(d.name)}" aria-pressed="${on}" role="listitem" ${bgStyle}>${TL.tileInner(d, true)}<i class="chk"></i></button>`;
     }
 
     function renderMore() {
@@ -125,6 +168,11 @@
       selected = TL.store.selectedSet(listKey);
       btn.classList.toggle('is-sel', res.added);
       btn.setAttribute('aria-pressed', String(res.added));
+      // if we are currently viewing only "selected" tiles and the user unselected one,
+      // remove it from the grid so it vanishes immediately
+      if (!res.added && filters.has('selected')) {
+        btn.remove();
+      }
       updateCount();
     });
 
